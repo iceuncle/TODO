@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/rili"
-        android:icon="@mipmap/rili"
+        android:id="@+id/finish"
+        android:icon="@mipmap/finish"
         android:orderInCategory="90"
-        android:title="rili"
+        android:title="完成"
         app:showAsAction="always" />
 
 </menu>

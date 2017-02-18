@@ -3,4 +3,20 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+
+    <color name="transparent">#00000000</color>
+
+    <!--白-->
+    <color name="w0">#FFFFFF</color>
+    <!--默认背景色-->
+    <color name="w1">#efeff5</color>
+
+
+    <!--最常用灰-->
+    <color name="g0">#888888</color>
+    <!--分割线,灰按钮描边-->
+    <color name="g1">#d9d9d9</color>
+
+    <color name="b0">#1296db</color>
 </resources>
