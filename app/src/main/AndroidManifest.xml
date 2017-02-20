@@ -18,15 +18,8 @@
         </activity>
         <activity android:name=".ui.base.BaseActivity" />
         <activity android:name=".ui.datepicker.DatePickerActivity" />
-        <activity android:name=".ui.add.AddActivity" />
-        <activity android:name=".ui.alarm.RemindActivity"/>
-
-        <receiver
-            android:name=".ui.Receiver.OneShotAlarm"
-            android:process=":remote" />
-        <!--<receiver
-            android:name=".RepeatingAlarm"
-            android:process=":remote" />-->
+        <activity android:name=".ui.crud.AddActivity" />
+        <activity android:name=".ui.crud.ShowActivity" />
     </application>
 
 </manifest>

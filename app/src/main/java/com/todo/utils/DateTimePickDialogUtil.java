@@ -14,14 +14,13 @@ import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 
 import com.todo.R;
-import com.todo.ui.add.AddActivity;
+import com.todo.data.bean.CalendarBean;
 
 /**
  * 日期时间选择控件 使用方法： private EditText inputDate;//需要设置的日期时间文本编辑框 private String
@@ -33,7 +32,7 @@ import com.todo.ui.add.AddActivity;
  * dateTimePicKDialog=new
  * DateTimePickDialogUtil(SinvestigateActivity.this,initDateTime);
  * dateTimePicKDialog.dateTimePicKDialog(inputDate);
- * <p/>
+ * <p>
  * } });
  */
 public class DateTimePickDialogUtil implements OnDateChangedListener,
@@ -85,7 +84,7 @@ public class DateTimePickDialogUtil implements OnDateChangedListener,
      */
     private TextView textView;
 
-    public AlertDialog dateTimePicKDialog(final TextView inputDate) {
+    public AlertDialog dateTimePicKDialog(final TextView inputDate, final CalendarBean calendarBean) {
         LinearLayout dateTimeLayout = (LinearLayout) activity
                 .getLayoutInflater().inflate(R.layout.util_datetime, null);
         datePicker = (DatePicker) dateTimeLayout.findViewById(R.id.datepicker);
@@ -103,7 +102,7 @@ public class DateTimePickDialogUtil implements OnDateChangedListener,
                     public void onClick(DialogInterface dialog, int whichButton) {
                         inputDate.setText(dateTime);
                         Log.d("qqq", "canlendar0   " + calendar.getTime());
-                        AddActivity.cal = calendar;
+                        calendarBean.setCalendar(calendar);
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {

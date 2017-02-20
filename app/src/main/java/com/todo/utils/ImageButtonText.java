@@ -27,7 +27,7 @@ public class ImageButtonText extends LinearLayout implements View.OnClickListene
 
     public ImageButtonText(final Context context, AttributeSet attrs) {
         super(context, attrs);
-        LayoutInflater.from(context).inflate(R.layout.button_img_text, this, true);
+        LayoutInflater.from(context).inflate(R.layout.button_imgtext, this, true);
 
         this.imgView = (ImageView) findViewById(R.id.imgview);
         this.textView = (TextView) findViewById(R.id.textview);

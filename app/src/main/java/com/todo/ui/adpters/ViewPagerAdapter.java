@@ -5,13 +5,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.todo.ui.main.MainFragemnt;
+import com.todo.ui.main.MainFragment;
+
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     final int PAGE_COUNT = 3;
-    private String tabTitles[] = new String[]{"待办", "完成", "过期"};
+    private String tabTitles[] = new String[]{"待办", "过期", "完成"};
     private Context context;
+
 
     public ViewPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
@@ -20,8 +22,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return MainFragemnt.newInstance(position+1);
+        return MainFragment.newInstance(position);
     }
+
 
     @Override
     public int getCount() {
@@ -32,4 +35,27 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return tabTitles[position];
     }
+
+    private int mChildCount = 0;
+
+    @Override
+    public void notifyDataSetChanged() {
+        // 重写这个方法，取到子Fragment的数量，用于下面的判断，以执行多少次刷新
+        mChildCount = getCount();
+        super.notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        if (mChildCount > 0) {
+            // 这里利用判断执行若干次不缓存，刷新
+            mChildCount--;
+            // 返回这个是强制ViewPager不缓存，每次滑动都刷新视图
+            return POSITION_NONE;
+        }
+        // 这个则是缓存不刷新视图
+        return super.getItemPosition(object);
+    }
+
+
 }
