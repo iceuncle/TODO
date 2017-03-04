@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.todo.R;
 import com.todo.data.database.Schedule;
+import com.todo.data.database.WeekSchedule;
 
 import java.util.List;
 
@@ -19,25 +20,30 @@ import java.util.List;
  * Created by tianyang on 2017/2/19.
  */
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
-    public List<Schedule> scheduleList;
+    public List<WeekSchedule> scheduleList;
     private MyOnItemClickLitener mOnItemClickLitener;
     private View mView;
 
-    public MainAdapter(List<Schedule> list) {
+
+    
+
+    public MainAdapter(List<WeekSchedule> list) {
         this.scheduleList = list;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView time, title;
-        ImageView tagImg;
+        ImageView tagImg, alarImg;
         CheckBox checkBox;
 
         public ViewHolder(View itemView) {
             super(itemView);
             time = (TextView) itemView.findViewById(R.id.time);
             title = (TextView) itemView.findViewById(R.id.title);
-            tagImg = (ImageView) itemView.findViewById(R.id.biaoqianImg);
+            tagImg =
+                    (ImageView) itemView.findViewById(R.id.biaoqianImg);
             checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);
+            alarImg = (ImageView) itemView.findViewById(R.id.alarmImg);
         }
 
     }
@@ -53,19 +59,28 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Schedule schedule = scheduleList.get(position);
+        final WeekSchedule schedule = scheduleList.get(position);
         holder.time.setText(schedule.getStartTime());
         holder.title.setText(schedule.getTitle());
         holder.checkBox.setChecked(schedule.isFinished());
 
-        if (schedule.getBiaoqian().equals("工作"))
-            holder.tagImg.setImageResource(R.mipmap.gongzuo1);
-        else if (schedule.getBiaoqian().equals("学习"))
-            holder.tagImg.setImageResource(R.mipmap.xuexi1);
-        else if (schedule.getBiaoqian().equals("生活"))
-            holder.tagImg.setImageResource(R.mipmap.shenghuo1);
-        else if (schedule.getBiaoqian().equals("其它"))
-            holder.tagImg.setImageResource(R.mipmap.qita1);
+        switch (schedule.getBiaoqian()) {
+            case "工作":
+                holder.tagImg.setImageResource(R.mipmap.gongzuo1);
+                break;
+            case "学习":
+                holder.tagImg.setImageResource(R.mipmap.xuexi1);
+                break;
+            case "生活":
+                holder.tagImg.setImageResource(R.mipmap.shenghuo1);
+                break;
+            case "其它":
+                holder.tagImg.setImageResource(R.mipmap.qita1);
+                break;
+        }
+
+        if (schedule.isRemind()) holder.alarImg.setImageResource(R.mipmap.alarmon);
+        else holder.alarImg.setImageResource(R.mipmap.alarmoff);
 
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +96,14 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             }
         });
 
+        mView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mOnItemClickLitener.onLongClick(view, position);
+                return false;
+            }
+        });
+
     }
 
 
@@ -93,6 +116,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         void onItemClick(View view, int position);
 
         void onClick(View view, int poisition);
+
+        void onLongClick(View view, int position);
     }
 
     public void setOnItemClickLitener(MyOnItemClickLitener mOnItemClickLitener) {

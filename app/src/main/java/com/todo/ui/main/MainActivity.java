@@ -11,25 +11,26 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.todo.R;
-import com.todo.ui.crud.AddActivity;
 import com.todo.ui.adpters.ViewPagerAdapter;
 import com.todo.ui.base.BaseActivity;
+import com.todo.ui.crud.AddActivity;
 import com.todo.ui.datepicker.DatePickerActivity;
 
-public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
+public class MainActivity extends BaseActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter viewPagerAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        Connector.getDatabase();
 //        DataSupport.deleteAll(Schedule.class);
+//        DataSupport.deleteAll(WeekSchedule.class);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
-
-
+        toolbar.setTitle("七天日程");
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
@@ -45,13 +46,10 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), this);
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-//        tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
         tabLayout.setupWithViewPager(viewPager);
 
-        viewPager.addOnPageChangeListener(this);
-
-
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -71,23 +69,8 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     }
 
     public void Add(View view) {
-        startActivity(new Intent(MainActivity.this, AddActivity.class));
-    }
-
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        viewPagerAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
+        Intent intent = new Intent(MainActivity.this, AddActivity.class);
+        startActivity(intent);
     }
 
 

@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/w1"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
@@ -29,30 +28,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/w0"
-                android:minHeight="50dp">
+                android:minHeight="60dp">
 
-                <EditText
-                    android:id="@+id/title"
+                <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:hint="标题"
-                    android:paddingEnd="15dp"
-                    android:paddingStart="15dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="15dp"
+                    android:text="标题"
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/title_et"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/g0"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.8dp"
-                android:background="@color/g1" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.8dp"
-                android:layout_marginTop="30dp"
                 android:background="@color/g1" />
 
             <RelativeLayout
@@ -93,26 +95,24 @@
                 android:onClick="startTime">
 
                 <TextView
+                    android:id="@+id/starttime_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginStart="15dp"
                     android:text="提醒时间"
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
 
-
                 <TextView
-                    android:id="@+id/stText"
+                    android:id="@+id/starttime_content_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_toLeftOf="@+id/arrowRight1"
+                    android:layout_marginLeft="30dp"
+                    android:layout_toRightOf="@id/starttime_tv"
                     android:textColor="@color/g0"
-                    android:textSize="13sp" />
+                    android:textSize="14sp" />
 
                 <ImageView
                     android:id="@+id/arrowRight1"
@@ -125,50 +125,6 @@
 
             </RelativeLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.8dp"
-                android:background="@color/g1"
-                android:visibility="gone" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@color/w0"
-                android:onClick="endTime"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="15dp"
-                    android:text="结束"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />
-
-
-                <TextView
-                    android:id="@+id/etText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:layout_toLeftOf="@+id/arrowRight2"
-                    android:textColor="@color/g0"
-                    android:textSize="13sp" />
-
-                <ImageView
-                    android:id="@+id/arrowRight2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="20dp"
-                    android:src="@mipmap/right_arrow" />
-
-            </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -182,25 +138,25 @@
                 android:onClick="xunHuan">
 
                 <TextView
+                    android:id="@+id/xunhuan_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginStart="15dp"
                     android:text="循环类型"
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
 
-
                 <TextView
-                    android:id="@+id/xunhuanText"
+                    android:id="@+id/xunhuan_content_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:layout_toLeftOf="@+id/arrowRight3"
+                    android:layout_marginLeft="30dp"
+                    android:layout_toRightOf="@id/xunhuan_tv"
+                    android:layout_marginRight="60dp"
                     android:textColor="@color/g0"
-                    android:textSize="13sp" />
+                    android:textSize="14sp" />
 
                 <ImageView
                     android:id="@+id/arrowRight3"

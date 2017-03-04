@@ -27,6 +27,12 @@ dependencies {
     compile 'jp.wasabeef:glide-transformations:2.0.1'
     compile 'org.litepal.android:core:1.4.1'
     compile 'joda-time:joda-time:2.9.7'
+    compile 'com.android.support:recyclerview-v7:24.1.0'
+    compile 'io.reactivex:rxjava:1.0.14'
+    compile 'io.reactivex:rxandroid:1.0.1'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'io.reactivex:rxjava:1.1.6'
+    compile 'io.reactivex:rxandroid:1.2.1'
     compile project(':DatePicker')
     compile project(':alarmmanagerclock')
 }

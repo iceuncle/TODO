@@ -9,7 +9,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.main.MainActivity">
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,6 +22,7 @@
         <activity android:name=".ui.datepicker.DatePickerActivity" />
         <activity android:name=".ui.crud.AddActivity" />
         <activity android:name=".ui.crud.ShowActivity" />
+        <activity android:name=".ui.crud.ModifyActivity" />
     </application>
 
 </manifest>

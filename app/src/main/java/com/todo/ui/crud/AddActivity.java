@@ -1,6 +1,7 @@
 package com.todo.ui.crud;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -20,10 +21,13 @@ import com.todo.R;
 import com.todo.data.bean.CalendarBean;
 import com.todo.data.database.Schedule;
 import com.todo.ui.base.BaseActivity;
+import com.todo.ui.event.MsgEvent;
+import com.todo.ui.main.MainActivity;
 import com.todo.utils.DateFormatUtil;
 import com.todo.utils.DateTimePickDialogUtil;
 import com.todo.utils.ImageButtonText;
 
+import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 
@@ -178,14 +182,18 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
 
     public void save() {
         if (canSave()) {
+            //在点击保存时再读取calendarBean中的值。
             startCalendar = calendarBean.getCalendar();
             //判断提醒时间是否正确
             if (isTimeRight()) {
                 //存入数据库并设置闹钟
                 addToDataBase();
                 if (naozhong.isChecked()) addAlarm();
-                Toast.makeText(this, "save", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "已保存", Toast.LENGTH_SHORT).show();
+
+                EventBus.getDefault().post(new MsgEvent("AddActivity"));
                 finish();
+
             } else {
                 Toast.makeText(this, "提醒时间已过期", Toast.LENGTH_SHORT).show();
             }
@@ -241,6 +249,7 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
         schedule.setStartTime(DateFormatUtil.format(dateTime));
         schedule.setCycleTime(xunhuanText.getText().toString());
         schedule.setBiaoqian(biaoqian);
+        schedule.setType(selectedIndex);
         schedule.save();
         alarmId = schedule.getId();
         Log.d("qqq", "startime " + DateFormatUtil.format(dateTime));

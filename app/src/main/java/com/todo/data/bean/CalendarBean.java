@@ -6,7 +6,7 @@ import java.util.Calendar;
  * Created by tianyang on 2017/2/19.
  */
 public class CalendarBean {
-    private Calendar calendar = Calendar.getInstance();
+    private Calendar calendar ;
 
     public Calendar getCalendar() {
         return calendar;

@@ -40,7 +40,12 @@ public class ImageButtonText extends LinearLayout implements View.OnClickListene
 
     }
 
-    public void setImgView(ImageView imgView){
+    public void setImageButtonTextClickable(boolean b) {
+        this.setClickable(b);
+        this.setFocusable(b);
+    }
+
+    public void setImgView(ImageView imgView) {
         this.imgView = imgView;
     }
 

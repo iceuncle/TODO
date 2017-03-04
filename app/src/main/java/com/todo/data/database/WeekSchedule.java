@@ -1,60 +1,29 @@
 package com.todo.data.database;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import org.joda.time.DateTime;
 import org.litepal.crud.DataSupport;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 /**
- * Created by tianyang on 2017/2/15.
+ * Created by tianyang on 2017/2/26.
  */
-public class Schedule extends DataSupport implements Cloneable {
+public class WeekSchedule extends DataSupport {
 
     private int id;
 
-    /**
-     * 是否开启闹钟提示
-     */
+    private int scheduleId;
+
     private boolean isRemind;
 
-    /**
-     * 是否完成
-     */
     private boolean isFinished;
 
-    /**
-     * 标题文字
-     */
     private String title;
 
-    /**
-     * 提醒时间
-     */
     private String startTime;
 
-    /**
-     * type = 0 表示一次性的闹钟
-     * type = 1 表示每天提醒的闹钟
-     * type = 2 表示按周每周提醒的闹钟
-     */
     private int type;
 
-    /**
-     * 循环类型文字
-     */
     private String cycleTime;
 
-    /**
-     * 标签文字
-     */
     private String biaoqian;
-
-
 
 
     public int getId() {
@@ -63,6 +32,14 @@ public class Schedule extends DataSupport implements Cloneable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getScheduleId() {
+        return scheduleId;
+    }
+
+    public void setScheduleId(int scheduleId) {
+        this.scheduleId = scheduleId;
     }
 
     public boolean isRemind() {
@@ -121,15 +98,15 @@ public class Schedule extends DataSupport implements Cloneable {
         isFinished = finished;
     }
 
-    public Schedule clone() {
-        Schedule o = null;
-        try {
-            o = (Schedule) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return o;
-    }
 
+    public void setSchedule(Schedule schedule) {
+        this.scheduleId = schedule.getId();
+        this.isRemind = schedule.isRemind();
+        this.title = schedule.getTitle();
+        this.startTime = schedule.getStartTime();
+        this.type = schedule.getType();
+        this.cycleTime = schedule.getCycleTime();
+        this.biaoqian = schedule.getBiaoqian();
+    }
 
 }

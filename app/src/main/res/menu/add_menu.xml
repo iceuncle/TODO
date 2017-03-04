@@ -6,7 +6,7 @@
         android:id="@+id/finish"
         android:icon="@mipmap/finish"
         android:orderInCategory="90"
-        android:title="完成"
+        android:title="save"
         app:showAsAction="always" />
 
 </menu>
