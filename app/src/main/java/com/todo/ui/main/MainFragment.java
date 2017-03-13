@@ -1,36 +1,31 @@
 package com.todo.ui.main;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
 import com.todo.R;
 import com.todo.data.database.Schedule;
 import com.todo.data.database.WeekSchedule;
-import com.todo.ui.adpters.MainAdapter;
-import com.todo.ui.crud.ShowActivity;
+import com.todo.ui.main.adpters.MainAdapter;
+import com.todo.ui.crud.WeekShowActivity;
 import com.todo.ui.event.MsgEvent;
 import com.todo.utils.DateFormatUtil;
-import com.todo.utils.DividerItemDecoration;
 import com.todo.utils.LogUtil;
 import com.todo.utils.SchedulesUtil;
+import com.todo.widget.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
 import org.joda.time.Minutes;
 import org.litepal.crud.DataSupport;
 
@@ -81,10 +76,8 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MsgEvent event) {
-        if (event.getMsg().equals("AddActivity")) {
-            LogUtil.d("onEventMainThread", "onEventMainThread....");
+        if (event.getMsg().equals("UpDate")) {
             initDatas();
-            adapter.notifyDataSetChanged();
         }
     }
 
@@ -123,6 +116,7 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        LogUtil.d("aaa", "onActivityCreated");
         initDatas();
     }
 
@@ -130,6 +124,7 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
     private void initDatas() {
         if (!refreshLayout.isRefreshing())
             refreshLayout.setRefreshing(true);
+        LogUtil.d("aaa", "onActivityCreated");
 
         weekList.clear();
         scheduleList.clear();
@@ -137,27 +132,27 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
         daibanList.clear();
         guoqiList.clear();
         weekScheduleList.clear();
-        adapter.notifyDataSetChanged();
+        adapter.update(scheduleList);
 
-        Action1<String> onNextAction = new Action1<String>() {
+        Action1<List<WeekSchedule>> onNextAction = new Action1<List<WeekSchedule>>() {
             // onNext()
             @Override
-            public void call(String s) {
+            public void call(List<WeekSchedule> list) {
                 LogUtil.d("lll", "Action1...");
                 refreshLayout.setRefreshing(false);
-                adapter.notifyDataSetChanged();
+                adapter.update(scheduleList);
             }
         };
 
 
-        Observable.create(new Observable.OnSubscribe<String>() {
+        Observable.create(new Observable.OnSubscribe<List<WeekSchedule>>() {
             @Override
-            public void call(Subscriber<? super String> subscriber) {
+            public void call(Subscriber<? super List<WeekSchedule>> subscriber) {
                 LogUtil.d("lll", "call...");
                 setWeekList();
                 setWeekScheduleList();
                 setScheduleList();
-                subscriber.onNext("");
+                subscriber.onNext(scheduleList);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -247,47 +242,44 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
             scheduleList.get(position).setFinished(false);
             scheduleList.get(position).save();
             scheduleList.remove(position);
-            adapter.notifyDataSetChanged();
+            adapter.update(scheduleList);
 
 
         } else {
             scheduleList.get(position).setFinished(true);
             scheduleList.get(position).save();
             scheduleList.remove(position);
-            adapter.notifyDataSetChanged();
+            adapter.update(scheduleList);
         }
     }
 
     @Override
     public void onClick(View view, int poisition) {
-        Intent intent = new Intent(getActivity(), ShowActivity.class);
-        intent.putExtra("schedulaId", scheduleList.get(poisition).getId());
+        Intent intent = new Intent(getActivity(), WeekShowActivity.class);
+        intent.putExtra("WeekScheduleId", scheduleList.get(poisition).getId());
         startActivity(intent);
     }
 
     @Override
     public void onLongClick(View view, final int position) {
-        new AlertDialog.Builder(getActivity())
-                .setTitle("将删除所有该类行的重复闹钟！")
-                .setNegativeButton("取消", null)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        int id = scheduleList.get(position).getScheduleId();
-//                        Log.d("qqq", "position  " + position);
-//                        Log.d("qqq", "id  " + id);
-                        if (scheduleList.get(position).isRemind())
-                            AlarmManagerUtil.cancelAlarm(getActivity(), "com.loonggg.alarm.clock", id);
-//                        scheduleList.remove(position);
-                        DataSupport.delete(Schedule.class, id);
-                        DataSupport.deleteAll(WeekSchedule.class, "scheduleId=?", id + "");
-                        for (int m = scheduleList.size() - 1; m >= 0; m--) {
-                            if (scheduleList.get(m).getScheduleId() == id)
-                                scheduleList.remove(m);
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-                }).show();
+//        new AlertDialog.Builder(getActivity())
+//                .setTitle("将删除所有该类行的重复闹钟！")
+//                .setNegativeButton("取消", null)
+//                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        int id = scheduleList.get(position).getScheduleId();
+//                        if (scheduleList.get(position).isRemind())
+//                            AlarmManagerUtil.cancelAlarm(getActivity(), "com.loonggg.alarm.clock", id);
+//                        DataSupport.delete(Schedule.class, id);
+//                        DataSupport.deleteAll(WeekSchedule.class, "scheduleId=?", id + "");
+//                        for (int m = scheduleList.size() - 1; m >= 0; m--) {
+//                            if (scheduleList.get(m).getScheduleId() == id)
+//                                scheduleList.remove(m);
+//                        }
+//                        adapter.update(scheduleList);
+//                    }
+//                }).show();
 
     }
 

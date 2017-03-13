@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import org.joda.time.DateTime;
 import org.litepal.crud.DataSupport;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * Created by tianyang on 2017/2/15.
  */
-public class Schedule extends DataSupport implements Cloneable {
+public class Schedule extends DataSupport implements Cloneable, Serializable {
 
     private int id;
 
@@ -53,8 +54,6 @@ public class Schedule extends DataSupport implements Cloneable {
      * 标签文字
      */
     private String biaoqian;
-
-
 
 
     public int getId() {

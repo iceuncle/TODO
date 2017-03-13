@@ -1,7 +1,6 @@
 package com.todo.ui.crud;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -22,10 +21,9 @@ import com.todo.data.bean.CalendarBean;
 import com.todo.data.database.Schedule;
 import com.todo.ui.base.BaseActivity;
 import com.todo.ui.event.MsgEvent;
-import com.todo.ui.main.MainActivity;
 import com.todo.utils.DateFormatUtil;
-import com.todo.utils.DateTimePickDialogUtil;
-import com.todo.utils.ImageButtonText;
+import com.todo.widget.DateTimePickDialog;
+import com.todo.widget.ImageButtonText;
 
 import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
@@ -113,15 +111,15 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
 
     public void startTime(View view) {
         calendarBean = new CalendarBean();
-        DateTimePickDialogUtil dateTimePickDialogUtil = new DateTimePickDialogUtil(this, "");
-        dateTimePickDialogUtil.dateTimePicKDialog(stText, calendarBean);
+        DateTimePickDialog dateTimePickDialog = new DateTimePickDialog(this, "");
+        dateTimePickDialog.dateTimePicKDialog(stText, calendarBean);
 
     }
 
     public void endTime(View view) {
         CalendarBean calendarBean = new CalendarBean();
-        DateTimePickDialogUtil dateTimePickDialogUtil = new DateTimePickDialogUtil(this, "");
-        dateTimePickDialogUtil.dateTimePicKDialog(etText, calendarBean);
+        DateTimePickDialog dateTimePickDialog = new DateTimePickDialog(this, "");
+        dateTimePickDialog.dateTimePicKDialog(etText, calendarBean);
         endCalendar = calendarBean.getCalendar();
     }
 
@@ -191,11 +189,11 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
                 if (naozhong.isChecked()) addAlarm();
                 Toast.makeText(this, "已保存", Toast.LENGTH_SHORT).show();
 
-                EventBus.getDefault().post(new MsgEvent("AddActivity"));
+                EventBus.getDefault().post(new MsgEvent("UpDate"));
                 finish();
 
             } else {
-                Toast.makeText(this, "提醒时间已过期", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "开始时间已过期", Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(this, "请补全信息后添加日程", Toast.LENGTH_SHORT).show();

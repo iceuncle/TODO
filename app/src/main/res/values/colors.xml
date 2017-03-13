@@ -21,4 +21,7 @@
     <color name="b0">#1296db</color>
 
     <color name="black">#000</color>
+
+    <!--标准绿-->
+    <color name="green1">#45C01A</color>
 </resources>

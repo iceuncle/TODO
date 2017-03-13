@@ -1,4 +1,4 @@
-package com.todo.utils;
+package com.todo.widget;
 
 /**
  * Created by wutianyang on 2017/2/15.
@@ -28,14 +28,14 @@ import com.todo.data.bean.CalendarBean;
  * inputDate.setOnClickListener(new OnClickListener() {
  *
  * @author
- * @Override public void onClick(View v) { DateTimePickDialogUtil
+ * @Override public void onClick(View v) { DateTimePickDialog
  * dateTimePicKDialog=new
- * DateTimePickDialogUtil(SinvestigateActivity.this,initDateTime);
+ * DateTimePickDialog(SinvestigateActivity.this,initDateTime);
  * dateTimePicKDialog.dateTimePicKDialog(inputDate);
  * <p>
  * } });
  */
-public class DateTimePickDialogUtil implements OnDateChangedListener,
+public class DateTimePickDialog implements OnDateChangedListener,
         OnTimeChangedListener {
     private DatePicker datePicker;
     private TimePicker timePicker;
@@ -51,7 +51,7 @@ public class DateTimePickDialogUtil implements OnDateChangedListener,
      * @param activity     ：调用的父activity
      * @param initDateTime 初始日期时间值，作为弹出窗口的标题和日期时间初始值
      */
-    public DateTimePickDialogUtil(Activity activity, String initDateTime) {
+    public DateTimePickDialog(Activity activity, String initDateTime) {
         this.activity = activity;
         this.initDateTime = initDateTime;
 

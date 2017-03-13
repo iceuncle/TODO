@@ -1,4 +1,4 @@
-package com.todo.utils;
+package com.todo.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;

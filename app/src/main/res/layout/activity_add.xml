@@ -98,7 +98,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
-                    android:text="提醒时间"
+                    android:text="开始时间"
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
 
@@ -244,28 +244,28 @@
                     android:orientation="horizontal">
 
 
-                    <com.todo.utils.ImageButtonText
+                    <com.todo.widget.ImageButtonText
                         android:id="@+id/imageText1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1" />
 
-                    <com.todo.utils.ImageButtonText
+                    <com.todo.widget.ImageButtonText
                         android:id="@+id/imageText2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1" />
 
-                    <com.todo.utils.ImageButtonText
+                    <com.todo.widget.ImageButtonText
                         android:id="@+id/imageText3"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1" />
 
-                    <com.todo.utils.ImageButtonText
+                    <com.todo.widget.ImageButtonText
                         android:id="@+id/imageText4"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

@@ -1,1 +1,1 @@
-include ':app', ':DatePicker', ':alarmmanagerclock'
+include ':app', ':alarmmanagerclock', ':DatePicker'

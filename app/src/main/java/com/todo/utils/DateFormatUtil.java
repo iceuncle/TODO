@@ -1,5 +1,6 @@
 package com.todo.utils;
 
+import org.abego.treelayout.internal.util.java.lang.string.StringUtil;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -29,6 +30,16 @@ public class DateFormatUtil {
 
     public static String format(DateTime dateTime, String format) {
         return dateTime.toString(format);
+    }
+
+
+    public static DateTime parseDate(String a) {
+        String[] strings = a.split("-");
+        int year = Integer.parseInt(strings[0]);
+        int month = Integer.parseInt(strings[1]);
+        int day = Integer.parseInt(strings[2]);
+        DateTime dateTime = new DateTime(year, month, day, 0, 0);
+        return dateTime;
     }
 
 

@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="databinding-rv-adapter-1.0.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.github.markzhai/databinding-rv-adapter/1.0.1/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.github.markzhai/databinding-rv-adapter/1.0.1/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.markzhai/databinding-rv-adapter/1.0.1/4a08182e6bb11956439d14b69f3dbaaed305c17a/databinding-rv-adapter-1.0.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

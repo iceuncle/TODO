@@ -67,5 +67,5 @@
         android:layout_margin="16dp"
         android:onClick="Add"
         android:src="@android:drawable/ic_input_add"
-        app:layout_behavior="com.todo.utils.ScrollAwareFABBehaviorDefault" />
+        app:layout_behavior="com.todo.widget.ScrollAwareFABBehaviorDefault" />
 </android.support.design.widget.CoordinatorLayout>

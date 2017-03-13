@@ -11,10 +11,14 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.todo.R;
-import com.todo.ui.adpters.ViewPagerAdapter;
+import com.todo.data.database.Schedule;
+import com.todo.data.database.WeekSchedule;
+import com.todo.ui.main.adpters.ViewPagerAdapter;
 import com.todo.ui.base.BaseActivity;
 import com.todo.ui.crud.AddActivity;
 import com.todo.ui.datepicker.DatePickerActivity;
+
+import org.litepal.crud.DataSupport;
 
 public class MainActivity extends BaseActivity {
     private TabLayout tabLayout;
@@ -25,7 +29,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Connector.getDatabase();
 //        DataSupport.deleteAll(Schedule.class);
 //        DataSupport.deleteAll(WeekSchedule.class);
 

@@ -1,4 +1,4 @@
-package com.todo.ui.adpters;
+package com.todo.ui.main.adpters;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;

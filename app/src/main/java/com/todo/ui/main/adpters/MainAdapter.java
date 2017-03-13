@@ -1,17 +1,14 @@
-package com.todo.ui.adpters;
+package com.todo.ui.main.adpters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.todo.R;
-import com.todo.data.database.Schedule;
 import com.todo.data.database.WeekSchedule;
 
 import java.util.List;
@@ -122,6 +119,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     public void setOnItemClickLitener(MyOnItemClickLitener mOnItemClickLitener) {
         this.mOnItemClickLitener = mOnItemClickLitener;
+    }
+
+    public void update(List<WeekSchedule> list){
+        this.scheduleList = list;
+        notifyDataSetChanged();
     }
 
 

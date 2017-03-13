@@ -1,5 +1,6 @@
 package com.todo.ui.crud;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,12 +23,15 @@ import com.todo.data.bean.CalendarBean;
 import com.todo.data.database.Schedule;
 import com.todo.data.database.WeekSchedule;
 import com.todo.ui.base.BaseActivity;
+import com.todo.ui.datepicker.DatePickerActivity;
+import com.todo.ui.event.MsgEvent;
 import com.todo.ui.main.MainActivity;
 import com.todo.utils.DateFormatUtil;
-import com.todo.utils.DateTimePickDialogUtil;
-import com.todo.utils.ImageButtonText;
+import com.todo.widget.DateTimePickDialog;
+import com.todo.widget.ImageButtonText;
 import com.todo.utils.LogUtil;
 
+import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 import org.litepal.crud.DataSupport;
@@ -39,7 +43,7 @@ import java.util.Locale;
  * Created by tianyang on 2017/2/20.
  */
 public class ModifyActivity extends BaseActivity implements ImageButtonText.OnImageButtonTextClickListener {
-    private WeekSchedule mSchedule;
+    private Schedule mSchedule;
     private EditText titleEt;
     private TextView startTimeTv, xunhuanTv;
     private SwitchCompat switchCompat;
@@ -56,6 +60,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
     private String[] weekdays = {"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
     private String[] types = {"只此一次", "每天", "每周", "自定义"};
     private boolean[] selectedWeekdays = new boolean[7];
+    private String type;
 
 
     @Override
@@ -66,6 +71,13 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         initView();
         initDatas();
         initEvents();
+    }
+
+    public static void actionStart(Context context, int scheduleId, String type) {
+        Intent intent = new Intent(context, ModifyActivity.class);
+        intent.putExtra("ScheduleID", scheduleId);
+        intent.putExtra("ActivityType", type);
+        context.startActivity(intent);
     }
 
 
@@ -123,7 +135,8 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
 
     private void initDatas() {
         mScheduleId = getIntent().getExtras().getInt("ScheduleID");
-        mSchedule = DataSupport.find(WeekSchedule.class, mScheduleId);
+        type = getIntent().getStringExtra("ActivityType");
+        mSchedule = DataSupport.find(Schedule.class, mScheduleId);
     }
 
     private void initEvents() {
@@ -234,8 +247,8 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
     public void startTime(View view) {
         isClicked = true;
         calendarBean = new CalendarBean();
-        DateTimePickDialogUtil dateTimePickDialogUtil = new DateTimePickDialogUtil(this, "");
-        dateTimePickDialogUtil.dateTimePicKDialog(startTimeTv, calendarBean);
+        DateTimePickDialog dateTimePickDialog = new DateTimePickDialog(this, "");
+        dateTimePickDialog.dateTimePicKDialog(startTimeTv, calendarBean);
     }
 
     public void xunHuan(View view) {
@@ -300,14 +313,21 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         if (isTimeRight()) {
             //有闹钟删除闹钟并删除数据库中数据
             if (mSchedule.isRemind())
-                AlarmManagerUtil.cancelAlarm(this, "com.loonggg.alarm.clock", mSchedule.getScheduleId());
-            DataSupport.delete(Schedule.class, mSchedule.getScheduleId());
-            DataSupport.deleteAll(WeekSchedule.class, "scheduleId=?", mSchedule.getScheduleId() + "");
+                AlarmManagerUtil.cancelAlarm(this, "com.loonggg.alarm.clock", mSchedule.getId());
+            DataSupport.delete(Schedule.class, mSchedule.getId());
+            DataSupport.deleteAll(WeekSchedule.class, "scheduleId=?", mSchedule.getId() + "");
             //添加数据
             addToDataBase();
             if (switchCompat.isChecked()) addAlarm();
             Toast.makeText(this, "save", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, MainActivity.class));
+            if (type.equals("WeekShowActivity")) {
+                startActivity(new Intent(this, MainActivity.class));
+                EventBus.getDefault().post(new MsgEvent("UpDate"));
+            } else if (type.equals("DayShowActivity")) {
+                startActivity(new Intent(this, DatePickerActivity.class));
+                EventBus.getDefault().post(new MsgEvent("MonthViewUpDate"));
+            }
+
         } else {
             Toast.makeText(this, "提醒时间已过期", Toast.LENGTH_SHORT).show();
         }
@@ -329,6 +349,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         schedule.setStartTime(DateFormatUtil.format(dateTime));
         schedule.setCycleTime(xunhuanTv.getText().toString());
         schedule.setBiaoqian(tag);
+        schedule.setType(selectedIndex);
         schedule.save();
         alarmId = schedule.getId();
     }

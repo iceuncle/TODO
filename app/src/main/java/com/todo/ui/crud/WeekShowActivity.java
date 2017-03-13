@@ -1,30 +1,34 @@
 package com.todo.ui.crud;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
 import com.todo.R;
 import com.todo.data.database.Schedule;
 import com.todo.data.database.WeekSchedule;
 import com.todo.ui.base.BaseActivity;
-import com.todo.utils.ImageButtonText;
-import com.todo.utils.LogUtil;
+import com.todo.ui.event.MsgEvent;
+import com.todo.widget.ImageButtonText;
 
+import org.greenrobot.eventbus.EventBus;
 import org.litepal.crud.DataSupport;
 
 /**
  * Created by tianyang on 2017/2/19.
  */
-public class ShowActivity extends BaseActivity {
-    private int scheduleId;
-    private WeekSchedule schedule;
+public class WeekShowActivity extends BaseActivity {
+    private int mWeekScheduleId;
+    private WeekSchedule mWeekSchedule;
     private ImageButtonText imageText1, imageText2;
     private TextView tiltle, startTime, xunhuan;
 
@@ -48,9 +52,7 @@ public class ShowActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent = new Intent(this, ModifyActivity.class);
-        intent.putExtra("ScheduleID", scheduleId);
-        startActivity(intent);
+        ModifyActivity.actionStart(this, mWeekSchedule.getScheduleId(), "WeekShowActivity");
         return true;
     }
 
@@ -80,19 +82,19 @@ public class ShowActivity extends BaseActivity {
     }
 
     private void initData() {
-        scheduleId = getIntent().getExtras().getInt("schedulaId");
-        schedule = DataSupport.find(WeekSchedule.class, scheduleId);
+        mWeekScheduleId = getIntent().getExtras().getInt("WeekScheduleId");
+        mWeekSchedule = DataSupport.find(WeekSchedule.class, mWeekScheduleId);
 
     }
 
     private void initEvent() {
-        imageText1.getTextView().setText(schedule.getBiaoqian());
-        imageText1.getImgView().setImageResource(getBiaoqianImagId(schedule.getBiaoqian()));
-        imageText2.getTextView().setText(getAlarmText(schedule.isRemind()));
-        imageText2.getImgView().setImageResource(getAlarmImgId(schedule.isRemind()));
-        tiltle.setText(schedule.getTitle());
-        startTime.setText(schedule.getStartTime());
-        xunhuan.setText(schedule.getCycleTime());
+        imageText1.getTextView().setText(mWeekSchedule.getBiaoqian());
+        imageText1.getImgView().setImageResource(getBiaoqianImagId(mWeekSchedule.getBiaoqian()));
+        imageText2.getTextView().setText(getAlarmText(mWeekSchedule.isRemind()));
+        imageText2.getImgView().setImageResource(getAlarmImgId(mWeekSchedule.isRemind()));
+        tiltle.setText(mWeekSchedule.getTitle());
+        startTime.setText(mWeekSchedule.getStartTime());
+        xunhuan.setText(mWeekSchedule.getCycleTime());
 
     }
 
@@ -120,4 +122,21 @@ public class ShowActivity extends BaseActivity {
         }
     }
 
+    public void Delete(View view) {
+        new AlertDialog.Builder(this)
+                .setTitle("将删除所有该类行的重复闹钟！")
+                .setNegativeButton("取消", null)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        int id = mWeekSchedule.getScheduleId();
+                        if (mWeekSchedule.isRemind())
+                            AlarmManagerUtil.cancelAlarm(WeekShowActivity.this, "com.loonggg.alarm.clock", id);
+                        DataSupport.delete(Schedule.class, id);
+                        DataSupport.deleteAll(WeekSchedule.class, "scheduleId=?", id + "");
+                        EventBus.getDefault().post(new MsgEvent("UpDate"));
+                        finish();
+                    }
+                }).show();
+    }
 }

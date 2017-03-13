@@ -19,14 +19,14 @@
         android:layout_height="50dp"
         android:background="@color/w0">
 
-        <com.todo.utils.ImageButtonText
+        <com.todo.widget.ImageButtonText
             android:id="@+id/imageText1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1" />
 
-        <com.todo.utils.ImageButtonText
+        <com.todo.widget.ImageButtonText
             android:id="@+id/imageText2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
             android:text="标题"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
@@ -83,7 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
             android:text="提醒时间"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
@@ -115,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
             android:text="循环类型"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
@@ -131,5 +131,17 @@
             android:textSize="14sp" />
 
     </LinearLayout>
+
+    <Button
+        android:onClick="Delete"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="删除"
+        android:textSize="23dp"
+        android:textColor="@color/white"
+        android:background="@drawable/buttonstyle"/>
 
 </LinearLayout>

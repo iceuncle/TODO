@@ -86,6 +86,21 @@ public class Test {
 //        boolean b3 = DateManageUtil.isFuture(DateTime.now().plusDays(4));
 //        System.out.println(b3);
 
+//        String year = DateTime.now().getYear() + "";
+//        String month = DateTime.now().getMonthOfYear() + "";
+//        String day = DateTime.now().getDayOfMonth() + "";
+//        System.out.println(year + "-" + month + "-" + day);
+
+//        int i = DateManageUtil.getMonthDays(2017, 2);
+//        System.out.println(i);
+//        int a = DateManageUtil.getMonthDays(2017, 3);
+//        System.out.println(a);
+
+        DateTime dateTime1 = new DateTime(2017, 2, 3, 0, 0);
+        DateTime dateTime2 = new DateTime(2017, 2, 3, 0, 0);
+        DateTime dateTime3 = new DateTime(2017, 2, 5, 0, 0);
+        System.out.println(dateTime1.equals(dateTime2));
+        System.out.println(dateTime1.equals(dateTime3));
     }
 
 
