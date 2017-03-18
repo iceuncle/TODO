@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
 import com.todo.R;
 import com.todo.data.bean.CalendarBean;
+import com.todo.data.database.Alarm;
 import com.todo.data.database.Schedule;
 import com.todo.data.database.WeekSchedule;
 import com.todo.ui.base.BaseActivity;
@@ -317,8 +318,9 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
             DataSupport.delete(Schedule.class, mSchedule.getId());
             DataSupport.deleteAll(WeekSchedule.class, "scheduleId=?", mSchedule.getId() + "");
             //添加数据
-            addToDataBase();
-            if (switchCompat.isChecked()) addAlarm();
+            Schedule schedule = new Schedule();
+            addToDataBase(schedule);
+            if (switchCompat.isChecked()) addAlarm(schedule);
             Toast.makeText(this, "save", Toast.LENGTH_SHORT).show();
             if (type.equals("WeekShowActivity")) {
                 startActivity(new Intent(this, MainActivity.class));
@@ -341,9 +343,8 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
     }
 
 
-    private void addToDataBase() {
+    private void addToDataBase(Schedule schedule) {
         DateTime dateTime = new DateTime(startCalendar);
-        Schedule schedule = new Schedule();
         schedule.setTitle(titleEt.getText().toString());
         schedule.setRemind(switchCompat.isChecked());
         schedule.setStartTime(DateFormatUtil.format(dateTime));
@@ -354,20 +355,32 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         alarmId = schedule.getId();
     }
 
-    public void addAlarm() {
+    public void addAlarm(Schedule schedule) {
         if (selectedIndex == 0) {
-            AlarmManagerUtil.setAlarm(this, 0, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarmId, 0, titleEt.getText().toString(), 1);
+            Alarm alarm = new Alarm();
+            alarm.setSchedule(schedule);
+            alarm.save();
+            AlarmManagerUtil.setAlarm(this, 0, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), 0, titleEt.getText().toString(), 1);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 1) {
-            AlarmManagerUtil.setAlarm(this, 1, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarmId, 0, titleEt.getText().toString(), 1);
+            Alarm alarm = new Alarm();
+            alarm.setSchedule(schedule);
+            alarm.save();
+            AlarmManagerUtil.setAlarm(this, 1, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), 0, titleEt.getText().toString(), 1);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 2) {
+            Alarm alarm = new Alarm();
+            alarm.setSchedule(schedule);
+            alarm.save();
             DateTime dateTime = new DateTime(startCalendar);
-            AlarmManagerUtil.setAlarm(this, 2, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarmId, dateTime.getDayOfWeek(), titleEt.getText().toString(), 1);
+            AlarmManagerUtil.setAlarm(this, 2, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), dateTime.getDayOfWeek(), titleEt.getText().toString(), 1);
         } else if (selectedIndex == 3) {
             for (int i = 0; i < selectedWeekdays.length; i++) {
                 if (selectedWeekdays[i]) {
-                    AlarmManagerUtil.setAlarm(this, 2, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarmId, i + 1, titleEt.getText().toString(), 1);
+                    Alarm alarm = new Alarm();
+                    alarm.setSchedule(schedule);
+                    alarm.save();
+                    AlarmManagerUtil.setAlarm(this, 2, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), i + 1, titleEt.getText().toString(), 1);
                 }
             }
         }

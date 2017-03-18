@@ -3,6 +3,7 @@ package com.todo.ui.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -17,8 +18,12 @@ import com.todo.ui.main.adpters.ViewPagerAdapter;
 import com.todo.ui.base.BaseActivity;
 import com.todo.ui.crud.AddActivity;
 import com.todo.ui.datepicker.DatePickerActivity;
+import com.todo.ui.set.RingSettingActivity;
 
 import org.litepal.crud.DataSupport;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends BaseActivity {
     private TabLayout tabLayout;
@@ -33,11 +38,11 @@ public class MainActivity extends BaseActivity {
 //        DataSupport.deleteAll(WeekSchedule.class);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
-        toolbar.setTitle("七天日程");
+        toolbar.setTitle("近期日程");
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setDisplayHomeAsUpEnabled(false);
+        if (actionBar != null)
+            actionBar.setDisplayHomeAsUpEnabled(false);
 
         tabLayout = (TabLayout) findViewById(R.id.toolbar_tab);
 //        tabLayout.addTab(tabLayout.newTab().setText("待办"));
@@ -46,9 +51,15 @@ public class MainActivity extends BaseActivity {
 
         viewPager = (ViewPager) findViewById(R.id.viewPager);
 
-        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), this);
+        List<Fragment> fragmentList = new ArrayList<>();
+        fragmentList.add(null);
+        fragmentList.add(null);
+        fragmentList.add(null);
+
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), this, fragmentList);
+        viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(viewPagerAdapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setupWithViewPager(viewPager);
 
     }
@@ -66,6 +77,9 @@ public class MainActivity extends BaseActivity {
             case R.id.rili:
                 Intent intent = new Intent(MainActivity.this, DatePickerActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.music:
+                startActivity(new Intent(MainActivity.this, RingSettingActivity.class));
                 break;
         }
         return true;

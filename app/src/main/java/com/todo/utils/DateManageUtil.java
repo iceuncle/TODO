@@ -1,9 +1,6 @@
 package com.todo.utils;
 
-import android.util.Log;
-
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
 import org.joda.time.Days;
 import org.joda.time.Minutes;
 

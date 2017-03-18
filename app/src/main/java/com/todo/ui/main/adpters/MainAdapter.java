@@ -1,5 +1,7 @@
 package com.todo.ui.main.adpters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,22 +12,26 @@ import android.widget.TextView;
 
 import com.todo.R;
 import com.todo.data.database.WeekSchedule;
+import com.todo.ui.crud.WeekShowActivity;
+import com.todo.utils.LogUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by tianyang on 2017/2/19.
  */
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
-    public List<WeekSchedule> scheduleList;
+    public List<WeekSchedule> scheduleList = new ArrayList<>();
     private MyOnItemClickLitener mOnItemClickLitener;
-    private View mView;
+    private Boolean showCheckBox;
+    private Context mContext;
 
 
-    
-
-    public MainAdapter(List<WeekSchedule> list) {
-        this.scheduleList = list;
+    public MainAdapter(Context context, List<WeekSchedule> list, Boolean showCheckBox) {
+        this.scheduleList.addAll(list);
+        this.showCheckBox = showCheckBox;
+        this.mContext = context;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -37,8 +43,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             super(itemView);
             time = (TextView) itemView.findViewById(R.id.time);
             title = (TextView) itemView.findViewById(R.id.title);
-            tagImg =
-                    (ImageView) itemView.findViewById(R.id.biaoqianImg);
+            tagImg = (ImageView) itemView.findViewById(R.id.biaoqianImg);
             checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);
             alarImg = (ImageView) itemView.findViewById(R.id.alarmImg);
         }
@@ -47,20 +52,38 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LogUtil.d("yyy", "onCreateViewHolder    " );
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_adapter_main, parent, false);
         final ViewHolder holder = new ViewHolder(view);
-        mView = view;
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = holder.getAdapterPosition();
+                mOnItemClickLitener.onClick(view, position);
+            }
+        });
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = holder.getAdapterPosition();
+                mOnItemClickLitener.onItemClick(view, position);
+            }
+        });
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        LogUtil.d("yyy", "onBindViewHolder    " +position);
         final WeekSchedule schedule = scheduleList.get(position);
         holder.time.setText(schedule.getStartTime());
         holder.title.setText(schedule.getTitle());
         holder.checkBox.setChecked(schedule.isFinished());
-
+        if (showCheckBox)
+            holder.checkBox.setVisibility(View.VISIBLE);
+        else
+            holder.checkBox.setVisibility(View.GONE);
         switch (schedule.getBiaoqian()) {
             case "工作":
                 holder.tagImg.setImageResource(R.mipmap.gongzuo1);
@@ -79,27 +102,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         if (schedule.isRemind()) holder.alarImg.setImageResource(R.mipmap.alarmon);
         else holder.alarImg.setImageResource(R.mipmap.alarmoff);
 
-        holder.checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mOnItemClickLitener.onItemClick(view, position);
-            }
-        });
-
-        mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mOnItemClickLitener.onClick(view, position);
-            }
-        });
-
-        mView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                mOnItemClickLitener.onLongClick(view, position);
-                return false;
-            }
-        });
 
     }
 
@@ -121,8 +123,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         this.mOnItemClickLitener = mOnItemClickLitener;
     }
 
-    public void update(List<WeekSchedule> list){
-        this.scheduleList = list;
+    public void update(List<WeekSchedule> list) {
+        this.scheduleList.clear();
+        this.scheduleList.addAll(list);
         notifyDataSetChanged();
     }
 

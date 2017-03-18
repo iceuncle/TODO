@@ -2,9 +2,6 @@ package com.todo.utils;
 
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by tianyang on 2017/2/25.
  */

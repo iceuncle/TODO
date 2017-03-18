@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
 import com.todo.R;
 import com.todo.data.bean.CalendarBean;
+import com.todo.data.database.Alarm;
 import com.todo.data.database.Schedule;
 import com.todo.ui.base.BaseActivity;
 import com.todo.ui.event.MsgEvent;
@@ -28,6 +29,7 @@ import com.todo.widget.ImageButtonText;
 import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
+import org.joda.time.Seconds;
 
 import java.util.Calendar;
 
@@ -44,7 +46,6 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
     private EditText title;
     private String biaoqian;
     private SwitchCompat naozhong;
-    private int alarmId = 0;  //存入数据库的id同样设置闹钟id
     private CalendarBean calendarBean;
 
     public Calendar startCalendar, endCalendar;
@@ -184,9 +185,10 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
             startCalendar = calendarBean.getCalendar();
             //判断提醒时间是否正确
             if (isTimeRight()) {
+                Schedule schedule = new Schedule();
                 //存入数据库并设置闹钟
-                addToDataBase();
-                if (naozhong.isChecked()) addAlarm();
+                addToDataBase(schedule);
+                if (naozhong.isChecked()) addAlarm(schedule);
                 Toast.makeText(this, "已保存", Toast.LENGTH_SHORT).show();
 
                 EventBus.getDefault().post(new MsgEvent("UpDate"));
@@ -204,8 +206,8 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
     public boolean isTimeRight() {
         DateTime now = DateTime.now();
         DateTime dateTime = new DateTime(startCalendar);
-        int minutes = Minutes.minutesBetween(now, dateTime).getMinutes();
-        return minutes > 0;
+        int seconds = Seconds.secondsBetween(now, dateTime).getSeconds();
+        return seconds > 0;
     }
 
 
@@ -220,28 +222,40 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
         }
     }
 
-    public void addAlarm() {
+    public void addAlarm(Schedule schedule) {
         if (selectedIndex == 0) {
-            AlarmManagerUtil.setAlarm(this, 0, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarmId, 0, title.getText().toString(), 1);
+            Alarm alarm = new Alarm();
+            alarm.setSchedule(schedule);
+            alarm.save();
+            AlarmManagerUtil.setAlarm(this, 0, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), 0, title.getText().toString(), 1);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 1) {
-            AlarmManagerUtil.setAlarm(this, 1, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarmId, 0, title.getText().toString(), 1);
+            Alarm alarm = new Alarm();
+            alarm.setSchedule(schedule);
+            alarm.save();
+            AlarmManagerUtil.setAlarm(this, 1, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), 0, title.getText().toString(), 1);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 2) {
+            Alarm alarm = new Alarm();
+            alarm.setSchedule(schedule);
+            alarm.save();
             DateTime dateTime = new DateTime(startCalendar);
-            AlarmManagerUtil.setAlarm(this, 2, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarmId, dateTime.getDayOfWeek(), title.getText().toString(), 1);
+            AlarmManagerUtil.setAlarm(this, 2, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), dateTime.getDayOfWeek(), title.getText().toString(), 1);
         } else if (selectedIndex == 3) {
             for (int i = 0; i < selectedWeekdays.length; i++) {
                 if (selectedWeekdays[i]) {
-                    AlarmManagerUtil.setAlarm(this, 2, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarmId, i + 1, title.getText().toString(), 1);
+                    Alarm alarm = new Alarm();
+                    alarm.setSchedule(schedule);
+                    alarm.save();
+                    AlarmManagerUtil.setAlarm(this, 2, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), i + 1, title.getText().toString(), 1);
                 }
             }
         }
+
     }
 
-    private void addToDataBase() {
+    private void addToDataBase(Schedule schedule) {
         DateTime dateTime = new DateTime(startCalendar);
-        Schedule schedule = new Schedule();
         schedule.setTitle(title.getText().toString());
         schedule.setRemind(naozhong.isChecked());
         schedule.setStartTime(DateFormatUtil.format(dateTime));
@@ -249,14 +263,6 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
         schedule.setBiaoqian(biaoqian);
         schedule.setType(selectedIndex);
         schedule.save();
-        alarmId = schedule.getId();
-        Log.d("qqq", "startime " + DateFormatUtil.format(dateTime));
-
-//        List<Schedule> scheduls = DataSupport.findAll(Schedule.class);
-//        for(Schedule s: scheduls){
-//            Log.d("qqq","lala   "+DateFormatUtil.parse(s.getStartTime()).toString(DateFormatUtil.string));
-//        }
-
     }
 
 

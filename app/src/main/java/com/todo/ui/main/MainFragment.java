@@ -3,7 +3,6 @@ package com.todo.ui.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +13,10 @@ import android.view.ViewGroup;
 import com.todo.R;
 import com.todo.data.database.Schedule;
 import com.todo.data.database.WeekSchedule;
-import com.todo.ui.main.adpters.MainAdapter;
+import com.todo.ui.base.BaseFragment;
 import com.todo.ui.crud.WeekShowActivity;
 import com.todo.ui.event.MsgEvent;
+import com.todo.ui.main.adpters.MainAdapter;
 import com.todo.utils.DateFormatUtil;
 import com.todo.utils.LogUtil;
 import com.todo.utils.SchedulesUtil;
@@ -26,7 +26,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.joda.time.DateTime;
-import org.joda.time.Minutes;
+import org.joda.time.Seconds;
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
@@ -44,9 +44,9 @@ import rx.schedulers.Schedulers;
 /**
  * Created by tianyang on 2017/2/14.
  */
-public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickLitener {
+public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemClickLitener {
     private static final String ARG_POSITION = "position";
-    private int position;
+    private int mPosition;
     private RecyclerView recyclerView;
     private List<WeekSchedule> scheduleList = new ArrayList<>();
     private List<Schedule> weekList = new ArrayList<>();
@@ -54,8 +54,13 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
     private List<WeekSchedule> daibanList = new ArrayList<>();
     private List<WeekSchedule> guoqiList = new ArrayList<>();
     private List<WeekSchedule> wanchengList = new ArrayList<>();
-    private MainAdapter adapter;
+    private MainAdapter daibanAdapter;
+    private MainAdapter guoqiAdapter;
+    private MainAdapter wanchengAdapter;
+
     private SwipeRefreshLayout refreshLayout;
+    // 标志位，标志已经初始化完成。
+    private boolean isPrepared;
 
     public static MainFragment newInstance(int position) {
         MainFragment mainFragment = new MainFragment();
@@ -68,8 +73,7 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        position = getArguments().getInt(ARG_POSITION);
-
+        mPosition = getArguments().getInt(ARG_POSITION);
         EventBus.getDefault().register(this);
 
     }
@@ -77,6 +81,7 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MsgEvent event) {
         if (event.getMsg().equals("UpDate")) {
+            LogUtil.d("aaa", "UpDate");
             initDatas();
         }
     }
@@ -95,11 +100,24 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new MainAdapter(scheduleList);
-        recyclerView.setAdapter(adapter);
+        if (mPosition == 0) {
+            daibanAdapter = new MainAdapter(getActivity(), scheduleList, false);
+            recyclerView.setAdapter(daibanAdapter);
+            daibanAdapter.setOnItemClickLitener(this);
+        } else if (mPosition == 1) {
+            guoqiAdapter = new MainAdapter(getActivity(), scheduleList, true);
+            recyclerView.setAdapter(guoqiAdapter);
+            guoqiAdapter.setOnItemClickLitener(this);
+        } else {
+            wanchengAdapter = new MainAdapter(getActivity(), scheduleList, true);
+            recyclerView.setAdapter(wanchengAdapter);
+            wanchengAdapter.setOnItemClickLitener(this);
+        }
+
+
         recyclerView.addItemDecoration(new DividerItemDecoration(
                 getActivity(), DividerItemDecoration.VERTICAL_LIST));
-        adapter.setOnItemClickLitener(this);
+
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light);
         refreshLayout.setProgressViewOffset(false, 0, 100);
@@ -109,14 +127,24 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
                 initDatas();
             }
         });
+        isPrepared = true;
         return view;
 
     }
 
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        LogUtil.d("aaa", "onActivityCreated");
+        LogUtil.d("www", "onActivityCreated");
+        lazyLoad();
+    }
+
+    @Override
+    protected void lazyLoad() {
+        if (!isPrepared || !isVisible) {
+            return;
+        }
         initDatas();
     }
 
@@ -124,7 +152,7 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
     private void initDatas() {
         if (!refreshLayout.isRefreshing())
             refreshLayout.setRefreshing(true);
-        LogUtil.d("aaa", "onActivityCreated");
+        LogUtil.d("www", "initDatas");
 
         weekList.clear();
         scheduleList.clear();
@@ -132,15 +160,25 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
         daibanList.clear();
         guoqiList.clear();
         weekScheduleList.clear();
-        adapter.update(scheduleList);
 
         Action1<List<WeekSchedule>> onNextAction = new Action1<List<WeekSchedule>>() {
-            // onNext()
             @Override
             public void call(List<WeekSchedule> list) {
-                LogUtil.d("lll", "Action1...");
                 refreshLayout.setRefreshing(false);
-                adapter.update(scheduleList);
+                LogUtil.d("www", "size    " + list.size());
+                switch (mPosition) {
+                    case 0:
+                        daibanAdapter.update(list);
+                        break;
+                    case 1:
+                        guoqiAdapter.update(list);
+                        break;
+                    default:
+                        wanchengAdapter.update(list);
+                        break;
+                }
+
+
             }
         };
 
@@ -148,11 +186,9 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
         Observable.create(new Observable.OnSubscribe<List<WeekSchedule>>() {
             @Override
             public void call(Subscriber<? super List<WeekSchedule>> subscriber) {
-                LogUtil.d("lll", "call...");
                 setWeekList();
                 setWeekScheduleList();
-                setScheduleList();
-                subscriber.onNext(scheduleList);
+                subscriber.onNext(setScheduleList());
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -162,6 +198,9 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
     }
 
 
+    /**
+     * 解析一周内所有的Schedule
+     */
     private void setWeekList() {
         List<Schedule> list = DataSupport.findAll(Schedule.class);
         for (Schedule schedule : list) {
@@ -179,6 +218,9 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
         }
     }
 
+    /**
+     * 将所有的schedule转换成weekSchedule并保存，删除三天之前的数据
+     */
     private void setWeekScheduleList() {
         SchedulesUtil.deleteThreeDayBeforeDatas();
         try {
@@ -197,34 +239,43 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
 
     }
 
-    private void setScheduleList() {
+
+    /**
+     * 将所有的weekSchedule转换成三种状态
+     *
+     * @return
+     */
+    private List<WeekSchedule> setScheduleList() {
         for (WeekSchedule schedule : weekScheduleList) {
             if (schedule.isFinished()) wanchengList.add(schedule);
             else {
                 String date = schedule.getStartTime();
                 DateTime now = DateTime.now();
                 DateTime dateTime = DateFormatUtil.parse(date);
-                int minutes = Minutes.minutesBetween(now, dateTime).getMinutes();
-                if (minutes < 0) guoqiList.add(schedule);
+                int seconds = Seconds.secondsBetween(now, dateTime).getSeconds();
+                if (seconds < 0) guoqiList.add(schedule);
                 else daibanList.add(schedule);
             }
         }
-        if (position == 0) {
+        if (mPosition == 0) {
             scheduleList.addAll(daibanList);
             ListSortComparator2 comparator = new ListSortComparator2();
             Collections.sort(scheduleList, comparator);
-        } else if (position == 1) {
+        } else if (mPosition == 1) {
             scheduleList.addAll(guoqiList);
             ListSortComparator comparator = new ListSortComparator();
             Collections.sort(scheduleList, comparator);
-        } else if (position == 2) {
+        } else if (mPosition == 2) {
             scheduleList.addAll(wanchengList);
             ListSortComparator comparator = new ListSortComparator();
             Collections.sort(scheduleList, comparator);
         }
+        return scheduleList;
     }
 
-    //判断是否存在weekSchedule
+    /**
+     * 判断是否存在weekSchedule
+     */
     public boolean isExist(Schedule schedule) {
         List<WeekSchedule> weekScheduleList = DataSupport.findAll(WeekSchedule.class);
         for (WeekSchedule weekSchedule : weekScheduleList) {
@@ -242,14 +293,35 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
             scheduleList.get(position).setFinished(false);
             scheduleList.get(position).save();
             scheduleList.remove(position);
-            adapter.update(scheduleList);
+
+            switch (mPosition) {
+                case 0:
+                    daibanAdapter.update(scheduleList);
+                    break;
+                case 1:
+                    guoqiAdapter.update(scheduleList);
+                    break;
+                default:
+                    wanchengAdapter.update(scheduleList);
+                    break;
+            }
 
 
         } else {
             scheduleList.get(position).setFinished(true);
             scheduleList.get(position).save();
             scheduleList.remove(position);
-            adapter.update(scheduleList);
+            switch (mPosition) {
+                case 0:
+                    daibanAdapter.update(scheduleList);
+                    break;
+                case 1:
+                    guoqiAdapter.update(scheduleList);
+                    break;
+                default:
+                    wanchengAdapter.update(scheduleList);
+                    break;
+            }
         }
     }
 
@@ -262,24 +334,6 @@ public class MainFragment extends Fragment implements MainAdapter.MyOnItemClickL
 
     @Override
     public void onLongClick(View view, final int position) {
-//        new AlertDialog.Builder(getActivity())
-//                .setTitle("将删除所有该类行的重复闹钟！")
-//                .setNegativeButton("取消", null)
-//                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        int id = scheduleList.get(position).getScheduleId();
-//                        if (scheduleList.get(position).isRemind())
-//                            AlarmManagerUtil.cancelAlarm(getActivity(), "com.loonggg.alarm.clock", id);
-//                        DataSupport.delete(Schedule.class, id);
-//                        DataSupport.deleteAll(WeekSchedule.class, "scheduleId=?", id + "");
-//                        for (int m = scheduleList.size() - 1; m >= 0; m--) {
-//                            if (scheduleList.get(m).getScheduleId() == id)
-//                                scheduleList.remove(m);
-//                        }
-//                        adapter.update(scheduleList);
-//                    }
-//                }).show();
 
     }
 

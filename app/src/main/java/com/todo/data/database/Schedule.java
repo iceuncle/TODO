@@ -1,14 +1,9 @@
 package com.todo.data.database;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import org.joda.time.DateTime;
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,6 +49,8 @@ public class Schedule extends DataSupport implements Cloneable, Serializable {
      * 标签文字
      */
     private String biaoqian;
+
+    private List<Alarm> alarmList = new ArrayList<>();
 
 
     public int getId() {
@@ -118,6 +115,14 @@ public class Schedule extends DataSupport implements Cloneable, Serializable {
 
     public void setFinished(boolean finished) {
         isFinished = finished;
+    }
+
+    public void setAlarmList(List<Alarm> alarmList) {
+        this.alarmList = alarmList;
+    }
+
+    public List<Alarm> getAlarmList() {
+        return alarmList;
     }
 
     public Schedule clone() {

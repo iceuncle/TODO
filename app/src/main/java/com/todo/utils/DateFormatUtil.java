@@ -1,11 +1,8 @@
 package com.todo.utils;
 
-import org.abego.treelayout.internal.util.java.lang.string.StringUtil;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
-import java.util.Locale;
 
 /**
  * Created by tianyang on 2017/2/18.

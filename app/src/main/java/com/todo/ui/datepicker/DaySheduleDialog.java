@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.github.markzhai.recyclerview.BaseViewAdapter;
 import com.github.markzhai.recyclerview.BindingViewHolder;
@@ -18,8 +17,6 @@ import com.todo.databinding.DaysheduleDialogBinding;
 import com.todo.databinding.ItemAdapterDaytimeBinding;
 import com.todo.utils.SchedulesUtil;
 import com.todo.utils.Util;
-import com.todo.widget.DividerItemDecoration;
-
 
 import org.joda.time.DateTime;
 import org.litepal.crud.DataSupport;

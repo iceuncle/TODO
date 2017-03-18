@@ -1,7 +1,6 @@
 package com.todo.ui.crud;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 
 import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
 import com.todo.R;
+import com.todo.data.database.Alarm;
 import com.todo.data.database.Schedule;
 import com.todo.data.database.WeekSchedule;
 import com.todo.ui.base.BaseActivity;
@@ -22,6 +22,9 @@ import com.todo.widget.ImageButtonText;
 
 import org.greenrobot.eventbus.EventBus;
 import org.litepal.crud.DataSupport;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by tianyang on 2017/2/19.
@@ -130,8 +133,14 @@ public class WeekShowActivity extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         int id = mWeekSchedule.getScheduleId();
-                        if (mWeekSchedule.isRemind())
-                            AlarmManagerUtil.cancelAlarm(WeekShowActivity.this, "com.loonggg.alarm.clock", id);
+                        Schedule mSchedule = DataSupport.find(Schedule.class, id);
+                        List<Integer> alarmIdList = new ArrayList<Integer>();
+                        for (Alarm alarm : mSchedule.getAlarmList())
+                            alarmIdList.add(alarm.getId());
+                        if (mWeekSchedule.isRemind()) {
+                            for (int alarmId : alarmIdList)
+                                AlarmManagerUtil.cancelAlarm(WeekShowActivity.this, "com.loonggg.alarm.clock", alarmId);
+                        }
                         DataSupport.delete(Schedule.class, id);
                         DataSupport.deleteAll(WeekSchedule.class, "scheduleId=?", id + "");
                         EventBus.getDefault().post(new MsgEvent("UpDate"));

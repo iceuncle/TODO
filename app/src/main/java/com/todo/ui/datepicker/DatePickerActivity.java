@@ -1,13 +1,12 @@
 package com.todo.ui.datepicker;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.text.format.Time;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.view.ViewGroup;
 
 import com.todo.R;
 import com.todo.data.database.Schedule;
@@ -15,7 +14,6 @@ import com.todo.ui.base.BaseActivity;
 import com.todo.ui.event.MsgEvent;
 import com.todo.utils.DateFormatUtil;
 import com.todo.utils.DateManageUtil;
-import com.todo.utils.LogUtil;
 import com.todo.utils.PickerUtil;
 import com.todo.utils.SchedulesUtil;
 
@@ -26,7 +24,6 @@ import org.joda.time.DateTime;
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 
@@ -142,4 +139,25 @@ public class DatePickerActivity extends BaseActivity implements DatePicker.DateC
     public void DateChange(int year, int month) {
         initDatas(year, month);
     }
+
+
+    public void dateSet(View view) {
+        DatePickerDialog mDialog = new DatePickerDialog(this, mdateListener, DateTime.now().getYear(),
+                DateTime.now().getMonthOfYear(), DateTime.now().getDayOfMonth());
+        mDialog.show();
+        android.widget.DatePicker dp = mDialog.getDatePicker();
+        ((ViewGroup) ((ViewGroup) dp.getChildAt(0)).getChildAt(0)).getChildAt(2).setVisibility(View.GONE);
+    }
+
+
+    private DatePickerDialog.OnDateSetListener mdateListener = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(android.widget.DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+            picker.setDate(year, monthOfYear+1);
+            initDatas(year, monthOfYear + 1);
+        }
+
+    };
+
 }
