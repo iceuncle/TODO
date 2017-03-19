@@ -143,7 +143,7 @@ public class DatePickerActivity extends BaseActivity implements DatePicker.DateC
 
     public void dateSet(View view) {
         DatePickerDialog mDialog = new DatePickerDialog(this, mdateListener, DateTime.now().getYear(),
-                DateTime.now().getMonthOfYear(), DateTime.now().getDayOfMonth());
+                DateTime.now().getMonthOfYear() - 1, DateTime.now().getDayOfMonth());
         mDialog.show();
         android.widget.DatePicker dp = mDialog.getDatePicker();
         ((ViewGroup) ((ViewGroup) dp.getChildAt(0)).getChildAt(0)).getChildAt(2).setVisibility(View.GONE);
@@ -154,7 +154,7 @@ public class DatePickerActivity extends BaseActivity implements DatePicker.DateC
 
         @Override
         public void onDateSet(android.widget.DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-            picker.setDate(year, monthOfYear+1);
+            picker.setDate(year, monthOfYear + 1);
             initDatas(year, monthOfYear + 1);
         }
 

@@ -192,12 +192,14 @@ public class SchedulesUtil {
      * @return
      */
     public static Schedule getSheduleInDay(Schedule schedule, DateTime dayTime, int type) {
-        DateTime startTime = DateFormatUtil.parse(schedule.getStartTime());
+        DateTime time = DateFormatUtil.parse(schedule.getStartTime());
+        String str = DateFormatUtil.format(time, "yyyy年MM月dd日");
+        DateTime startTime = DateFormatUtil.parse(str, "yyyy年MM月dd日");
+
         int days = Days.daysBetween(startTime, dayTime).getDays();
         if (type == 0) {
             if (days == 0) {
-                Schedule schedule1 = schedule.clone();
-                return schedule1;
+                return schedule.clone();
             }
         } else if (type == 1) {
             if (days >= 0) {

@@ -35,6 +35,7 @@ import com.todo.utils.LogUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
+import org.joda.time.Seconds;
 import org.litepal.crud.DataSupport;
 
 import java.util.Calendar;
@@ -338,8 +339,8 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
     public boolean isTimeRight() {
         DateTime now = DateTime.now();
         DateTime dateTime = new DateTime(startCalendar);
-        int minutes = Minutes.minutesBetween(now, dateTime).getMinutes();
-        return minutes > 0;
+        int seconds = Seconds.secondsBetween(now, dateTime).getSeconds();
+        return seconds > 0;
     }
 
 

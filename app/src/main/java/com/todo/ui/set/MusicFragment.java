@@ -16,6 +16,7 @@ import com.github.markzhai.recyclerview.SingleTypeAdapter;
 import com.loonggg.lib.alarmmanager.clock.SPUtils;
 import com.todo.R;
 import com.todo.data.bean.Mp3Info;
+import com.todo.utils.LogUtil;
 import com.todo.utils.MediaUtil;
 
 import java.io.IOException;
@@ -42,6 +43,7 @@ public class MusicFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_music, container, false);
+        LogUtil.d("MusicFragment  onCreateView...");
         initView();
         initDatas();
         return mView;

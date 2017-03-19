@@ -35,6 +35,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/ploatbtn_margin"
+        android:layout_marginRight="@dimen/ploatbtn_margin"
         android:src="@mipmap/recorder_start" />
 
 </RelativeLayout>
