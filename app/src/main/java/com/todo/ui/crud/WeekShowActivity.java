@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
@@ -33,7 +34,8 @@ public class WeekShowActivity extends BaseActivity {
     private int mWeekScheduleId;
     private WeekSchedule mWeekSchedule;
     private ImageButtonText imageText1, imageText2;
-    private TextView tiltle, startTime, xunhuan;
+    private TextView tiltle, startTime, xunhuan, detailTv;
+    private LinearLayout detailView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,6 +82,8 @@ public class WeekShowActivity extends BaseActivity {
         tiltle = (TextView) findViewById(R.id.title_tv);
         startTime = (TextView) findViewById(R.id.starttime_tv);
         xunhuan = (TextView) findViewById(R.id.xunhuan_tv);
+        detailTv = (TextView) findViewById(R.id.detail_tv);
+        detailView = (LinearLayout) findViewById(R.id.detail_view);
         imageText1.setImageButtonTextClickable(false);
         imageText2.setImageButtonTextClickable(false);
     }
@@ -98,6 +102,12 @@ public class WeekShowActivity extends BaseActivity {
         tiltle.setText(mWeekSchedule.getTitle());
         startTime.setText(mWeekSchedule.getStartTime());
         xunhuan.setText(mWeekSchedule.getCycleTime());
+        if (mWeekSchedule.getDetail() == null || mWeekSchedule.getDetail().equals("")) {
+            detailView.setVisibility(View.GONE);
+        } else {
+            detailView.setVisibility(View.VISIBLE);
+            detailTv.setText(mWeekSchedule.getDetail());
+        }
 
     }
 

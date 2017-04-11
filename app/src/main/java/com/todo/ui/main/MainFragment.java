@@ -97,6 +97,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+        LogUtil.d("www", "onCreateView");
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -132,13 +133,6 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
 
     }
 
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        LogUtil.d("www", "onActivityCreated");
-        lazyLoad();
-    }
 
     @Override
     protected void lazyLoad() {

@@ -146,7 +146,10 @@ public class DatePickerActivity extends BaseActivity implements DatePicker.DateC
                 DateTime.now().getMonthOfYear() - 1, DateTime.now().getDayOfMonth());
         mDialog.show();
         android.widget.DatePicker dp = mDialog.getDatePicker();
-        ((ViewGroup) ((ViewGroup) dp.getChildAt(0)).getChildAt(0)).getChildAt(2).setVisibility(View.GONE);
+        if (dp.getChildAt(0) != null
+                && ((ViewGroup) dp.getChildAt(0)).getChildAt(0) != null
+                && ((ViewGroup) ((ViewGroup) dp.getChildAt(0)).getChildAt(0)).getChildAt(2) != null)
+            ((ViewGroup) ((ViewGroup) dp.getChildAt(0)).getChildAt(0)).getChildAt(2).setVisibility(View.GONE);
     }
 
 

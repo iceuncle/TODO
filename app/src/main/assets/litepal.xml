@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <litepal>
     <dbname value="ToDo" />
-    <version value="9" />
+    <version value="10" />
     <list>
         <mapping class="com.todo.data.database.Schedule"></mapping>
         <mapping class="com.todo.data.database.WeekSchedule"></mapping>

@@ -16,6 +16,7 @@ import com.github.markzhai.recyclerview.SingleTypeAdapter;
 import com.loonggg.lib.alarmmanager.clock.SPUtils;
 import com.todo.R;
 import com.todo.data.bean.Mp3Info;
+import com.todo.ui.base.BaseFragment;
 import com.todo.utils.LogUtil;
 import com.todo.utils.MediaUtil;
 
@@ -26,16 +27,27 @@ import java.util.List;
 /**
  * Created by tianyang on 2017/3/17.
  */
-public class MusicFragment extends Fragment {
+public class MusicFragment extends BaseFragment {
     private List<Mp3Info> mp3InfoList = new ArrayList<>();
     private RecyclerView recyclerView;
     private View mView;
     private SingleTypeAdapter<Mp3Info> mAdapter;
     private MediaPlayer mMediaPlayer;
+    // 标志位，标志已经初始化完成。
+    private boolean isPrepared;
 
     public static MusicFragment newInstance() {
         MusicFragment fragment = new MusicFragment();
         return fragment;
+    }
+
+
+    @Override
+    protected void lazyLoad() {
+        if (!isPrepared || !isVisible) {
+            return;
+        }
+        initDatas();
     }
 
 
@@ -45,10 +57,11 @@ public class MusicFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_music, container, false);
         LogUtil.d("MusicFragment  onCreateView...");
         initView();
-        initDatas();
+        isPrepared = true;
         return mView;
 
     }
+
 
     private void initView() {
         recyclerView = (RecyclerView) mView.findViewById(R.id.recyclerview);
@@ -60,6 +73,7 @@ public class MusicFragment extends Fragment {
     }
 
     private void initDatas() {
+        LogUtil.d("MusicFragment  initDatas...");
         mp3InfoList = MediaUtil.getMp3Infos(getActivity());
         String type = (String) SPUtils.get(getActivity(), SPUtils.RING_TYPE_KEY, "");
         String contentUri = (String) SPUtils.get(getActivity(), SPUtils.MUSIC_NAME_KEY, "");
@@ -70,6 +84,7 @@ public class MusicFragment extends Fragment {
             }
         mAdapter.addAll(mp3InfoList);
     }
+
 
     public class ItemPresenter implements BaseViewAdapter.Presenter {
 
@@ -102,11 +117,25 @@ public class MusicFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mMediaPlayer != null)
+    protected void onInvisible() {
+        super.onInvisible();
+        LogUtil.d("music   onInvisible...");
+        if (mMediaPlayer != null){
             mMediaPlayer.release();
-        mMediaPlayer = null;
+            mMediaPlayer = null;
+        }
     }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        LogUtil.d("music   stop...");
+        if (mMediaPlayer != null){
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
+    }
+
 
 }

@@ -1,6 +1,10 @@
 package com.todo.ui.main;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -11,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
 import com.todo.R;
 import com.todo.data.database.Schedule;
 import com.todo.data.database.WeekSchedule;
@@ -38,7 +43,7 @@ public class MainActivity extends BaseActivity {
 //        DataSupport.deleteAll(WeekSchedule.class);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
-        toolbar.setTitle("近期日程");
+        toolbar.setTitle("近期行程");
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
@@ -57,8 +62,8 @@ public class MainActivity extends BaseActivity {
         fragmentList.add(null);
 
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), this, fragmentList);
-        viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(viewPagerAdapter);
+        viewPager.setOffscreenPageLimit(3);
 //        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setupWithViewPager(viewPager);
 
@@ -88,6 +93,22 @@ public class MainActivity extends BaseActivity {
     public void Add(View view) {
         Intent intent = new Intent(MainActivity.this, AddActivity.class);
         startActivity(intent);
+//        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        Intent intent = new Intent(AlarmManagerUtil.ALARM_ACTION);
+//
+//        long intervalMillis = 60000;
+//        intent.putExtra("msg", "测试");
+//        intent.putExtra("intervalMillis", intervalMillis);
+//        intent.putExtra("id", 1111);
+//        intent.putExtra("soundOrVibrator", 1);
+//        PendingIntent sender = PendingIntent.getBroadcast(this, 1111, intent, PendingIntent
+//                .FLAG_CANCEL_CURRENT);
+//
+////        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 10000, sender);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+//            am.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 3000,
+//                    sender);
+
     }
 
 

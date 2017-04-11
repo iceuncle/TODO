@@ -11,7 +11,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,13 +42,16 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
     private TextView stText, etText, xunhuanText;
     private ImageButtonText imageButtonText1, imageButtonText2, imageButtonText3, imageButtonText4;
     private int selectedIndex = 0; //重复类型
+    private int soundOrVibrator = 1;//铃声或震动设置
     private String[] weekdays = {"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
     private String[] types = {"只此一次", "每天", "每周", "自定义"};
     private boolean[] selectedWeekdays = new boolean[7];
-    private EditText title;
+    private EditText title, detailEt;
     private String biaoqian;
-    private SwitchCompat naozhong;
+    private SwitchCompat naozhongSc, zhengdongSc, ringSc;
     private CalendarBean calendarBean;
+    private LinearLayout soundOrVibratorView;
+    private View soundOrVibratorDivider;
 
     public Calendar startCalendar, endCalendar;
 
@@ -72,7 +77,12 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
         stText = (TextView) findViewById(R.id.stText);
         etText = (TextView) findViewById(R.id.etText);
         xunhuanText = (TextView) findViewById(R.id.xunhuanText);
-        naozhong = (SwitchCompat) findViewById(R.id.switchCompat);
+        naozhongSc = (SwitchCompat) findViewById(R.id.switchCompat);
+        zhengdongSc = (SwitchCompat) findViewById(R.id.zhendong_sc);
+        ringSc = (SwitchCompat) findViewById(R.id.ring_sc);
+        detailEt = (EditText) findViewById(R.id.detail_et);
+        soundOrVibratorView = (LinearLayout) findViewById(R.id.soundOrVibrator_view);
+        soundOrVibratorDivider = findViewById(R.id.soundOrVibrator_divider);
 
         imageButtonText1 = (ImageButtonText) findViewById(R.id.imageText1);
         imageButtonText2 = (ImageButtonText) findViewById(R.id.imageText2);
@@ -88,6 +98,36 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
         imageButtonText2.setmOnImageButtonTextClickListener(this);
         imageButtonText3.setmOnImageButtonTextClickListener(this);
         imageButtonText4.setmOnImageButtonTextClickListener(this);
+
+        naozhongSc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    soundOrVibratorView.setVisibility(View.VISIBLE);
+                    soundOrVibratorDivider.setVisibility(View.VISIBLE);
+                } else {
+                    soundOrVibratorView.setVisibility(View.GONE);
+                    soundOrVibratorDivider.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        ringSc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (!b && !zhengdongSc.isChecked())
+                    zhengdongSc.setChecked(true);
+            }
+        });
+
+        zhengdongSc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (!b && !ringSc.isChecked())
+                    ringSc.setChecked(true);
+            }
+        });
+
 
     }
 
@@ -181,6 +221,13 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
 
     public void save() {
         if (canSave()) {
+            //获取铃声或震动设置
+            if (ringSc.isChecked() && !zhengdongSc.isChecked())
+                soundOrVibrator = 1;
+            else if (ringSc.isChecked() && zhengdongSc.isChecked())
+                soundOrVibrator = 2;
+            else if (!ringSc.isChecked() && zhengdongSc.isChecked())
+                soundOrVibrator = 0;
             //在点击保存时再读取calendarBean中的值。
             startCalendar = calendarBean.getCalendar();
             //判断提醒时间是否正确
@@ -188,8 +235,8 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
                 Schedule schedule = new Schedule();
                 //存入数据库并设置闹钟
                 addToDataBase(schedule);
-                if (naozhong.isChecked()) addAlarm(schedule);
-                Toast.makeText(this, "已保存", Toast.LENGTH_SHORT).show();
+                if (naozhongSc.isChecked()) addAlarm(schedule);
+//                Toast.makeText(this, "已保存", Toast.LENGTH_SHORT).show();
 
                 EventBus.getDefault().post(new MsgEvent("UpDate"));
                 finish();
@@ -223,31 +270,32 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
     }
 
     public void addAlarm(Schedule schedule) {
+
         if (selectedIndex == 0) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
-            AlarmManagerUtil.setAlarm(this, 0, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), 0, title.getText().toString(), 1);
+            AlarmManagerUtil.setAlarm(this, 0, startCalendar, alarm.getId(), 0, title.getText().toString(), soundOrVibrator);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 1) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
-            AlarmManagerUtil.setAlarm(this, 1, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), 0, title.getText().toString(), 1);
+            AlarmManagerUtil.setAlarm(this, 1, startCalendar, alarm.getId(), 0, title.getText().toString(), soundOrVibrator);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 2) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
             DateTime dateTime = new DateTime(startCalendar);
-            AlarmManagerUtil.setAlarm(this, 2, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), dateTime.getDayOfWeek(), title.getText().toString(), 1);
+            AlarmManagerUtil.setAlarm(this, 2, startCalendar, alarm.getId(), dateTime.getDayOfWeek(), title.getText().toString(), soundOrVibrator);
         } else if (selectedIndex == 3) {
             for (int i = 0; i < selectedWeekdays.length; i++) {
                 if (selectedWeekdays[i]) {
                     Alarm alarm = new Alarm();
                     alarm.setSchedule(schedule);
                     alarm.save();
-                    AlarmManagerUtil.setAlarm(this, 2, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), i + 1, title.getText().toString(), 1);
+                    AlarmManagerUtil.setAlarm(this, 2, startCalendar, alarm.getId(), i + 1, title.getText().toString(), soundOrVibrator);
                 }
             }
         }
@@ -257,11 +305,13 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
     private void addToDataBase(Schedule schedule) {
         DateTime dateTime = new DateTime(startCalendar);
         schedule.setTitle(title.getText().toString());
-        schedule.setRemind(naozhong.isChecked());
+        schedule.setRemind(naozhongSc.isChecked());
         schedule.setStartTime(DateFormatUtil.format(dateTime));
         schedule.setCycleTime(xunhuanText.getText().toString());
         schedule.setBiaoqian(biaoqian);
         schedule.setType(selectedIndex);
+        schedule.setDetail(detailEt.getText().toString());
+        schedule.setSoundOrVibrator(soundOrVibrator);
         schedule.save();
     }
 

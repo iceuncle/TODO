@@ -38,7 +38,9 @@ import org.joda.time.Minutes;
 import org.joda.time.Seconds;
 import org.litepal.crud.DataSupport;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -46,7 +48,7 @@ import java.util.Locale;
  */
 public class ModifyActivity extends BaseActivity implements ImageButtonText.OnImageButtonTextClickListener {
     private Schedule mSchedule;
-    private EditText titleEt;
+    private EditText titleEt, detailEt;
     private TextView startTimeTv, xunhuanTv;
     private SwitchCompat switchCompat;
     private ImageButtonText ibt1, ibt2, ibt3, ibt4;
@@ -116,6 +118,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         startTimeTv = (TextView) findViewById(R.id.starttime_content_tv);
         xunhuanTv = (TextView) findViewById(R.id.xunhuan_content_tv);
         switchCompat = (SwitchCompat) findViewById(R.id.switchCompat);
+        detailEt = (EditText) findViewById(R.id.detail_et);
         ibt1 = (ImageButtonText) findViewById(R.id.imageText1);
         ibt2 = (ImageButtonText) findViewById(R.id.imageText2);
         ibt3 = (ImageButtonText) findViewById(R.id.imageText3);
@@ -139,6 +142,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         mScheduleId = getIntent().getExtras().getInt("ScheduleID");
         type = getIntent().getStringExtra("ActivityType");
         mSchedule = DataSupport.find(Schedule.class, mScheduleId);
+        selectedIndex = mSchedule.getType();
     }
 
     private void initEvents() {
@@ -147,6 +151,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         switchCompat.setChecked(mSchedule.isRemind());
         startTimeTv.setText(mSchedule.getStartTime());
         xunhuanTv.setText(mSchedule.getCycleTime());
+        detailEt.setText(mSchedule.getDetail());
         switch (mSchedule.getBiaoqian()) {
             case "工作":
                 ibt1.getImgView().setImageResource(R.mipmap.gongzuo1);
@@ -154,13 +159,13 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
                 tag = "工作";
                 break;
             case "学习":
-                ibt2.getImgView().setImageResource(R.mipmap.xuexi1);
-                ibt2.getTextView().setTextColor(getResources().getColor(R.color.b0));
+                ibt3.getImgView().setImageResource(R.mipmap.xuexi1);
+                ibt3.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 tag = "学习";
                 break;
             case "生活":
-                ibt3.getImgView().setImageResource(R.mipmap.shenghuo1);
-                ibt3.getTextView().setTextColor(getResources().getColor(R.color.b0));
+                ibt2.getImgView().setImageResource(R.mipmap.shenghuo1);
+                ibt2.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 tag = "生活";
                 break;
             default:
@@ -313,16 +318,23 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
             LogUtil.d("null....");
         } else startCalendar = calendarBean.getCalendar();
         if (isTimeRight()) {
-            //有闹钟删除闹钟并删除数据库中数据
-            if (mSchedule.isRemind())
-                AlarmManagerUtil.cancelAlarm(this, "com.loonggg.alarm.clock", mSchedule.getId());
+            //有闹钟删除闹钟
+            List<Integer> alarmIdList = new ArrayList<Integer>();
+            for (Alarm alarm : mSchedule.getAlarmList())
+                alarmIdList.add(alarm.getId());
+            if (mSchedule.isRemind()) {
+                for (int alarmId : alarmIdList)
+                    AlarmManagerUtil.cancelAlarm(this, "com.loonggg.alarm.clock", alarmId);
+            }
+
+            //删除数据库中数据
             DataSupport.delete(Schedule.class, mSchedule.getId());
             DataSupport.deleteAll(WeekSchedule.class, "scheduleId=?", mSchedule.getId() + "");
             //添加数据
             Schedule schedule = new Schedule();
             addToDataBase(schedule);
             if (switchCompat.isChecked()) addAlarm(schedule);
-            Toast.makeText(this, "save", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "save", Toast.LENGTH_SHORT).show();
             if (type.equals("WeekShowActivity")) {
                 startActivity(new Intent(this, MainActivity.class));
                 EventBus.getDefault().post(new MsgEvent("UpDate"));
@@ -352,6 +364,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         schedule.setCycleTime(xunhuanTv.getText().toString());
         schedule.setBiaoqian(tag);
         schedule.setType(selectedIndex);
+        schedule.setDetail(detailEt.getText().toString());
         schedule.save();
         alarmId = schedule.getId();
     }
@@ -361,27 +374,27 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
-            AlarmManagerUtil.setAlarm(this, 0, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), 0, titleEt.getText().toString(), 1);
+            AlarmManagerUtil.setAlarm(this, 0, startCalendar, alarm.getId(), 0, titleEt.getText().toString(), 1);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 1) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
-            AlarmManagerUtil.setAlarm(this, 1, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), 0, titleEt.getText().toString(), 1);
+            AlarmManagerUtil.setAlarm(this, 1, startCalendar, alarm.getId(), 0, titleEt.getText().toString(), 1);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 2) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
             DateTime dateTime = new DateTime(startCalendar);
-            AlarmManagerUtil.setAlarm(this, 2, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), dateTime.getDayOfWeek(), titleEt.getText().toString(), 1);
+            AlarmManagerUtil.setAlarm(this, 2, startCalendar, alarm.getId(), dateTime.getDayOfWeek(), titleEt.getText().toString(), 1);
         } else if (selectedIndex == 3) {
             for (int i = 0; i < selectedWeekdays.length; i++) {
                 if (selectedWeekdays[i]) {
                     Alarm alarm = new Alarm();
                     alarm.setSchedule(schedule);
                     alarm.save();
-                    AlarmManagerUtil.setAlarm(this, 2, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), alarm.getId(), i + 1, titleEt.getText().toString(), 1);
+                    AlarmManagerUtil.setAlarm(this, 2, startCalendar, alarm.getId(), i + 1, titleEt.getText().toString(), 1);
                 }
             }
         }

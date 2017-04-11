@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import com.todo.ui.main.MainFragment;
 
@@ -29,6 +30,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         Fragment fragment = fragmentList.get(position);
         if (fragment == null) {
+            Log.d("qqq", "new fragment  " + position);
             fragment = MainFragment.newInstance(position);
             fragmentList.set(position, fragment);
         }

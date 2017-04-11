@@ -24,4 +24,7 @@
 
     <!--标准绿-->
     <color name="green1">#45C01A</color>
+
+    <!--描边绿-->
+    <color name="green2">#06bc04</color>
 </resources>

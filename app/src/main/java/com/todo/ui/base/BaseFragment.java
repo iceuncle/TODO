@@ -1,5 +1,7 @@
 package com.todo.ui.base;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 /**
@@ -8,6 +10,13 @@ import android.support.v4.app.Fragment;
 public abstract class BaseFragment extends Fragment {
 
     protected boolean isVisible;
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        lazyLoad();
+    }
+
 
     /**
      * 在这里实现Fragment数据的缓加载.

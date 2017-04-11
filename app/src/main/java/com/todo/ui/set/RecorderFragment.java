@@ -24,6 +24,7 @@ import com.loonggg.lib.alarmmanager.clock.SPUtils;
 import com.todo.R;
 import com.todo.data.bean.Mp3Info;
 import com.todo.databinding.ItemRecorderBinding;
+import com.todo.ui.base.BaseFragment;
 import com.todo.utils.DensityUtil;
 import com.todo.utils.LogUtil;
 
@@ -35,7 +36,7 @@ import java.util.List;
 /**
  * Created by tianyang on 2017/3/17.
  */
-public class RecorderFragment extends Fragment {
+public class RecorderFragment extends BaseFragment {
 
     private View mView;
     private RecyclerView recyclerView;
@@ -48,6 +49,9 @@ public class RecorderFragment extends Fragment {
     private List<Mp3Info> mp3InfoList = new ArrayList<>();
     private boolean mStartRecording = true;
     private Chronometer mChronometer;
+    // 标志位，标志已经初始化完成。
+    private boolean isPrepared;
+
 
     public static RecorderFragment newInstance() {
         RecorderFragment fragment = new RecorderFragment();
@@ -55,15 +59,25 @@ public class RecorderFragment extends Fragment {
     }
 
 
+    @Override
+    protected void lazyLoad() {
+        if (!isPrepared || !isVisible) {
+            return;
+        }
+        initDatas();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_recorder, container, false);
+        LogUtil.d("RecorderFragment  onCreateView...");
         initView();
-        initDatas();
+        isPrepared = true;
         initEventHandelers();
         return mView;
     }
+
 
 
     private void initView() {
@@ -80,6 +94,7 @@ public class RecorderFragment extends Fragment {
 
 
     private void initDatas() {
+        LogUtil.d("RecorderFragment  initDatas...");
         mp3InfoList.clear();
         fileNameList = GetMediaFileName(getActivity().getFilesDir().getAbsolutePath());
         if (fileNameList != null) {
@@ -276,10 +291,25 @@ public class RecorderFragment extends Fragment {
 
     }
 
+    @Override
+    protected void onInvisible() {
+        super.onInvisible();
+        LogUtil.d("Record   onInvisible...");
+        if (mRecorder != null) {
+            mRecorder.release();
+            mRecorder = null;
+        }
+
+        if (mPlayer != null) {
+            mPlayer.release();
+            mPlayer = null;
+        }
+    }
 
     @Override
     public void onStop() {
         super.onStop();
+        LogUtil.d("Record   stop...");
         if (mRecorder != null) {
             mRecorder.release();
             mRecorder = null;

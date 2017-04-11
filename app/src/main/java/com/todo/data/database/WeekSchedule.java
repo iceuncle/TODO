@@ -25,6 +25,7 @@ public class WeekSchedule extends DataSupport {
 
     private String biaoqian;
 
+    private String detail;
 
     public int getId() {
         return id;
@@ -98,6 +99,14 @@ public class WeekSchedule extends DataSupport {
         isFinished = finished;
     }
 
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
 
     public void setSchedule(Schedule schedule) {
         this.scheduleId = schedule.getId();
@@ -107,6 +116,7 @@ public class WeekSchedule extends DataSupport {
         this.type = schedule.getType();
         this.cycleTime = schedule.getCycleTime();
         this.biaoqian = schedule.getBiaoqian();
+        this.detail = schedule.getDetail();
     }
 
 }

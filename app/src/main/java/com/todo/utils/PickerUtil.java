@@ -40,7 +40,7 @@ public class PickerUtil {
             @Override
             public void drawDecorTR(Canvas canvas, Rect rect, Paint paint, String data) {
                 super.drawDecorTR(canvas, rect, paint, data);
-                paint.setColor(Color.parseColor("#FF4081"));
+                paint.setColor(Color.parseColor("#45C01A"));
                 canvas.drawCircle(rect.centerX(), rect.centerY(), rect.width() / 4, paint);
             }
         });

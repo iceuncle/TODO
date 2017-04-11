@@ -37,6 +37,7 @@ public class Schedule extends DataSupport implements Cloneable, Serializable {
      * type = 0 表示一次性的闹钟
      * type = 1 表示每天提醒的闹钟
      * type = 2 表示按周每周提醒的闹钟
+     * type = 3 表示自定义按周每周提醒的闹钟
      */
     private int type;
 
@@ -49,6 +50,16 @@ public class Schedule extends DataSupport implements Cloneable, Serializable {
      * 标签文字
      */
     private String biaoqian;
+
+    /**
+     * 详情
+     */
+    private String detail;
+
+    /**
+     * 音乐震动模式
+     */
+    private int soundOrVibrator;
 
     private List<Alarm> alarmList = new ArrayList<>();
 
@@ -119,6 +130,22 @@ public class Schedule extends DataSupport implements Cloneable, Serializable {
 
     public void setAlarmList(List<Alarm> alarmList) {
         this.alarmList = alarmList;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setSoundOrVibrator(int soundOrVibrator) {
+        this.soundOrVibrator = soundOrVibrator;
+    }
+
+    public int getSoundOrVibrator() {
+        return soundOrVibrator;
     }
 
     public List<Alarm> getAlarmList() {

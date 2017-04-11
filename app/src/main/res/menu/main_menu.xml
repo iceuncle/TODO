@@ -5,7 +5,6 @@
     <item
         android:id="@+id/music"
         android:icon="@mipmap/ring"
-        android:orderInCategory="90"
         android:title="铃声设置"
         app:showAsAction="always" />
 
@@ -13,9 +12,18 @@
     <item
         android:id="@+id/rili"
         android:icon="@mipmap/rili"
-        android:orderInCategory="90"
         android:title="日历"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/today"
+        android:title="今日行程"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/thisWeek"
+        android:title="本周行程"
+        app:showAsAction="never" />
 
 
 </menu>

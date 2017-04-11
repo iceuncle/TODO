@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
@@ -35,7 +36,8 @@ import java.util.List;
 public class DayShowActivity extends BaseActivity {
     private Schedule mSchedule;
     private ImageButtonText imageText1, imageText2;
-    private TextView tiltle, startTime, xunhuan;
+    private TextView tiltle, startTime, xunhuan, detailTv;
+    private LinearLayout detailView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,6 +90,8 @@ public class DayShowActivity extends BaseActivity {
         tiltle = (TextView) findViewById(R.id.title_tv);
         startTime = (TextView) findViewById(R.id.starttime_tv);
         xunhuan = (TextView) findViewById(R.id.xunhuan_tv);
+        detailTv = (TextView) findViewById(R.id.detail_tv);
+        detailView = (LinearLayout) findViewById(R.id.detail_view);
         imageText1.setImageButtonTextClickable(false);
         imageText2.setImageButtonTextClickable(false);
     }
@@ -105,6 +109,13 @@ public class DayShowActivity extends BaseActivity {
         tiltle.setText(mSchedule.getTitle());
         startTime.setText(mSchedule.getStartTime());
         xunhuan.setText(mSchedule.getCycleTime());
+        if (mSchedule.getDetail() == null || mSchedule.getDetail().equals("")) {
+            detailView.setVisibility(View.GONE);
+        } else {
+            detailView.setVisibility(View.VISIBLE);
+            detailTv.setText(mSchedule.getDetail());
+        }
+
 
     }
 
