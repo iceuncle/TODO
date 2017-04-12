@@ -228,6 +228,8 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
                 soundOrVibrator = 2;
             else if (!ringSc.isChecked() && zhengdongSc.isChecked())
                 soundOrVibrator = 0;
+            else
+                soundOrVibrator = 1;
             //在点击保存时再读取calendarBean中的值。
             startCalendar = calendarBean.getCalendar();
             //判断提醒时间是否正确

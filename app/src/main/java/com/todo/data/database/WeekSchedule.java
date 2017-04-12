@@ -27,6 +27,8 @@ public class WeekSchedule extends DataSupport {
 
     private String detail;
 
+    private int soundOrVibrator;
+
     public int getId() {
         return id;
     }
@@ -107,6 +109,14 @@ public class WeekSchedule extends DataSupport {
         return detail;
     }
 
+    public void setSoundOrVibrator(int soundOrVibrator) {
+        this.soundOrVibrator = soundOrVibrator;
+    }
+
+    public int getSoundOrVibrator() {
+        return soundOrVibrator;
+    }
+
 
     public void setSchedule(Schedule schedule) {
         this.scheduleId = schedule.getId();
@@ -117,6 +127,7 @@ public class WeekSchedule extends DataSupport {
         this.cycleTime = schedule.getCycleTime();
         this.biaoqian = schedule.getBiaoqian();
         this.detail = schedule.getDetail();
+        this.soundOrVibrator = schedule.getSoundOrVibrator();
     }
 
 }

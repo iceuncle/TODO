@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +36,9 @@ public class WeekShowActivity extends BaseActivity {
     private WeekSchedule mWeekSchedule;
     private ImageButtonText imageText1, imageText2;
     private TextView tiltle, startTime, xunhuan, detailTv;
-    private LinearLayout detailView;
+    private LinearLayout detailView, soundOrVibratorView;
+    private View dividerView;
+    private SwitchCompat zhengdongSc, ringSc;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,6 +87,10 @@ public class WeekShowActivity extends BaseActivity {
         xunhuan = (TextView) findViewById(R.id.xunhuan_tv);
         detailTv = (TextView) findViewById(R.id.detail_tv);
         detailView = (LinearLayout) findViewById(R.id.detail_view);
+        soundOrVibratorView = (LinearLayout) findViewById(R.id.soundOrVibrator_view);
+        dividerView = findViewById(R.id.soundOrVibrator_divider);
+        zhengdongSc = (SwitchCompat) findViewById(R.id.zhendong_sc);
+        ringSc = (SwitchCompat) findViewById(R.id.ring_sc);
         imageText1.setImageButtonTextClickable(false);
         imageText2.setImageButtonTextClickable(false);
     }
@@ -107,6 +114,19 @@ public class WeekShowActivity extends BaseActivity {
         } else {
             detailView.setVisibility(View.VISIBLE);
             detailTv.setText(mWeekSchedule.getDetail());
+        }
+
+        if (mWeekSchedule.isRemind()) {
+            soundOrVibratorView.setVisibility(View.VISIBLE);
+            dividerView.setVisibility(View.VISIBLE);
+            if (mWeekSchedule.getSoundOrVibrator() == 1) {
+                ringSc.setChecked(true);
+            } else if (mWeekSchedule.getSoundOrVibrator() == 0) {
+                zhengdongSc.setChecked(true);
+            } else if (mWeekSchedule.getSoundOrVibrator() == 2) {
+                ringSc.setChecked(true);
+                zhengdongSc.setChecked(true);
+            }
         }
 
     }
