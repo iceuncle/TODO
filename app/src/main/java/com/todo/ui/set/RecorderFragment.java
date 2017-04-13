@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +26,7 @@ import com.todo.databinding.ItemRecorderBinding;
 import com.todo.ui.base.BaseFragment;
 import com.todo.utils.DensityUtil;
 import com.todo.utils.LogUtil;
+import com.todo.utils.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,7 +79,6 @@ public class RecorderFragment extends BaseFragment {
     }
 
 
-
     private void initView() {
         recyclerView = (RecyclerView) mView.findViewById(R.id.recyclerview);
         addBtn = (FloatingActionButton) mView.findViewById(R.id.add_btn);
@@ -96,15 +95,14 @@ public class RecorderFragment extends BaseFragment {
     private void initDatas() {
         LogUtil.d("RecorderFragment  initDatas...");
         mp3InfoList.clear();
-        fileNameList = GetMediaFileName(getActivity().getFilesDir().getAbsolutePath());
-        if (fileNameList != null) {
-            for (String s : fileNameList) {
-                Mp3Info mp3Info = new Mp3Info();
-                mp3Info.setTitle(s.substring(0, s.length() - 4));
-                mp3Info.setUrl(getActivity().getFilesDir().getAbsolutePath() + "/" + s);
-                mp3InfoList.add(mp3Info);
-            }
+        fileNameList = getMediaFileName(getActivity().getFilesDir().getAbsolutePath());
+        for (String s : fileNameList) {
+            Mp3Info mp3Info = new Mp3Info();
+            mp3Info.setTitle(s.substring(0, s.length() - 4));
+            mp3Info.setUrl(getActivity().getFilesDir().getAbsolutePath() + "/" + s);
+            mp3InfoList.add(mp3Info);
         }
+
         String type = (String) SPUtils.get(getActivity(), SPUtils.RING_TYPE_KEY, "");
         String url = (String) SPUtils.get(getActivity(), SPUtils.RECORD_NAME_KEY, "");
         if (type != null && type.equals(SPUtils.RECORD_NAME_KEY) && url != null)
@@ -189,7 +187,7 @@ public class RecorderFragment extends BaseFragment {
     }
 
 
-    public List<String> GetMediaFileName(String fileAbsolutePath) {
+    public List<String> getMediaFileName(String fileAbsolutePath) {
         List<String> fileList = new ArrayList<>();
         File file = new File(fileAbsolutePath);
         File[] subFile = file.listFiles();
@@ -206,6 +204,7 @@ public class RecorderFragment extends BaseFragment {
         }
         return fileList;
     }
+
 
 
     public class ItemPresenter implements BaseViewAdapter.Presenter {

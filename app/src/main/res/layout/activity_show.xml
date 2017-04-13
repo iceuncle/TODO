@@ -82,7 +82,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:enabled="false" />
+                        android:clickable="false" />
 
                 </RelativeLayout>
 
@@ -115,7 +115,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:enabled="false" />
+                        android:clickable="false" />
 
                 </RelativeLayout>
             </LinearLayout>

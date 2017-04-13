@@ -13,7 +13,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,12 +52,15 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
     private Schedule mSchedule;
     private EditText titleEt, detailEt;
     private TextView startTimeTv, xunhuanTv;
-    private SwitchCompat switchCompat;
+    private SwitchCompat switchCompat, zhengdongSc, ringSc;
+    private View soundOrVibratorDivider;
+    private LinearLayout soundOrVibratorView;
     private ImageButtonText ibt1, ibt2, ibt3, ibt4;
     private String title, startTime, xunhuan, tag;
     private CalendarBean calendarBean = new CalendarBean();
     public Calendar startCalendar;
     private int mScheduleId;
+    private int soundOrVibrator = 1;//铃声或震动设置
     private int alarmId;  //存入数据库的id同样设置闹钟id
     //记录是否点击过时间选择器
     private boolean isClicked = false;
@@ -136,6 +141,11 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         ibt3.setmOnImageButtonTextClickListener(this);
         ibt4.setmOnImageButtonTextClickListener(this);
 
+        soundOrVibratorView = (LinearLayout) findViewById(R.id.soundOrVibrator_view);
+        soundOrVibratorDivider = findViewById(R.id.soundOrVibrator_divider);
+        zhengdongSc = (SwitchCompat) findViewById(R.id.zhendong_sc);
+        ringSc = (SwitchCompat) findViewById(R.id.ring_sc);
+
     }
 
     private void initDatas() {
@@ -143,9 +153,11 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         type = getIntent().getStringExtra("ActivityType");
         mSchedule = DataSupport.find(Schedule.class, mScheduleId);
         selectedIndex = mSchedule.getType();
+        soundOrVibrator = mSchedule.getSoundOrVibrator();
     }
 
     private void initEvents() {
+
         titleEt.setText(mSchedule.getTitle());
         titleEt.setSelection(mSchedule.getTitle().length());
         switchCompat.setChecked(mSchedule.isRemind());
@@ -173,6 +185,48 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
                 ibt4.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 tag = "其它";
         }
+
+        if (mSchedule.isRemind()) {
+            soundOrVibratorView.setVisibility(View.VISIBLE);
+            soundOrVibratorDivider.setVisibility(View.VISIBLE);
+            if (mSchedule.getSoundOrVibrator() == 1) {
+                ringSc.setChecked(true);
+            } else if (mSchedule.getSoundOrVibrator() == 0) {
+                zhengdongSc.setChecked(true);
+            } else if (mSchedule.getSoundOrVibrator() == 2) {
+                ringSc.setChecked(true);
+                zhengdongSc.setChecked(true);
+            }
+        }
+
+        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    soundOrVibratorView.setVisibility(View.VISIBLE);
+                    soundOrVibratorDivider.setVisibility(View.VISIBLE);
+                } else {
+                    soundOrVibratorView.setVisibility(View.GONE);
+                    soundOrVibratorDivider.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        ringSc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (!b && !zhengdongSc.isChecked())
+                    zhengdongSc.setChecked(true);
+            }
+        });
+
+        zhengdongSc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (!b && !ringSc.isChecked())
+                    ringSc.setChecked(true);
+            }
+        });
     }
 
     @Override
@@ -312,6 +366,15 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
 
 
     private void save() {
+        //获取铃声或震动设置的值
+        if (ringSc.isChecked() && !zhengdongSc.isChecked())
+            soundOrVibrator = 1;
+        else if (ringSc.isChecked() && zhengdongSc.isChecked())
+            soundOrVibrator = 2;
+        else if (!ringSc.isChecked() && zhengdongSc.isChecked())
+            soundOrVibrator = 0;
+        else
+            soundOrVibrator = 1;
         //在点击保存时再读取calendarBean中的值。
         if (calendarBean.getCalendar() == null) {
             startCalendar = DateFormatUtil.parse(mSchedule.getStartTime()).toCalendar(Locale.CHINA);
@@ -365,6 +428,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         schedule.setBiaoqian(tag);
         schedule.setType(selectedIndex);
         schedule.setDetail(detailEt.getText().toString());
+        schedule.setSoundOrVibrator(soundOrVibrator);
         schedule.save();
         alarmId = schedule.getId();
     }
@@ -374,27 +438,27 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
-            AlarmManagerUtil.setAlarm(this, 0, startCalendar, alarm.getId(), 0, titleEt.getText().toString(), 1);
+            AlarmManagerUtil.setAlarm(this, 0, startCalendar, alarm.getId(), 0, titleEt.getText().toString(), soundOrVibrator);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 1) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
-            AlarmManagerUtil.setAlarm(this, 1, startCalendar, alarm.getId(), 0, titleEt.getText().toString(), 1);
+            AlarmManagerUtil.setAlarm(this, 1, startCalendar, alarm.getId(), 0, titleEt.getText().toString(), soundOrVibrator);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 2) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
             DateTime dateTime = new DateTime(startCalendar);
-            AlarmManagerUtil.setAlarm(this, 2, startCalendar, alarm.getId(), dateTime.getDayOfWeek(), titleEt.getText().toString(), 1);
+            AlarmManagerUtil.setAlarm(this, 2, startCalendar, alarm.getId(), dateTime.getDayOfWeek(), titleEt.getText().toString(), soundOrVibrator);
         } else if (selectedIndex == 3) {
             for (int i = 0; i < selectedWeekdays.length; i++) {
                 if (selectedWeekdays[i]) {
                     Alarm alarm = new Alarm();
                     alarm.setSchedule(schedule);
                     alarm.save();
-                    AlarmManagerUtil.setAlarm(this, 2, startCalendar, alarm.getId(), i + 1, titleEt.getText().toString(), 1);
+                    AlarmManagerUtil.setAlarm(this, 2, startCalendar, alarm.getId(), i + 1, titleEt.getText().toString(), soundOrVibrator);
                 }
             }
         }

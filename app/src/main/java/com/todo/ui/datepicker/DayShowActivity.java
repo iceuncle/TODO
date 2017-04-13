@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,7 +38,11 @@ public class DayShowActivity extends BaseActivity {
     private Schedule mSchedule;
     private ImageButtonText imageText1, imageText2;
     private TextView tiltle, startTime, xunhuan, detailTv;
-    private LinearLayout detailView;
+    private LinearLayout detailView, soundOrVibratorView;
+    private View dividerView;
+    private SwitchCompat zhengdongSc, ringSc;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,6 +97,10 @@ public class DayShowActivity extends BaseActivity {
         xunhuan = (TextView) findViewById(R.id.xunhuan_tv);
         detailTv = (TextView) findViewById(R.id.detail_tv);
         detailView = (LinearLayout) findViewById(R.id.detail_view);
+        soundOrVibratorView = (LinearLayout) findViewById(R.id.soundOrVibrator_view);
+        dividerView = findViewById(R.id.soundOrVibrator_divider);
+        zhengdongSc = (SwitchCompat) findViewById(R.id.zhendong_sc);
+        ringSc = (SwitchCompat) findViewById(R.id.ring_sc);
         imageText1.setImageButtonTextClickable(false);
         imageText2.setImageButtonTextClickable(false);
     }
@@ -116,6 +125,18 @@ public class DayShowActivity extends BaseActivity {
             detailTv.setText(mSchedule.getDetail());
         }
 
+        if (mSchedule.isRemind()) {
+            soundOrVibratorView.setVisibility(View.VISIBLE);
+            dividerView.setVisibility(View.VISIBLE);
+            if (mSchedule.getSoundOrVibrator() == 1) {
+                ringSc.setChecked(true);
+            } else if (mSchedule.getSoundOrVibrator() == 0) {
+                zhengdongSc.setChecked(true);
+            } else if (mSchedule.getSoundOrVibrator() == 2) {
+                ringSc.setChecked(true);
+                zhengdongSc.setChecked(true);
+            }
+        }
 
     }
 
