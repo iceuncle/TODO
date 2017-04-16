@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_work"
+        android:icon="@mipmap/work_white"
+        android:orderInCategory="0"
+        android:title="工作类"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_life"
+        android:icon="@mipmap/life_whie"
+        android:orderInCategory="1"
+        android:title="生活类"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_study"
+        android:icon="@mipmap/study_white"
+        android:orderInCategory="2"
+        android:title="学习类"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_other"
+        android:icon="@mipmap/other_white"
+        android:orderInCategory="3"
+        android:title="其它类"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_add"
+        android:icon="@mipmap/add_white"
+        android:orderInCategory="4"
+        android:title="添加"
+        app:showAsAction="never" />
+
+
+</menu>

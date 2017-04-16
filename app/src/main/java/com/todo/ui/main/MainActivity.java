@@ -30,6 +30,9 @@ import org.litepal.crud.DataSupport;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
+
 public class MainActivity extends BaseActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -91,8 +94,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void Add(View view) {
-        Intent intent = new Intent(MainActivity.this, AddActivity.class);
-        startActivity(intent);
+
 //        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 //        Intent intent = new Intent(AlarmManagerUtil.ALARM_ACTION);
 //

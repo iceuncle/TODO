@@ -16,7 +16,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/gongzuo" />
+            android:src="@mipmap/work_default" />
 
         <TextView
             android:id="@+id/textview"

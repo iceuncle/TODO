@@ -1,7 +1,6 @@
 package com.todo.ui.main.adpters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 
 import com.todo.R;
 import com.todo.data.database.WeekSchedule;
-import com.todo.ui.crud.WeekShowActivity;
 import com.todo.utils.LogUtil;
 
 import java.util.ArrayList;
@@ -86,21 +84,21 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             holder.checkBox.setVisibility(View.GONE);
         switch (schedule.getBiaoqian()) {
             case "工作":
-                holder.tagImg.setImageResource(R.mipmap.gongzuo1);
+                holder.tagImg.setImageResource(R.mipmap.work);
                 break;
             case "学习":
-                holder.tagImg.setImageResource(R.mipmap.xuexi1);
+                holder.tagImg.setImageResource(R.mipmap.study);
                 break;
             case "生活":
-                holder.tagImg.setImageResource(R.mipmap.shenghuo1);
+                holder.tagImg.setImageResource(R.mipmap.life);
                 break;
             case "其它":
-                holder.tagImg.setImageResource(R.mipmap.qita1);
+                holder.tagImg.setImageResource(R.mipmap.other);
                 break;
         }
 
-        if (schedule.isRemind()) holder.alarImg.setImageResource(R.mipmap.alarmon);
-        else holder.alarImg.setImageResource(R.mipmap.alarmoff);
+        if (schedule.isRemind()) holder.alarImg.setImageResource(R.mipmap.alarm_on);
+        else holder.alarImg.setImageResource(R.mipmap.alarm_off);
 
 
     }

@@ -39,6 +39,7 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.github.yavski:fab-speed-dial:1.0.6'
     compile project(':DatePicker')
     compile project(':alarmmanagerclock')
 }

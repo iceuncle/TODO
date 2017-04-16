@@ -30,7 +30,6 @@ import com.todo.widget.ImageButtonText;
 
 import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
-import org.joda.time.Minutes;
 import org.joda.time.Seconds;
 
 import java.util.Calendar;
@@ -89,11 +88,11 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
         imageButtonText3 = (ImageButtonText) findViewById(R.id.imageText3);
         imageButtonText4 = (ImageButtonText) findViewById(R.id.imageText4);
         imageButtonText2.getTextView().setText("生活");
-        imageButtonText2.getImgView().setImageResource(R.mipmap.shenghuo);
+        imageButtonText2.getImgView().setImageResource(R.mipmap.life_default);
         imageButtonText3.getTextView().setText("学习");
-        imageButtonText3.getImgView().setImageResource(R.mipmap.xuexi);
+        imageButtonText3.getImgView().setImageResource(R.mipmap.study_default);
         imageButtonText4.getTextView().setText("其它");
-        imageButtonText4.getImgView().setImageResource(R.mipmap.qita);
+        imageButtonText4.getImgView().setImageResource(R.mipmap.other_default);
         imageButtonText1.setmOnImageButtonTextClickListener(this);
         imageButtonText2.setmOnImageButtonTextClickListener(this);
         imageButtonText3.setmOnImageButtonTextClickListener(this);
@@ -324,52 +323,52 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
             case R.id.imageText1:
                 if (imageButtonText1.isChecked()) {
                     imageButtonText1.setChecked(false);
-                    imageButtonText1.getImgView().setImageResource(R.mipmap.gongzuo);
+                    imageButtonText1.getImgView().setImageResource(R.mipmap.work_default);
                     imageButtonText1.getTextView().setTextColor(getResources().getColor(R.color.g0));
                 } else {
                     biaoqian = imageButtonText1.getTextView().getText().toString();
                     resetAllImageBUttonText();
                     imageButtonText1.setChecked(true);
-                    imageButtonText1.getImgView().setImageResource(R.mipmap.gongzuo1);
+                    imageButtonText1.getImgView().setImageResource(R.mipmap.work);
                     imageButtonText1.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 }
                 break;
             case R.id.imageText2:
                 if (imageButtonText2.isChecked()) {
                     imageButtonText2.setChecked(false);
-                    imageButtonText2.getImgView().setImageResource(R.mipmap.shenghuo);
+                    imageButtonText2.getImgView().setImageResource(R.mipmap.life_default);
                     imageButtonText2.getTextView().setTextColor(getResources().getColor(R.color.g0));
                 } else {
                     biaoqian = imageButtonText2.getTextView().getText().toString();
                     resetAllImageBUttonText();
                     imageButtonText2.setChecked(true);
-                    imageButtonText2.getImgView().setImageResource(R.mipmap.shenghuo1);
+                    imageButtonText2.getImgView().setImageResource(R.mipmap.life);
                     imageButtonText2.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 }
                 break;
             case R.id.imageText3:
                 if (imageButtonText3.isChecked()) {
                     imageButtonText3.setChecked(false);
-                    imageButtonText3.getImgView().setImageResource(R.mipmap.xuexi);
+                    imageButtonText3.getImgView().setImageResource(R.mipmap.study_default);
                     imageButtonText3.getTextView().setTextColor(getResources().getColor(R.color.g0));
                 } else {
                     biaoqian = imageButtonText3.getTextView().getText().toString();
                     resetAllImageBUttonText();
                     imageButtonText3.setChecked(true);
-                    imageButtonText3.getImgView().setImageResource(R.mipmap.xuexi1);
+                    imageButtonText3.getImgView().setImageResource(R.mipmap.study);
                     imageButtonText3.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 }
                 break;
             case R.id.imageText4:
                 if (imageButtonText4.isChecked()) {
                     imageButtonText4.setChecked(false);
-                    imageButtonText4.getImgView().setImageResource(R.mipmap.qita);
+                    imageButtonText4.getImgView().setImageResource(R.mipmap.other_default);
                     imageButtonText4.getTextView().setTextColor(getResources().getColor(R.color.g0));
                 } else {
                     biaoqian = imageButtonText4.getTextView().getText().toString();
                     resetAllImageBUttonText();
                     imageButtonText4.setChecked(true);
-                    imageButtonText4.getImgView().setImageResource(R.mipmap.qita1);
+                    imageButtonText4.getImgView().setImageResource(R.mipmap.other);
                     imageButtonText4.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 }
                 break;
@@ -379,16 +378,16 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
 
     public void resetAllImageBUttonText() {
         imageButtonText1.setChecked(false);
-        imageButtonText1.getImgView().setImageResource(R.mipmap.gongzuo);
+        imageButtonText1.getImgView().setImageResource(R.mipmap.work_default);
         imageButtonText1.getTextView().setTextColor(getResources().getColor(R.color.g0));
         imageButtonText2.setChecked(false);
-        imageButtonText2.getImgView().setImageResource(R.mipmap.shenghuo);
+        imageButtonText2.getImgView().setImageResource(R.mipmap.life_default);
         imageButtonText2.getTextView().setTextColor(getResources().getColor(R.color.g0));
         imageButtonText3.setChecked(false);
-        imageButtonText3.getImgView().setImageResource(R.mipmap.xuexi);
+        imageButtonText3.getImgView().setImageResource(R.mipmap.study_default);
         imageButtonText3.getTextView().setTextColor(getResources().getColor(R.color.g0));
         imageButtonText4.setChecked(false);
-        imageButtonText4.getImgView().setImageResource(R.mipmap.qita);
+        imageButtonText4.getImgView().setImageResource(R.mipmap.other_default);
         imageButtonText4.getTextView().setTextColor(getResources().getColor(R.color.g0));
     }
 

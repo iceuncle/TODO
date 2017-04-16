@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,6 +15,7 @@ import com.todo.R;
 import com.todo.data.database.Schedule;
 import com.todo.data.database.WeekSchedule;
 import com.todo.ui.base.BaseFragment;
+import com.todo.ui.crud.AddActivity;
 import com.todo.ui.crud.WeekShowActivity;
 import com.todo.ui.event.MsgEvent;
 import com.todo.ui.main.adpters.MainAdapter;
@@ -35,6 +37,8 @@ import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -129,6 +133,32 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
             }
         });
         isPrepared = true;
+
+        final FabSpeedDial fabSpeedDial = (FabSpeedDial) view.findViewById(R.id.fab_speed_dial);
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.action_work:
+                        break;
+                    case R.id.action_life:
+                        break;
+                    case R.id.action_study:
+                        break;
+                    case R.id.action_other:
+                        break;
+                    case R.id.action_add:
+                        LogUtil.d("add...");
+                        Intent intent = new Intent(getActivity(), AddActivity.class);
+                        startActivity(intent);
+                        fabSpeedDial.closeMenu();
+                        break;
+
+                }
+                return false;
+            }
+        });
+
         return view;
 
     }

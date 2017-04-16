@@ -35,7 +35,7 @@
                 android:layout_height="15dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
-                android:src="@mipmap/alarmon" />
+                android:src="@mipmap/alarm_on" />
 
             <TextView
                 android:id="@+id/time_tv"
@@ -58,7 +58,7 @@
                 android:layout_height="15dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:src="@mipmap/gongzuo1" />
+                android:src="@mipmap/work" />
 
             <TextView
                 android:id="@+id/title_tv"

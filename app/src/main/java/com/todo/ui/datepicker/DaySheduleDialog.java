@@ -136,23 +136,23 @@ public class DaySheduleDialog extends AppCompatDialog {
             public void decorator(BindingViewHolder holder, int position, int viewType) {
                 binding = (ItemAdapterDaytimeBinding) holder.getBinding();
                 if (scheduleList.get(position).isRemind()) {
-                    binding.alarmImg.setImageResource(R.mipmap.alarmon);
+                    binding.alarmImg.setImageResource(R.mipmap.alarm_on);
                 } else {
-                    binding.alarmImg.setImageResource(R.mipmap.alarmoff);
+                    binding.alarmImg.setImageResource(R.mipmap.alarm_off);
                 }
                 if (scheduleList.get(position).getBiaoqian() != null)
                     switch (scheduleList.get(position).getBiaoqian()) {
                         case "工作":
-                            binding.biaoqianImg.setImageResource(R.mipmap.gongzuo1);
+                            binding.biaoqianImg.setImageResource(R.mipmap.work);
                             break;
                         case "学习":
-                            binding.biaoqianImg.setImageResource(R.mipmap.xuexi1);
+                            binding.biaoqianImg.setImageResource(R.mipmap.study);
                             break;
                         case "生活":
-                            binding.biaoqianImg.setImageResource(R.mipmap.shenghuo1);
+                            binding.biaoqianImg.setImageResource(R.mipmap.life);
                             break;
                         case "其它":
-                            binding.biaoqianImg.setImageResource(R.mipmap.qita1);
+                            binding.biaoqianImg.setImageResource(R.mipmap.other);
                             break;
                         default:
                             break;

@@ -36,7 +36,6 @@ import com.todo.utils.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
-import org.joda.time.Minutes;
 import org.joda.time.Seconds;
 import org.litepal.crud.DataSupport;
 
@@ -132,10 +131,10 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         ibt2.getTextView().setText("生活");
         ibt3.getTextView().setText("学习");
         ibt4.getTextView().setText("其它");
-        ibt1.getImgView().setImageResource(R.mipmap.gongzuo);
-        ibt2.getImgView().setImageResource(R.mipmap.shenghuo);
-        ibt3.getImgView().setImageResource(R.mipmap.xuexi);
-        ibt4.getImgView().setImageResource(R.mipmap.qita);
+        ibt1.getImgView().setImageResource(R.mipmap.work_default);
+        ibt2.getImgView().setImageResource(R.mipmap.life_default);
+        ibt3.getImgView().setImageResource(R.mipmap.study_default);
+        ibt4.getImgView().setImageResource(R.mipmap.other_default);
         ibt1.setmOnImageButtonTextClickListener(this);
         ibt2.setmOnImageButtonTextClickListener(this);
         ibt3.setmOnImageButtonTextClickListener(this);
@@ -166,22 +165,22 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         detailEt.setText(mSchedule.getDetail());
         switch (mSchedule.getBiaoqian()) {
             case "工作":
-                ibt1.getImgView().setImageResource(R.mipmap.gongzuo1);
+                ibt1.getImgView().setImageResource(R.mipmap.work);
                 ibt1.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 tag = "工作";
                 break;
             case "学习":
-                ibt3.getImgView().setImageResource(R.mipmap.xuexi1);
+                ibt3.getImgView().setImageResource(R.mipmap.study);
                 ibt3.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 tag = "学习";
                 break;
             case "生活":
-                ibt2.getImgView().setImageResource(R.mipmap.shenghuo1);
+                ibt2.getImgView().setImageResource(R.mipmap.life);
                 ibt2.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 tag = "生活";
                 break;
             default:
-                ibt4.getImgView().setImageResource(R.mipmap.qita1);
+                ibt4.getImgView().setImageResource(R.mipmap.other);
                 ibt4.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 tag = "其它";
         }
@@ -235,52 +234,52 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
             case R.id.imageText1:
                 if (ibt1.isChecked()) {
                     ibt1.setChecked(false);
-                    ibt1.getImgView().setImageResource(R.mipmap.gongzuo);
+                    ibt1.getImgView().setImageResource(R.mipmap.work_default);
                     ibt1.getTextView().setTextColor(getResources().getColor(R.color.g0));
                 } else {
                     tag = ibt1.getTextView().getText().toString();
                     resetAllImageBUttonText();
                     ibt1.setChecked(true);
-                    ibt1.getImgView().setImageResource(R.mipmap.gongzuo1);
+                    ibt1.getImgView().setImageResource(R.mipmap.work);
                     ibt1.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 }
                 break;
             case R.id.imageText2:
                 if (ibt2.isChecked()) {
                     ibt2.setChecked(false);
-                    ibt2.getImgView().setImageResource(R.mipmap.shenghuo);
+                    ibt2.getImgView().setImageResource(R.mipmap.life_default);
                     ibt2.getTextView().setTextColor(getResources().getColor(R.color.g0));
                 } else {
                     tag = ibt2.getTextView().getText().toString();
                     resetAllImageBUttonText();
                     ibt2.setChecked(true);
-                    ibt2.getImgView().setImageResource(R.mipmap.shenghuo1);
+                    ibt2.getImgView().setImageResource(R.mipmap.life);
                     ibt2.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 }
                 break;
             case R.id.imageText3:
                 if (ibt3.isChecked()) {
                     ibt3.setChecked(false);
-                    ibt3.getImgView().setImageResource(R.mipmap.xuexi);
+                    ibt3.getImgView().setImageResource(R.mipmap.study_default);
                     ibt3.getTextView().setTextColor(getResources().getColor(R.color.g0));
                 } else {
                     tag = ibt3.getTextView().getText().toString();
                     resetAllImageBUttonText();
                     ibt3.setChecked(true);
-                    ibt3.getImgView().setImageResource(R.mipmap.xuexi1);
+                    ibt3.getImgView().setImageResource(R.mipmap.study);
                     ibt3.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 }
                 break;
             case R.id.imageText4:
                 if (ibt4.isChecked()) {
                     ibt4.setChecked(false);
-                    ibt4.getImgView().setImageResource(R.mipmap.qita);
+                    ibt4.getImgView().setImageResource(R.mipmap.other_default);
                     ibt4.getTextView().setTextColor(getResources().getColor(R.color.g0));
                 } else {
                     tag = ibt4.getTextView().getText().toString();
                     resetAllImageBUttonText();
                     ibt4.setChecked(true);
-                    ibt4.getImgView().setImageResource(R.mipmap.qita1);
+                    ibt4.getImgView().setImageResource(R.mipmap.other);
                     ibt4.getTextView().setTextColor(getResources().getColor(R.color.b0));
                 }
                 break;
@@ -291,16 +290,16 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
 
     public void resetAllImageBUttonText() {
         ibt1.setChecked(false);
-        ibt1.getImgView().setImageResource(R.mipmap.gongzuo);
+        ibt1.getImgView().setImageResource(R.mipmap.work_default);
         ibt1.getTextView().setTextColor(getResources().getColor(R.color.g0));
         ibt2.setChecked(false);
-        ibt2.getImgView().setImageResource(R.mipmap.shenghuo);
+        ibt2.getImgView().setImageResource(R.mipmap.life_default);
         ibt2.getTextView().setTextColor(getResources().getColor(R.color.g0));
         ibt3.setChecked(false);
-        ibt3.getImgView().setImageResource(R.mipmap.xuexi);
+        ibt3.getImgView().setImageResource(R.mipmap.study_default);
         ibt3.getTextView().setTextColor(getResources().getColor(R.color.g0));
         ibt4.setChecked(false);
-        ibt4.getImgView().setImageResource(R.mipmap.qita);
+        ibt4.getImgView().setImageResource(R.mipmap.other_default);
         ibt4.getTextView().setTextColor(getResources().getColor(R.color.g0));
     }
 

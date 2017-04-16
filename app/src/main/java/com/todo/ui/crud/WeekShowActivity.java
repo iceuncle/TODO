@@ -138,20 +138,20 @@ public class WeekShowActivity extends BaseActivity {
     }
 
     private int getAlarmImgId(boolean b) {
-        if (b) return R.mipmap.alarmon;
-        else return R.mipmap.alarmoff;
+        if (b) return R.mipmap.alarm_on;
+        else return R.mipmap.alarm_off;
     }
 
     private int getBiaoqianImagId(String s) {
         switch (s) {
             case "工作":
-                return R.mipmap.gongzuo1;
+                return R.mipmap.work;
             case "学习":
-                return R.mipmap.xuexi1;
+                return R.mipmap.study;
             case "生活":
-                return R.mipmap.shenghuo1;
+                return R.mipmap.life;
             default:
-                return R.mipmap.qita1;
+                return R.mipmap.other;
         }
     }
 
