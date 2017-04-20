@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SimpleAdapter;
 
 import com.todo.R;
 import com.todo.data.database.Schedule;
@@ -61,6 +62,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
     private MainAdapter daibanAdapter;
     private MainAdapter guoqiAdapter;
     private MainAdapter wanchengAdapter;
+    private FabSpeedDial fabSpeedDial;
 
     private SwipeRefreshLayout refreshLayout;
     // 标志位，标志已经初始化完成。
@@ -134,24 +136,92 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
         });
         isPrepared = true;
 
-        final FabSpeedDial fabSpeedDial = (FabSpeedDial) view.findViewById(R.id.fab_speed_dial);
+        fabSpeedDial = (FabSpeedDial) view.findViewById(R.id.fab_speed_dial);
+
+        final List<WeekSchedule> weekSchedules = new ArrayList<>();
         fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.action_work:
+                        weekSchedules.clear();
+                        for (WeekSchedule weekSchedule : scheduleList) {
+                            if (weekSchedule.getBiaoqian().equals("工作")) {
+                                weekSchedules.add(weekSchedule);
+                            }
+                        }
+                        switch (mPosition) {
+                            case 0:
+                                daibanAdapter.update(weekSchedules);
+                                break;
+                            case 1:
+                                guoqiAdapter.update(weekSchedules);
+                                break;
+                            default:
+                                wanchengAdapter.update(weekSchedules);
+                                break;
+                        }
                         break;
                     case R.id.action_life:
+                        weekSchedules.clear();
+                        for (WeekSchedule weekSchedule : scheduleList) {
+                            if (weekSchedule.getBiaoqian().equals("生活")) {
+                                weekSchedules.add(weekSchedule);
+                            }
+                        }
+                        switch (mPosition) {
+                            case 0:
+                                daibanAdapter.update(weekSchedules);
+                                break;
+                            case 1:
+                                guoqiAdapter.update(weekSchedules);
+                                break;
+                            default:
+                                wanchengAdapter.update(weekSchedules);
+                                break;
+                        }
                         break;
                     case R.id.action_study:
+                        weekSchedules.clear();
+                        for (WeekSchedule weekSchedule : scheduleList) {
+                            if (weekSchedule.getBiaoqian().equals("学习")) {
+                                weekSchedules.add(weekSchedule);
+                            }
+                        }
+                        switch (mPosition) {
+                            case 0:
+                                daibanAdapter.update(weekSchedules);
+                                break;
+                            case 1:
+                                guoqiAdapter.update(weekSchedules);
+                                break;
+                            default:
+                                wanchengAdapter.update(weekSchedules);
+                                break;
+                        }
                         break;
                     case R.id.action_other:
+                        weekSchedules.clear();
+                        for (WeekSchedule weekSchedule : scheduleList) {
+                            if (weekSchedule.getBiaoqian().equals("其它")) {
+                                weekSchedules.add(weekSchedule);
+                            }
+                        }
+                        switch (mPosition) {
+                            case 0:
+                                daibanAdapter.update(weekSchedules);
+                                break;
+                            case 1:
+                                guoqiAdapter.update(weekSchedules);
+                                break;
+                            default:
+                                wanchengAdapter.update(weekSchedules);
+                                break;
+                        }
                         break;
                     case R.id.action_add:
-                        LogUtil.d("add...");
                         Intent intent = new Intent(getActivity(), AddActivity.class);
                         startActivity(intent);
-                        fabSpeedDial.closeMenu();
                         break;
 
                 }
@@ -172,6 +242,12 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
         initDatas();
     }
 
+    @Override
+    protected void onInvisible() {
+        super.onInvisible();
+        if (fabSpeedDial != null && fabSpeedDial.isMenuOpen())
+            fabSpeedDial.closeMenu();
+    }
 
     private void initDatas() {
         if (!refreshLayout.isRefreshing())
