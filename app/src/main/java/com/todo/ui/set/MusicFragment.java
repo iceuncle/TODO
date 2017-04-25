@@ -4,21 +4,20 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.markzhai.recyclerview.BaseViewAdapter;
-import com.github.markzhai.recyclerview.SingleTypeAdapter;
 import com.loonggg.lib.alarmmanager.clock.SPUtils;
 import com.todo.R;
 import com.todo.data.bean.Mp3Info;
 import com.todo.ui.base.BaseFragment;
 import com.todo.utils.LogUtil;
 import com.todo.utils.MediaUtil;
+import com.todo.vendor.recyleradapter.BaseViewAdapter;
+import com.todo.vendor.recyleradapter.SingleTypeAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;

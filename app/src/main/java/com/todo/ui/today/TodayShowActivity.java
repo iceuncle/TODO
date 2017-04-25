@@ -1,6 +1,8 @@
-package com.todo.ui.crud;
+package com.todo.ui.today;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -19,6 +21,7 @@ import com.todo.data.database.Alarm;
 import com.todo.data.database.Schedule;
 import com.todo.data.database.WeekSchedule;
 import com.todo.ui.base.BaseActivity;
+import com.todo.ui.crud.ModifyActivity;
 import com.todo.ui.event.MsgEvent;
 import com.todo.widget.ImageButtonText;
 
@@ -29,16 +32,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by tianyang on 2017/2/19.
+ * Created by tianyang on 2017/3/11.
  */
-public class WeekShowActivity extends BaseActivity {
-    private int mWeekScheduleId;
-    private WeekSchedule mWeekSchedule;
+public class TodayShowActivity extends BaseActivity {
+    private Schedule mSchedule;
     private ImageButtonText imageText1, imageText2;
     private TextView tiltle, startTime, xunhuan, detailTv;
     private LinearLayout detailView, soundOrVibratorView;
     private View dividerView;
     private SwitchCompat zhengdongSc, ringSc;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,6 +55,12 @@ public class WeekShowActivity extends BaseActivity {
 
     }
 
+    public static void actionStart(Context context, Schedule schedule) {
+        Intent intent = new Intent(context, TodayShowActivity.class);
+        intent.putExtra("DaySchedule", schedule);
+        context.startActivity(intent);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -60,7 +70,7 @@ public class WeekShowActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        ModifyActivity.actionStart(this, mWeekSchedule.getScheduleId(), "WeekShowActivity");
+        ModifyActivity.actionStart(this, mSchedule.getId(), "TodayShowActivity");
         return true;
     }
 
@@ -79,7 +89,6 @@ public class WeekShowActivity extends BaseActivity {
         });
     }
 
-
     protected void initView() {
         imageText1 = (ImageButtonText) findViewById(R.id.imageText1);
         imageText2 = (ImageButtonText) findViewById(R.id.imageText2);
@@ -97,34 +106,33 @@ public class WeekShowActivity extends BaseActivity {
     }
 
     private void initData() {
-        mWeekScheduleId = getIntent().getExtras().getInt("WeekScheduleId");
-        mWeekSchedule = DataSupport.find(WeekSchedule.class, mWeekScheduleId);
+        mSchedule = (Schedule) getIntent().getSerializableExtra("DaySchedule");
 
     }
 
     private void initEvent() {
-        imageText1.getTextView().setText(mWeekSchedule.getBiaoqian());
-        imageText1.getImgView().setImageResource(getBiaoqianImagId(mWeekSchedule.getBiaoqian()));
-        imageText2.getTextView().setText(getAlarmText(mWeekSchedule.isRemind()));
-        imageText2.getImgView().setImageResource(getAlarmImgId(mWeekSchedule.isRemind()));
-        tiltle.setText(mWeekSchedule.getTitle());
-        startTime.setText(mWeekSchedule.getStartTime());
-        xunhuan.setText(mWeekSchedule.getCycleTime());
-        if (mWeekSchedule.getDetail() == null || mWeekSchedule.getDetail().equals("")) {
+        imageText1.getTextView().setText(mSchedule.getBiaoqian());
+        imageText1.getImgView().setImageResource(getBiaoqianImagId(mSchedule.getBiaoqian()));
+        imageText2.getTextView().setText(getAlarmText(mSchedule.isRemind()));
+        imageText2.getImgView().setImageResource(getAlarmImgId(mSchedule.isRemind()));
+        tiltle.setText(mSchedule.getTitle());
+        startTime.setText(mSchedule.getStartTime());
+        xunhuan.setText(mSchedule.getCycleTime());
+        if (mSchedule.getDetail() == null || mSchedule.getDetail().equals("")) {
             detailView.setVisibility(View.GONE);
         } else {
             detailView.setVisibility(View.VISIBLE);
-            detailTv.setText(mWeekSchedule.getDetail());
+            detailTv.setText(mSchedule.getDetail());
         }
 
-        if (mWeekSchedule.isRemind()) {
+        if (mSchedule.isRemind()) {
             soundOrVibratorView.setVisibility(View.VISIBLE);
             dividerView.setVisibility(View.VISIBLE);
-            if (mWeekSchedule.getSoundOrVibrator() == 1) {
+            if (mSchedule.getSoundOrVibrator() == 1) {
                 ringSc.setChecked(true);
-            } else if (mWeekSchedule.getSoundOrVibrator() == 0) {
+            } else if (mSchedule.getSoundOrVibrator() == 0) {
                 zhengdongSc.setChecked(true);
-            } else if (mWeekSchedule.getSoundOrVibrator() == 2) {
+            } else if (mSchedule.getSoundOrVibrator() == 2) {
                 ringSc.setChecked(true);
                 zhengdongSc.setChecked(true);
             }
@@ -163,18 +171,18 @@ public class WeekShowActivity extends BaseActivity {
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        int id = mWeekSchedule.getScheduleId();
-                        Schedule mSchedule = DataSupport.find(Schedule.class, id);
+                        int id = mSchedule.getId();
                         List<Integer> alarmIdList = new ArrayList<Integer>();
                         for (Alarm alarm : mSchedule.getAlarmList())
                             alarmIdList.add(alarm.getId());
-                        if (mWeekSchedule.isRemind()) {
+                        if (mSchedule.isRemind()) {
                             for (int alarmId : alarmIdList)
-                                AlarmManagerUtil.cancelAlarm(WeekShowActivity.this, "com.loonggg.alarm.clock", alarmId);
+                                AlarmManagerUtil.cancelAlarm(TodayShowActivity.this, "com.loonggg.alarm.clock", alarmId);
                         }
                         DataSupport.delete(Schedule.class, id);
                         DataSupport.deleteAll(WeekSchedule.class, "scheduleId=?", id + "");
                         EventBus.getDefault().post(new MsgEvent("UpDate"));
+                        EventBus.getDefault().post(new MsgEvent("MonthViewUpDate"));
                         finish();
                     }
                 }).show();

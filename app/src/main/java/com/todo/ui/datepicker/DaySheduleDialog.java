@@ -8,15 +8,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.github.markzhai.recyclerview.BaseViewAdapter;
-import com.github.markzhai.recyclerview.BindingViewHolder;
-import com.github.markzhai.recyclerview.SingleTypeAdapter;
+
 import com.todo.R;
 import com.todo.data.database.Schedule;
 import com.todo.databinding.DaysheduleDialogBinding;
 import com.todo.databinding.ItemAdapterDaytimeBinding;
 import com.todo.utils.SchedulesUtil;
 import com.todo.utils.Util;
+import com.todo.vendor.recyleradapter.BaseViewAdapter;
+import com.todo.vendor.recyleradapter.BindingViewHolder;
+import com.todo.vendor.recyleradapter.SingleTypeAdapter;
 
 import org.joda.time.DateTime;
 import org.litepal.crud.DataSupport;
@@ -96,23 +97,10 @@ public class DaySheduleDialog extends AppCompatDialog {
         private void initDatas() {
             List<Schedule> list = DataSupport.findAll(Schedule.class);
             for (Schedule schedule : list) {
-                if (schedule.getType() == 0) {
-                    Schedule s = SchedulesUtil.getSheduleInDay(schedule, dayTime, 0);
-                    if (s != null)
-                        scheduleList.add(s);
-                } else if (schedule.getType() == 1) {
-                    Schedule s = SchedulesUtil.getSheduleInDay(schedule, dayTime, 1);
-                    if (s != null)
-                        scheduleList.add(s);
-                } else if (schedule.getType() == 2) {
-                    Schedule s = SchedulesUtil.getSheduleInDay(schedule, dayTime, 2);
-                    if (s != null)
-                        scheduleList.add(s);
-                } else if (schedule.getType() == 3) {
-                    Schedule s = SchedulesUtil.getSheduleInDay(schedule, dayTime, 3);
-                    if (s != null)
-                        scheduleList.add(s);
-                }
+                Schedule s = SchedulesUtil.getSheduleInDay(schedule, dayTime, schedule.getType());
+                if (s != null)
+                    scheduleList.add(s);
+
             }
             ListSortComparator comparator = new ListSortComparator();
             Collections.sort(scheduleList, comparator);

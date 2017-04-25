@@ -84,7 +84,7 @@ public class RingSettingActivity extends BaseActivity {
             initView();
     }
 
-    private void initView() {
+    protected void initView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
         toolbar.setTitle("铃声设置");
         setSupportActionBar(toolbar);

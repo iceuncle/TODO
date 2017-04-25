@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">TODO</string>
-
     <string name="artist">艺术家</string>
-
     <string name="duration">时长</string>
+    <string name="title">标题:</string>
+    <string name="startTime">开始时间：</string>
+    <string name="describe">详情：</string>
 </resources>

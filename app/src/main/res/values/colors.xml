@@ -12,6 +12,7 @@
     <!--默认背景色-->
     <color name="w1">#efeff5</color>
 
+    <color name="gray">#888888</color><!--warm_grey-->
 
     <!--最常用灰-->
     <color name="g0">#888888</color>
@@ -36,5 +37,10 @@
     <!-- A dark Holo shade of orange -->
     <color name="holo_orange_dark">#ffff8800</color>
     <!-- A dark Holo shade of red -->
-    <color name="holo_red_dark">#ffcc0000</color>
+    <color name="holo_red_dark">#ffff4444</color>
+
+    <color name="work_color">@color/holo_red_dark</color>
+    <color name="life_color">@color/holo_purple</color>
+    <color name="study_color">@color/holo_green_light</color>
+    <color name="other_color">@color/holo_orange_dark</color>
 </resources>

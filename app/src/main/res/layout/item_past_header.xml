@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/ll_unless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp">
+
+        <TextView
+            style="@style/dividerLineStyle"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/tv_no_use"/>
+
+        <TextView
+            android:id="@+id/tv_no_use"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="已过期行程"
+            android:textColor="@color/gray"
+            android:textSize="16sp"/>
+
+        <TextView
+            style="@style/dividerLineStyle"
+            android:layout_marginLeft="10dp"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_no_use"/>
+
+    </RelativeLayout>
+</layout>

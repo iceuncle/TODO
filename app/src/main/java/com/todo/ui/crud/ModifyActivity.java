@@ -29,10 +29,11 @@ import com.todo.ui.base.BaseActivity;
 import com.todo.ui.datepicker.DatePickerActivity;
 import com.todo.ui.event.MsgEvent;
 import com.todo.ui.main.MainActivity;
+import com.todo.ui.today.TodayActivity;
 import com.todo.utils.DateFormatUtil;
+import com.todo.utils.LogUtil;
 import com.todo.widget.DateTimePickDialog;
 import com.todo.widget.ImageButtonText;
-import com.todo.utils.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
@@ -117,7 +118,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
 
     }
 
-    private void initView() {
+    protected void initView() {
         titleEt = (EditText) findViewById(R.id.title_et);
         startTimeTv = (TextView) findViewById(R.id.starttime_content_tv);
         xunhuanTv = (TextView) findViewById(R.id.xunhuan_content_tv);
@@ -147,7 +148,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
 
     }
 
-    private void initDatas() {
+    protected void initDatas() {
         mScheduleId = getIntent().getExtras().getInt("ScheduleID");
         type = getIntent().getStringExtra("ActivityType");
         mSchedule = DataSupport.find(Schedule.class, mScheduleId);
@@ -166,22 +167,22 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         switch (mSchedule.getBiaoqian()) {
             case "工作":
                 ibt1.getImgView().setImageResource(R.mipmap.work);
-                ibt1.getTextView().setTextColor(getResources().getColor(R.color.b0));
+                ibt1.getTextView().setTextColor(getResources().getColor(R.color.work_color));
                 tag = "工作";
                 break;
             case "学习":
                 ibt3.getImgView().setImageResource(R.mipmap.study);
-                ibt3.getTextView().setTextColor(getResources().getColor(R.color.b0));
+                ibt3.getTextView().setTextColor(getResources().getColor(R.color.study_color));
                 tag = "学习";
                 break;
             case "生活":
                 ibt2.getImgView().setImageResource(R.mipmap.life);
-                ibt2.getTextView().setTextColor(getResources().getColor(R.color.b0));
+                ibt2.getTextView().setTextColor(getResources().getColor(R.color.life_color));
                 tag = "生活";
                 break;
             default:
                 ibt4.getImgView().setImageResource(R.mipmap.other);
-                ibt4.getTextView().setTextColor(getResources().getColor(R.color.b0));
+                ibt4.getTextView().setTextColor(getResources().getColor(R.color.other_color));
                 tag = "其它";
         }
 
@@ -241,7 +242,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
                     resetAllImageBUttonText();
                     ibt1.setChecked(true);
                     ibt1.getImgView().setImageResource(R.mipmap.work);
-                    ibt1.getTextView().setTextColor(getResources().getColor(R.color.b0));
+                    ibt1.getTextView().setTextColor(getResources().getColor(R.color.work_color));
                 }
                 break;
             case R.id.imageText2:
@@ -254,7 +255,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
                     resetAllImageBUttonText();
                     ibt2.setChecked(true);
                     ibt2.getImgView().setImageResource(R.mipmap.life);
-                    ibt2.getTextView().setTextColor(getResources().getColor(R.color.b0));
+                    ibt2.getTextView().setTextColor(getResources().getColor(R.color.life_color));
                 }
                 break;
             case R.id.imageText3:
@@ -267,7 +268,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
                     resetAllImageBUttonText();
                     ibt3.setChecked(true);
                     ibt3.getImgView().setImageResource(R.mipmap.study);
-                    ibt3.getTextView().setTextColor(getResources().getColor(R.color.b0));
+                    ibt3.getTextView().setTextColor(getResources().getColor(R.color.study_color));
                 }
                 break;
             case R.id.imageText4:
@@ -280,7 +281,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
                     resetAllImageBUttonText();
                     ibt4.setChecked(true);
                     ibt4.getImgView().setImageResource(R.mipmap.other);
-                    ibt4.getTextView().setTextColor(getResources().getColor(R.color.b0));
+                    ibt4.getTextView().setTextColor(getResources().getColor(R.color.other_color));
                 }
                 break;
             default:
@@ -402,7 +403,10 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
                 EventBus.getDefault().post(new MsgEvent("UpDate"));
             } else if (type.equals("DayShowActivity")) {
                 startActivity(new Intent(this, DatePickerActivity.class));
-                EventBus.getDefault().post(new MsgEvent("MonthViewUpDate"));
+                EventBus.getDefault().post(new MsgEvent("UpDate"));
+            } else if (type.equals("TodayShowActivity")) {
+                startActivity(new Intent(this, TodayActivity.class));
+                EventBus.getDefault().post(new MsgEvent("UpDate"));
             }
 
         } else {

@@ -2,6 +2,7 @@ package com.todo.utils;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.joda.time.Minutes;
 
 import java.util.ArrayList;
@@ -148,6 +149,100 @@ public class DateManageUtil {
                 return true;
         }
         return false;
+    }
+
+
+    /**
+     * 判断是否在本周内
+     */
+    public static boolean isInThisWeek(DateTime dateTime) {
+        List<DateTime> list = new ArrayList<>();
+        DateTime now = DateTime.now();
+
+        DateTime startOfWeek = now.weekOfWeekyear().roundFloorCopy();
+//        DateTime endOfWeek = now.weekOfWeekyear().roundCeilingCopy();
+        list.add(startOfWeek);
+        for (int i = 1; i < 7; i++) {
+            list.add(startOfWeek.plusDays(i));
+        }
+
+        String dateTimeStr = DateFormatUtil.format(dateTime, "yyyy年MM月dd日");
+        List<String> stringList = new ArrayList<>();
+        for (DateTime date : list) {
+            stringList.add(DateFormatUtil.format(date, "yyyy年MM月dd日"));
+        }
+        for (String s : stringList) {
+            if (s.equals(dateTimeStr))
+                return true;
+        }
+        return false;
+    }
+
+
+
+    /**
+     * 修改datetime为本周的7天
+     */
+    public static List<DateTime> getThisWeek(DateTime dateTime) {
+        List<DateTime> list = new ArrayList<>();
+        DateTime now = DateTime.now();
+        DateTime startOfWeek = now.weekOfWeekyear().roundFloorCopy();
+        list.add(startOfWeek);
+        for (int i = 1; i < 7; i++) {
+            list.add(startOfWeek.plusDays(i));
+        }
+
+        String dateTimeStr = DateFormatUtil.format(dateTime, "HH:mm");
+//        List<String> stringList = new ArrayList<>();
+        List<DateTime> dateList = new ArrayList<>();
+        for (DateTime date : list) {
+            String s = DateFormatUtil.format(date, "yyyy年MM月dd日 " + dateTimeStr);
+//            stringList.add(s);
+            dateList.add(DateFormatUtil.parse(s));
+        }
+        return dateList;
+    }
+
+
+    /**
+     * 返回本周周几的日期
+     */
+    public static DateTime getDayofThisWeek(DateTime startTime) {
+        int num = startTime.getDayOfWeek();
+        String dateTimeStr = DateFormatUtil.format(startTime, "HH:mm");
+        List<DateTime> list = new ArrayList<>();
+        DateTime now = DateTime.now();
+        DateTime startOfWeek = now.weekOfWeekyear().roundFloorCopy();
+        list.add(startOfWeek);
+        for (int i = 1; i < 7; i++) {
+            list.add(startOfWeek.plusDays(i));
+        }
+
+        for (DateTime date : list) {
+            if (date.getDayOfWeek() == num) {
+                String s = DateFormatUtil.format(date, "yyyy年MM月dd日 " + dateTimeStr);
+                return DateFormatUtil.parse(s);
+            }
+        }
+        return null;
+    }
+
+    public static DateTime getDayofThisWeek(DateTime startTime, int num) {
+        String dateTimeStr = DateFormatUtil.format(startTime, "HH:mm");
+        List<DateTime> list = new ArrayList<>();
+        DateTime now = DateTime.now();
+        DateTime startOfWeek = now.weekOfWeekyear().roundFloorCopy();
+        list.add(startOfWeek);
+        for (int i = 1; i < 7; i++) {
+            list.add(startOfWeek.plusDays(i));
+        }
+        for (DateTime date : list) {
+            if (date.getDayOfWeek() == num) {
+                String s = DateFormatUtil.format(date, "yyyy年MM月dd日 " + dateTimeStr);
+                return DateFormatUtil.parse(s);
+            }
+        }
+        return null;
     }
 
 

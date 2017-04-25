@@ -59,9 +59,8 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
     private List<WeekSchedule> daibanList = new ArrayList<>();
     private List<WeekSchedule> guoqiList = new ArrayList<>();
     private List<WeekSchedule> wanchengList = new ArrayList<>();
-    private MainAdapter daibanAdapter;
-    private MainAdapter guoqiAdapter;
-    private MainAdapter wanchengAdapter;
+    private MainAdapter mAdapter;
+
     private FabSpeedDial fabSpeedDial;
 
     private SwipeRefreshLayout refreshLayout;
@@ -103,23 +102,16 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        LogUtil.d("www", "onCreateView");
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        if (mPosition == 0) {
-            daibanAdapter = new MainAdapter(getActivity(), scheduleList, false);
-            recyclerView.setAdapter(daibanAdapter);
-            daibanAdapter.setOnItemClickLitener(this);
-        } else if (mPosition == 1) {
-            guoqiAdapter = new MainAdapter(getActivity(), scheduleList, true);
-            recyclerView.setAdapter(guoqiAdapter);
-            guoqiAdapter.setOnItemClickLitener(this);
-        } else {
-            wanchengAdapter = new MainAdapter(getActivity(), scheduleList, true);
-            recyclerView.setAdapter(wanchengAdapter);
-            wanchengAdapter.setOnItemClickLitener(this);
-        }
+        if (mPosition == 0)
+            mAdapter = new MainAdapter(getActivity(), scheduleList, false);
+        else
+            mAdapter = new MainAdapter(getActivity(), scheduleList, true);
+
+        recyclerView.setAdapter(mAdapter);
+        mAdapter.setOnItemClickLitener(this);
 
 
         recyclerView.addItemDecoration(new DividerItemDecoration(
@@ -127,7 +119,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
 
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light);
-        refreshLayout.setProgressViewOffset(false, 0, 100);
+//        refreshLayout.setProgressViewOffset(false, 0, 100);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -150,17 +142,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
                                 weekSchedules.add(weekSchedule);
                             }
                         }
-                        switch (mPosition) {
-                            case 0:
-                                daibanAdapter.update(weekSchedules);
-                                break;
-                            case 1:
-                                guoqiAdapter.update(weekSchedules);
-                                break;
-                            default:
-                                wanchengAdapter.update(weekSchedules);
-                                break;
-                        }
+                        mAdapter.update(weekSchedules);
                         break;
                     case R.id.action_life:
                         weekSchedules.clear();
@@ -169,17 +151,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
                                 weekSchedules.add(weekSchedule);
                             }
                         }
-                        switch (mPosition) {
-                            case 0:
-                                daibanAdapter.update(weekSchedules);
-                                break;
-                            case 1:
-                                guoqiAdapter.update(weekSchedules);
-                                break;
-                            default:
-                                wanchengAdapter.update(weekSchedules);
-                                break;
-                        }
+                        mAdapter.update(weekSchedules);
                         break;
                     case R.id.action_study:
                         weekSchedules.clear();
@@ -188,17 +160,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
                                 weekSchedules.add(weekSchedule);
                             }
                         }
-                        switch (mPosition) {
-                            case 0:
-                                daibanAdapter.update(weekSchedules);
-                                break;
-                            case 1:
-                                guoqiAdapter.update(weekSchedules);
-                                break;
-                            default:
-                                wanchengAdapter.update(weekSchedules);
-                                break;
-                        }
+                        mAdapter.update(weekSchedules);
                         break;
                     case R.id.action_other:
                         weekSchedules.clear();
@@ -207,17 +169,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
                                 weekSchedules.add(weekSchedule);
                             }
                         }
-                        switch (mPosition) {
-                            case 0:
-                                daibanAdapter.update(weekSchedules);
-                                break;
-                            case 1:
-                                guoqiAdapter.update(weekSchedules);
-                                break;
-                            default:
-                                wanchengAdapter.update(weekSchedules);
-                                break;
-                        }
+                        mAdapter.update(weekSchedules);
                         break;
                     case R.id.action_add:
                         Intent intent = new Intent(getActivity(), AddActivity.class);
@@ -252,8 +204,6 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
     private void initDatas() {
         if (!refreshLayout.isRefreshing())
             refreshLayout.setRefreshing(true);
-        LogUtil.d("www", "initDatas");
-
         weekList.clear();
         scheduleList.clear();
         wanchengList.clear();
@@ -265,20 +215,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
             @Override
             public void call(List<WeekSchedule> list) {
                 refreshLayout.setRefreshing(false);
-                LogUtil.d("www", "size    " + list.size());
-                switch (mPosition) {
-                    case 0:
-                        daibanAdapter.update(list);
-                        break;
-                    case 1:
-                        guoqiAdapter.update(list);
-                        break;
-                    default:
-                        wanchengAdapter.update(list);
-                        break;
-                }
-
-
+                mAdapter.update(list);
             }
         };
 
@@ -387,41 +324,19 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
     }
 
 
+    //checkBox点击
     @Override
     public void onItemClick(View view, int position) {
         if (scheduleList.get(position).isFinished()) {
             scheduleList.get(position).setFinished(false);
             scheduleList.get(position).save();
             scheduleList.remove(position);
-
-            switch (mPosition) {
-                case 0:
-                    daibanAdapter.update(scheduleList);
-                    break;
-                case 1:
-                    guoqiAdapter.update(scheduleList);
-                    break;
-                default:
-                    wanchengAdapter.update(scheduleList);
-                    break;
-            }
-
-
+            mAdapter.update(scheduleList);
         } else {
             scheduleList.get(position).setFinished(true);
             scheduleList.get(position).save();
             scheduleList.remove(position);
-            switch (mPosition) {
-                case 0:
-                    daibanAdapter.update(scheduleList);
-                    break;
-                case 1:
-                    guoqiAdapter.update(scheduleList);
-                    break;
-                default:
-                    wanchengAdapter.update(scheduleList);
-                    break;
-            }
+            mAdapter.update(scheduleList);
         }
     }
 
@@ -439,7 +354,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
 
 
     //从大到小的排序
-    class ListSortComparator implements Comparator {
+    private class ListSortComparator implements Comparator {
         @Override
         public int compare(Object o, Object t1) {
             WeekSchedule s1 = (WeekSchedule) o;
@@ -449,7 +364,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
     }
 
     //从小到大的排序
-    class ListSortComparator2 implements Comparator {
+    private class ListSortComparator2 implements Comparator {
         @Override
         public int compare(Object o, Object t1) {
             WeekSchedule s1 = (WeekSchedule) o;

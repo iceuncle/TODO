@@ -24,6 +24,8 @@ import com.todo.ui.base.BaseActivity;
 import com.todo.ui.crud.AddActivity;
 import com.todo.ui.datepicker.DatePickerActivity;
 import com.todo.ui.set.RingSettingActivity;
+import com.todo.ui.thisweek.ThisWeekActivity;
+import com.todo.ui.today.TodayActivity;
 
 import org.litepal.crud.DataSupport;
 
@@ -88,6 +90,12 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.music:
                 startActivity(new Intent(MainActivity.this, RingSettingActivity.class));
+                break;
+            case R.id.today:
+                startActivity(new Intent(MainActivity.this, TodayActivity.class));
+                break;
+            case R.id.thisWeek:
+                startActivity(new Intent(MainActivity.this, ThisWeekActivity.class));
                 break;
         }
         return true;

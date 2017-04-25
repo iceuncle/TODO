@@ -330,7 +330,7 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
                     resetAllImageBUttonText();
                     imageButtonText1.setChecked(true);
                     imageButtonText1.getImgView().setImageResource(R.mipmap.work);
-                    imageButtonText1.getTextView().setTextColor(getResources().getColor(R.color.b0));
+                    imageButtonText1.getTextView().setTextColor(getResources().getColor(R.color.work_color));
                 }
                 break;
             case R.id.imageText2:
@@ -343,7 +343,7 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
                     resetAllImageBUttonText();
                     imageButtonText2.setChecked(true);
                     imageButtonText2.getImgView().setImageResource(R.mipmap.life);
-                    imageButtonText2.getTextView().setTextColor(getResources().getColor(R.color.b0));
+                    imageButtonText2.getTextView().setTextColor(getResources().getColor(R.color.life_color));
                 }
                 break;
             case R.id.imageText3:
@@ -356,7 +356,7 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
                     resetAllImageBUttonText();
                     imageButtonText3.setChecked(true);
                     imageButtonText3.getImgView().setImageResource(R.mipmap.study);
-                    imageButtonText3.getTextView().setTextColor(getResources().getColor(R.color.b0));
+                    imageButtonText3.getTextView().setTextColor(getResources().getColor(R.color.study_color));
                 }
                 break;
             case R.id.imageText4:
@@ -369,7 +369,7 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
                     resetAllImageBUttonText();
                     imageButtonText4.setChecked(true);
                     imageButtonText4.getImgView().setImageResource(R.mipmap.other);
-                    imageButtonText4.getTextView().setTextColor(getResources().getColor(R.color.b0));
+                    imageButtonText4.getTextView().setTextColor(getResources().getColor(R.color.other_color));
                 }
                 break;
             default:

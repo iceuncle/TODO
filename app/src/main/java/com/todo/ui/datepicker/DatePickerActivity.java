@@ -56,7 +56,7 @@ public class DatePickerActivity extends BaseActivity implements DatePicker.DateC
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MsgEvent event) {
-        if (event.getMsg().equals("MonthViewUpDate")) {
+        if (event.getMsg().equals("UpDate")) {
             initDatas(picker.getmYear(), picker.getmMonth());
         }
     }
@@ -68,7 +68,7 @@ public class DatePickerActivity extends BaseActivity implements DatePicker.DateC
     }
 
 
-    private void initView() {
+    protected void initView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
         toolbar.setTitle("日历");
         setSupportActionBar(toolbar);

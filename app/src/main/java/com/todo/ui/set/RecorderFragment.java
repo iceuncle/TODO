@@ -16,9 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.EditText;
 
-import com.github.markzhai.recyclerview.BaseViewAdapter;
-import com.github.markzhai.recyclerview.BindingViewHolder;
-import com.github.markzhai.recyclerview.SingleTypeAdapter;
+
 import com.loonggg.lib.alarmmanager.clock.SPUtils;
 import com.todo.R;
 import com.todo.data.bean.Mp3Info;
@@ -27,6 +25,9 @@ import com.todo.ui.base.BaseFragment;
 import com.todo.utils.DensityUtil;
 import com.todo.utils.LogUtil;
 import com.todo.utils.StringUtil;
+import com.todo.vendor.recyleradapter.BaseViewAdapter;
+import com.todo.vendor.recyleradapter.BindingViewHolder;
+import com.todo.vendor.recyleradapter.SingleTypeAdapter;
 
 import java.io.File;
 import java.io.IOException;

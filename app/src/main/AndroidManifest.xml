@@ -31,6 +31,13 @@
         <activity android:name=".ui.crud.ModifyActivity" />
         <activity android:name=".ui.datepicker.DayShowActivity" />
         <activity android:name=".ui.set.RingSettingActivity" />
+        <activity
+            android:name=".ui.today.TodayActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.thisweek.ThisWeekActivity"
+            android:launchMode="singleTask" />
+        <activity android:name=".ui.today.TodayShowActivity" />
     </application>
 
 </manifest>

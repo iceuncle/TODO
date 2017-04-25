@@ -234,4 +234,69 @@ public class SchedulesUtil {
     }
 
 
+    /**
+     * 判断是否在本周内
+     */
+    public static boolean isInThisWeek(Schedule schedule) {
+        DateTime dateTime = DateFormatUtil.parse(schedule.getStartTime());
+        return DateManageUtil.isInThisWeek(dateTime);
+    }
+
+
+    /**
+     * type==1 每天型闹钟 获取本周schedule
+     */
+    public static List<Schedule> getThisWeek(Schedule schedule) {
+        DateTime startTime = DateFormatUtil.parse(schedule.getStartTime());
+        List<DateTime> dateTimeList = DateManageUtil.getThisWeek(startTime);
+        List<Schedule> scheduleList = new ArrayList<>();
+        for (DateTime date : dateTimeList) {
+            if (DateManageUtil.BigerThanStart(startTime, date)) {
+                Schedule s = schedule.clone();
+                s.setStartTime(DateFormatUtil.format(date));
+                scheduleList.add(s);
+            }
+        }
+        return scheduleList;
+    }
+
+    /**
+     * type==2  每周单天型闹钟 获取本周内该周schedule;
+     */
+    public static Schedule getScheduleOfThisWeek(Schedule schedule) {
+        DateTime startTime = DateFormatUtil.parse(schedule.getStartTime());
+        DateTime date = DateManageUtil.getDayofThisWeek(startTime);
+//        LogUtil.d(startTime.toString() + "   " + date.toString());
+        if (DateManageUtil.BigerThanStart(startTime, date)) {
+            Schedule s = schedule.clone();
+            s.setStartTime(DateFormatUtil.format(date));
+            return s;
+        }
+        return null;
+    }
+
+
+    /**
+     * type==3 每周多天型闹钟 获取本周内ScheduleList
+     */
+    public static List<Schedule> getSchedulesOfWeek(Schedule schedule) {
+        List<Schedule> scheduleList = new ArrayList<>();
+        List<DateTime> dateTimeList = new ArrayList<>();
+        DateTime startTime = DateFormatUtil.parse(schedule.getStartTime());
+        List<Integer> integerList = parse(schedule.getCycleTime());
+        for (int i : integerList) {
+            dateTimeList.add(DateManageUtil.getDayofThisWeek(startTime, i));
+        }
+
+        for (DateTime dateTime : dateTimeList) {
+            if (DateManageUtil.BigerThanStart(startTime, dateTime)) {
+                Schedule s = schedule.clone();
+                s.setStartTime(DateFormatUtil.format(dateTime));
+                scheduleList.add(s);
+            }
+        }
+        return scheduleList;
+    }
+
+
 }

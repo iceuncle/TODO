@@ -89,7 +89,7 @@ public class DayShowActivity extends BaseActivity {
         });
     }
 
-    private void initView() {
+    protected void initView() {
         imageText1 = (ImageButtonText) findViewById(R.id.imageText1);
         imageText2 = (ImageButtonText) findViewById(R.id.imageText2);
         tiltle = (TextView) findViewById(R.id.title_tv);
