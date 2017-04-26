@@ -1,6 +1,7 @@
 package com.todo.ui.main;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,10 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SimpleAdapter;
 
+import com.android.databinding.library.baseAdapters.BR;
 import com.todo.R;
 import com.todo.data.database.Schedule;
 import com.todo.data.database.WeekSchedule;
+import com.todo.databinding.FragmentMainBinding;
 import com.todo.ui.base.BaseFragment;
+import com.todo.ui.base.EmptyState;
+import com.todo.ui.base.StateModel;
 import com.todo.ui.crud.AddActivity;
 import com.todo.ui.crud.WeekShowActivity;
 import com.todo.ui.event.MsgEvent;
@@ -51,8 +56,8 @@ import rx.schedulers.Schedulers;
  */
 public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemClickLitener {
     private static final String ARG_POSITION = "position";
+    private FragmentMainBinding mBinding;
     private int mPosition;
-    private RecyclerView recyclerView;
     private List<WeekSchedule> scheduleList = new ArrayList<>();
     private List<Schedule> weekList = new ArrayList<>();
     private List<WeekSchedule> weekScheduleList = new ArrayList<>();
@@ -61,11 +66,11 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
     private List<WeekSchedule> wanchengList = new ArrayList<>();
     private MainAdapter mAdapter;
 
-    private FabSpeedDial fabSpeedDial;
+    private StateModel stateModel;
 
-    private SwipeRefreshLayout refreshLayout;
     // 标志位，标志已经初始化完成。
     private boolean isPrepared;
+
 
     public static MainFragment newInstance(int position) {
         MainFragment mainFragment = new MainFragment();
@@ -101,87 +106,12 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        if (mPosition == 0)
-            mAdapter = new MainAdapter(getActivity(), scheduleList, false);
-        else
-            mAdapter = new MainAdapter(getActivity(), scheduleList, true);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false);
 
-        recyclerView.setAdapter(mAdapter);
-        mAdapter.setOnItemClickLitener(this);
+        initView();
+        initHandlers();
 
-
-        recyclerView.addItemDecoration(new DividerItemDecoration(
-                getActivity(), DividerItemDecoration.VERTICAL_LIST));
-
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
-        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light);
-//        refreshLayout.setProgressViewOffset(false, 0, 100);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                initDatas();
-            }
-        });
-        isPrepared = true;
-
-        fabSpeedDial = (FabSpeedDial) view.findViewById(R.id.fab_speed_dial);
-
-        final List<WeekSchedule> weekSchedules = new ArrayList<>();
-        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
-            @Override
-            public boolean onMenuItemSelected(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.action_work:
-                        weekSchedules.clear();
-                        for (WeekSchedule weekSchedule : scheduleList) {
-                            if (weekSchedule.getBiaoqian().equals("工作")) {
-                                weekSchedules.add(weekSchedule);
-                            }
-                        }
-                        mAdapter.update(weekSchedules);
-                        break;
-                    case R.id.action_life:
-                        weekSchedules.clear();
-                        for (WeekSchedule weekSchedule : scheduleList) {
-                            if (weekSchedule.getBiaoqian().equals("生活")) {
-                                weekSchedules.add(weekSchedule);
-                            }
-                        }
-                        mAdapter.update(weekSchedules);
-                        break;
-                    case R.id.action_study:
-                        weekSchedules.clear();
-                        for (WeekSchedule weekSchedule : scheduleList) {
-                            if (weekSchedule.getBiaoqian().equals("学习")) {
-                                weekSchedules.add(weekSchedule);
-                            }
-                        }
-                        mAdapter.update(weekSchedules);
-                        break;
-                    case R.id.action_other:
-                        weekSchedules.clear();
-                        for (WeekSchedule weekSchedule : scheduleList) {
-                            if (weekSchedule.getBiaoqian().equals("其它")) {
-                                weekSchedules.add(weekSchedule);
-                            }
-                        }
-                        mAdapter.update(weekSchedules);
-                        break;
-                    case R.id.action_add:
-                        Intent intent = new Intent(getActivity(), AddActivity.class);
-                        startActivity(intent);
-                        break;
-
-                }
-                return false;
-            }
-        });
-
-        return view;
+        return mBinding.getRoot();
 
     }
 
@@ -197,13 +127,120 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
     @Override
     protected void onInvisible() {
         super.onInvisible();
-        if (fabSpeedDial != null && fabSpeedDial.isMenuOpen())
-            fabSpeedDial.closeMenu();
+        if (mBinding != null && mBinding.fabSpeedDial != null && mBinding.fabSpeedDial.isMenuOpen())
+            mBinding.fabSpeedDial.closeMenu();
     }
 
+    private void initView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        mBinding.recyclerview.setLayoutManager(layoutManager);
+        if (mPosition == 0)
+            mAdapter = new MainAdapter(getActivity(), scheduleList, false);
+        else
+            mAdapter = new MainAdapter(getActivity(), scheduleList, true);
+
+        mBinding.recyclerview.setAdapter(mAdapter);
+        mAdapter.setOnItemClickLitener(this);
+
+
+        mBinding.recyclerview.addItemDecoration(new DividerItemDecoration(
+                getActivity(), DividerItemDecoration.VERTICAL_LIST));
+
+        //        refreshLayout.setProgressViewOffset(false, 0, 100);
+        mBinding.refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light);
+
+        isPrepared = true;
+
+        if (stateModel == null)
+            stateModel = new StateModel();
+        mBinding.setVariable(BR.stateModel, stateModel);
+
+    }
+
+    private void initHandlers() {
+        mBinding.refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                initDatas();
+            }
+        });
+
+        final List<WeekSchedule> weekSchedules = new ArrayList<>();
+        mBinding.fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.action_work:
+                        weekSchedules.clear();
+                        for (WeekSchedule weekSchedule : scheduleList) {
+                            if (weekSchedule.getBiaoqian().equals("工作")) {
+                                weekSchedules.add(weekSchedule);
+                            }
+                        }
+                        if (weekSchedules.isEmpty()) {
+                            stateModel.setEmptyState(EmptyState.EMPTY_KIND_SCHEDULE);
+                        } else {
+                            stateModel.setEmptyState(EmptyState.NORMAL);
+                            mAdapter.update(weekSchedules);
+                        }
+                        break;
+                    case R.id.action_life:
+                        weekSchedules.clear();
+                        for (WeekSchedule weekSchedule : scheduleList) {
+                            if (weekSchedule.getBiaoqian().equals("生活")) {
+                                weekSchedules.add(weekSchedule);
+                            }
+                        }
+                        if (weekSchedules.isEmpty()) {
+                            stateModel.setEmptyState(EmptyState.EMPTY_KIND_SCHEDULE);
+                        } else {
+                            stateModel.setEmptyState(EmptyState.NORMAL);
+                            mAdapter.update(weekSchedules);
+                        }
+                        break;
+                    case R.id.action_study:
+                        weekSchedules.clear();
+                        for (WeekSchedule weekSchedule : scheduleList) {
+                            if (weekSchedule.getBiaoqian().equals("学习")) {
+                                weekSchedules.add(weekSchedule);
+                            }
+                        }
+                        if (weekSchedules.isEmpty()) {
+                            stateModel.setEmptyState(EmptyState.EMPTY_KIND_SCHEDULE);
+                        } else {
+                            stateModel.setEmptyState(EmptyState.NORMAL);
+                            mAdapter.update(weekSchedules);
+                        }
+                        break;
+                    case R.id.action_other:
+                        weekSchedules.clear();
+                        for (WeekSchedule weekSchedule : scheduleList) {
+                            if (weekSchedule.getBiaoqian().equals("其它")) {
+                                weekSchedules.add(weekSchedule);
+                            }
+                        }
+                        if (weekSchedules.isEmpty()) {
+                            stateModel.setEmptyState(EmptyState.EMPTY_KIND_SCHEDULE);
+                        } else {
+                            stateModel.setEmptyState(EmptyState.NORMAL);
+                            mAdapter.update(weekSchedules);
+                        }
+                        break;
+                    case R.id.action_add:
+                        Intent intent = new Intent(getActivity(), AddActivity.class);
+                        startActivity(intent);
+                        break;
+
+                }
+                return false;
+            }
+        });
+    }
+
+
     private void initDatas() {
-        if (!refreshLayout.isRefreshing())
-            refreshLayout.setRefreshing(true);
+        if (!mBinding.refreshLayout.isRefreshing())
+            mBinding.refreshLayout.setRefreshing(true);
         weekList.clear();
         scheduleList.clear();
         wanchengList.clear();
@@ -214,8 +251,23 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
         Action1<List<WeekSchedule>> onNextAction = new Action1<List<WeekSchedule>>() {
             @Override
             public void call(List<WeekSchedule> list) {
-                refreshLayout.setRefreshing(false);
-                mAdapter.update(list);
+                mBinding.refreshLayout.setRefreshing(false);
+                if (list.isEmpty()) {
+                    switch (mPosition) {
+                        case 0:
+                            stateModel.setEmptyState(EmptyState.EMPTY_DAIBAN_SCHEDULE);
+                            break;
+                        case 1:
+                            stateModel.setEmptyState(EmptyState.EMPTY_GUOQI_SCHEDULE);
+                            break;
+                        case 2:
+                            stateModel.setEmptyState(EmptyState.EMPTY_WANCHENG_SCHEDULE);
+                            break;
+                    }
+                } else {
+                    stateModel.setEmptyState(EmptyState.NORMAL);
+                    mAdapter.update(list);
+                }
             }
         };
 

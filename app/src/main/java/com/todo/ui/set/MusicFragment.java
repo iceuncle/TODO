@@ -1,19 +1,24 @@
 package com.todo.ui.set;
 
+import android.databinding.DataBindingUtil;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.databinding.library.baseAdapters.BR;
 import com.loonggg.lib.alarmmanager.clock.SPUtils;
 import com.todo.R;
 import com.todo.data.bean.Mp3Info;
+import com.todo.databinding.FragmentMusicBinding;
 import com.todo.ui.base.BaseFragment;
+import com.todo.ui.base.EmptyState;
+import com.todo.ui.base.StateModel;
+import com.todo.utils.IsEmpty;
 import com.todo.utils.LogUtil;
 import com.todo.utils.MediaUtil;
 import com.todo.vendor.recyleradapter.BaseViewAdapter;
@@ -28,12 +33,13 @@ import java.util.List;
  */
 public class MusicFragment extends BaseFragment {
     private List<Mp3Info> mp3InfoList = new ArrayList<>();
-    private RecyclerView recyclerView;
-    private View mView;
     private SingleTypeAdapter<Mp3Info> mAdapter;
     private MediaPlayer mMediaPlayer;
     // 标志位，标志已经初始化完成。
     private boolean isPrepared;
+    private FragmentMusicBinding mBinding;
+
+    private StateModel stateModel;
 
     public static MusicFragment newInstance() {
         MusicFragment fragment = new MusicFragment();
@@ -53,27 +59,34 @@ public class MusicFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_music, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_music, container, false);
         LogUtil.d("MusicFragment  onCreateView...");
         initView();
         isPrepared = true;
-        return mView;
-
+        return mBinding.getRoot();
     }
 
 
     private void initView() {
-        recyclerView = (RecyclerView) mView.findViewById(R.id.recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
+        mBinding.recyclerview.setLayoutManager(layoutManager);
         mAdapter = new SingleTypeAdapter<>(getActivity(), R.layout.item_music);
         mAdapter.setPresenter(new ItemPresenter());
-        recyclerView.setAdapter(mAdapter);
+        mBinding.recyclerview.setAdapter(mAdapter);
+
+        if (stateModel == null)
+            stateModel = new StateModel();
+        mBinding.setVariable(BR.stateModel, stateModel);
     }
 
     private void initDatas() {
         LogUtil.d("MusicFragment  initDatas...");
         mp3InfoList = MediaUtil.getMp3Infos(getActivity());
+        if (IsEmpty.list(mp3InfoList)) {
+            stateModel.setEmptyState(EmptyState.EMPTY_MUSIC);
+            return;
+        }
+        stateModel.setEmptyState(EmptyState.NORMAL);
         String type = (String) SPUtils.get(getActivity(), SPUtils.RING_TYPE_KEY, "");
         String contentUri = (String) SPUtils.get(getActivity(), SPUtils.MUSIC_NAME_KEY, "");
         if (type != null && type.equals(SPUtils.MUSIC_NAME_KEY) && contentUri != null)
@@ -119,7 +132,7 @@ public class MusicFragment extends BaseFragment {
     protected void onInvisible() {
         super.onInvisible();
         LogUtil.d("music   onInvisible...");
-        if (mMediaPlayer != null){
+        if (mMediaPlayer != null) {
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
@@ -130,7 +143,7 @@ public class MusicFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         LogUtil.d("music   stop...");
-        if (mMediaPlayer != null){
+        if (mMediaPlayer != null) {
             mMediaPlayer.release();
             mMediaPlayer = null;
         }

@@ -13,17 +13,21 @@ import android.view.MenuItem;
 import android.view.View;
 
 
+import com.todo.BR;
 import com.todo.R;
 import com.todo.data.database.Schedule;
 import com.todo.databinding.ActivityTodayBinding;
 import com.todo.databinding.ItemListTodayBinding;
 import com.todo.ui.base.BaseActivity;
+import com.todo.ui.base.EmptyState;
+import com.todo.ui.base.StateModel;
 import com.todo.ui.crud.AddActivity;
 import com.todo.ui.datepicker.DatePickerActivity;
 import com.todo.ui.event.MsgEvent;
 import com.todo.ui.main.MainActivity;
 import com.todo.ui.set.RingSettingActivity;
 import com.todo.ui.thisweek.ThisWeekActivity;
+import com.todo.utils.IsEmpty;
 import com.todo.utils.LogUtil;
 import com.todo.utils.SchedulesUtil;
 import com.todo.vendor.recyleradapter.BaseViewAdapter;
@@ -51,6 +55,7 @@ public class TodayActivity extends BaseActivity {
     private ActivityTodayBinding mBinding;
     private SingleTypeAdapter<Schedule> mAdapter;
     private List<Schedule> mScheduleList = new ArrayList<>();
+    protected StateModel state; //显示空状态
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MsgEvent event) {
@@ -129,6 +134,10 @@ public class TodayActivity extends BaseActivity {
 //        mBinding.swipeRefreshLayout.setProgressViewOffset(false, 0, 100);
         mBinding.swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light);
 
+        if (state == null) {
+            state = new StateModel();
+        }
+        mBinding.setVariable(BR.stateModel, state);
     }
 
     private void initEventHandler() {
@@ -151,7 +160,12 @@ public class TodayActivity extends BaseActivity {
                                 schedules.add(schedule);
                             }
                         }
-                        mAdapter.set(schedules);
+                        state.setEmptyState(EmptyState.NORMAL);
+                        if (!IsEmpty.list(schedules)) {
+                            mAdapter.set(schedules);
+                        } else
+                            state.setEmptyState(EmptyState.EMPTY_KIND_SCHEDULE);
+
                         break;
                     case R.id.action_life:
                         schedules.clear();
@@ -160,7 +174,12 @@ public class TodayActivity extends BaseActivity {
                                 schedules.add(schedule);
                             }
                         }
-                        mAdapter.set(schedules);
+                        state.setEmptyState(EmptyState.NORMAL);
+                        if (!IsEmpty.list(schedules)) {
+                            mAdapter.set(schedules);
+                        } else
+                            state.setEmptyState(EmptyState.EMPTY_KIND_SCHEDULE);
+
                         break;
                     case R.id.action_study:
                         schedules.clear();
@@ -169,7 +188,12 @@ public class TodayActivity extends BaseActivity {
                                 schedules.add(schedule);
                             }
                         }
-                        mAdapter.set(schedules);
+                        state.setEmptyState(EmptyState.NORMAL);
+                        if (!IsEmpty.list(schedules)) {
+                            mAdapter.set(schedules);
+                        } else
+                            state.setEmptyState(EmptyState.EMPTY_KIND_SCHEDULE);
+
                         break;
                     case R.id.action_other:
                         schedules.clear();
@@ -178,7 +202,12 @@ public class TodayActivity extends BaseActivity {
                                 schedules.add(schedule);
                             }
                         }
-                        mAdapter.set(schedules);
+                        state.setEmptyState(EmptyState.NORMAL);
+                        if (!IsEmpty.list(schedules)) {
+                            mAdapter.set(schedules);
+                        } else
+                            state.setEmptyState(EmptyState.EMPTY_KIND_SCHEDULE);
+
                         break;
                     case R.id.action_add:
                         Intent intent = new Intent(TodayActivity.this, AddActivity.class);
@@ -202,13 +231,22 @@ public class TodayActivity extends BaseActivity {
                 mScheduleList.add(s);
 
         }
-        SortComparator comparator = new SortComparator();
-        Collections.sort(mScheduleList, comparator);
-        mAdapter.set(mScheduleList);
+
+        state.setEmptyState(EmptyState.NORMAL);
+        if (!IsEmpty.list(mScheduleList)) {
+            SortComparator comparator = new SortComparator();
+            Collections.sort(mScheduleList, comparator);
+            mAdapter.set(mScheduleList);
+        } else
+            state.setEmptyState(EmptyState.EMPTY_DATA);
+
         mBinding.swipeRefreshLayout.setRefreshing(false);
 
     }
 
+    public void setEmptyState() {
+        state.setEmptyState(EmptyState.NORMAL);
+    }
 
     public class ItemPresenter implements BaseViewAdapter.Presenter {
         public void onItemClick(Schedule schedule) {

@@ -5,4 +5,13 @@
     <string name="title">标题:</string>
     <string name="startTime">开始时间：</string>
     <string name="describe">详情：</string>
+    <string name="no_data">还没有行程哦！</string>
+    <string name="no_music">本地还没有音乐哦！</string>
+    <string name="no_recorder">还没有录音哦！</string>
+    <string name="no_kind_schedule">还没有该类行程哦！</string>
+    <string name="no_daiban_schedule">还没有待办行程哦！</string>
+    <string name="no_guoqi_schedule">还没有过期行程哦！</string>
+    <string name="no_wancheng_schedule">还没有已完成行程哦！</string>
+    <string name="nothing"></string>
+
 </resources>

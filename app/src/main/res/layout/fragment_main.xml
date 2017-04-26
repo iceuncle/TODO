@@ -1,37 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<layout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="stateModel"
+            type="com.todo.ui.base.StateModel" />
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="@{stateModel.empty?View.GONE:View.VISIBLE}" />
+
+                <include
+                    layout="@layout/widget_layout_empty"
+                    app:stateModel="@{stateModel}" />
+            </RelativeLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
 
 
-    <io.github.yavski.fabspeeddial.FabSpeedDial
-        android:id="@+id/fab_speed_dial"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        app:fabBackgroundTint="@color/colorAccent"
-        app:fabGravity="bottom_end"
-        app:fabMenu="@menu/menu_fab_main"
-        app:miniFabBackgroundTintList="@array/fab_menu_item_colors"
-        app:miniFabDrawableTint="@color/w0"
-        app:miniFabTitleTextColorList="@array/fab_menu_item_colors"
-        app:touchGuardDrawable="@drawable/fab_background" />
+        <io.github.yavski.fabspeeddial.FabSpeedDial
+            android:id="@+id/fab_speed_dial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            app:fabBackgroundTint="@color/colorAccent"
+            app:fabGravity="bottom_end"
+            app:fabMenu="@menu/menu_fab_main"
+            app:miniFabBackgroundTintList="@array/fab_menu_item_colors"
+            app:miniFabDrawableTint="@color/w0"
+            app:miniFabTitleTextColorList="@array/fab_menu_item_colors"
+            app:touchGuardDrawable="@drawable/fab_background" />
 
+    </RelativeLayout>
 
-</RelativeLayout>
-
+</layout>

@@ -28,4 +28,8 @@
         <item name="android:background">#e5e5e5</item>
     </style>
 
+    <style name="ContentLoadingProgressBar" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@android:color/holo_blue_light</item>
+    </style>
+
 </resources>

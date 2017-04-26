@@ -12,12 +12,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.todo.BR;
 import com.todo.R;
 import com.todo.data.database.Schedule;
 import com.todo.databinding.ActivityThisweekBinding;
 import com.todo.databinding.ItemListThisweekBinding;
 import com.todo.databinding.ItemListThisweekPastBinding;
 import com.todo.ui.base.BaseActivity;
+import com.todo.ui.base.EmptyState;
+import com.todo.ui.base.StateModel;
 import com.todo.ui.crud.AddActivity;
 import com.todo.ui.datepicker.DatePickerActivity;
 import com.todo.ui.event.MsgEvent;
@@ -26,6 +29,7 @@ import com.todo.ui.set.RingSettingActivity;
 import com.todo.ui.today.TodayActivity;
 import com.todo.ui.today.TodayShowActivity;
 import com.todo.utils.DateFormatUtil;
+import com.todo.utils.IsEmpty;
 import com.todo.utils.LogUtil;
 import com.todo.utils.SchedulesUtil;
 import com.todo.vendor.recyleradapter.BaseViewAdapter;
@@ -61,6 +65,7 @@ public class ThisWeekActivity extends BaseActivity {
     private List<Schedule> daibanList = new ArrayList<>();
     //过期list
     private List<Schedule> guoqiList = new ArrayList<>();
+    protected StateModel state; //显示空状态
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MsgEvent event) {
@@ -138,6 +143,11 @@ public class ThisWeekActivity extends BaseActivity {
 
 //        mBinding.swipeRefreshLayout.setProgressViewOffset(false, 0, 100);
         mBinding.swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light);
+
+        if (state == null) {
+            state = new StateModel();
+        }
+        mBinding.setVariable(BR.stateModel, state);
     }
 
 
@@ -161,6 +171,14 @@ public class ThisWeekActivity extends BaseActivity {
             }
         }
 
+        if (IsEmpty.list(mScheduleList)) {
+            state.setEmptyState(EmptyState.EMPTY_DATA);
+            mBinding.swipeRefreshLayout.setRefreshing(false);
+            return;
+        }
+
+        state.setEmptyState(EmptyState.NORMAL);
+
         for (Schedule schedule : mScheduleList) {
             String date = schedule.getStartTime();
             DateTime now = DateTime.now();
@@ -175,6 +193,7 @@ public class ThisWeekActivity extends BaseActivity {
 
         ListSortComparator comparator1 = new ListSortComparator();
         Collections.sort(guoqiList, comparator1);
+
 
         mAdapter.addAll(daibanList, DAIBAN_TYPE);
         if (guoqiList.size() > 0) {
@@ -232,7 +251,13 @@ public class ThisWeekActivity extends BaseActivity {
                                 schedules.add(schedule);
                             }
                         }
-                        updateAfterFilter(schedules);
+                        if (IsEmpty.list(schedules)) {
+                            state.setEmptyState(EmptyState.EMPTY_KIND_SCHEDULE);
+                        } else {
+                            state.setEmptyState(EmptyState.NORMAL);
+                            updateAfterFilter(schedules);
+                        }
+
                         break;
                     case R.id.action_life:
                         schedules.clear();
@@ -241,7 +266,12 @@ public class ThisWeekActivity extends BaseActivity {
                                 schedules.add(schedule);
                             }
                         }
-                        updateAfterFilter(schedules);
+                        if (IsEmpty.list(schedules)) {
+                            state.setEmptyState(EmptyState.EMPTY_KIND_SCHEDULE);
+                        } else {
+                            state.setEmptyState(EmptyState.NORMAL);
+                            updateAfterFilter(schedules);
+                        }
                         break;
                     case R.id.action_study:
                         schedules.clear();
@@ -250,7 +280,12 @@ public class ThisWeekActivity extends BaseActivity {
                                 schedules.add(schedule);
                             }
                         }
-                        updateAfterFilter(schedules);
+                        if (IsEmpty.list(schedules)) {
+                            state.setEmptyState(EmptyState.EMPTY_KIND_SCHEDULE);
+                        } else {
+                            state.setEmptyState(EmptyState.NORMAL);
+                            updateAfterFilter(schedules);
+                        }
                         break;
                     case R.id.action_other:
                         schedules.clear();
@@ -259,7 +294,12 @@ public class ThisWeekActivity extends BaseActivity {
                                 schedules.add(schedule);
                             }
                         }
-                        updateAfterFilter(schedules);
+                        if (IsEmpty.list(schedules)) {
+                            state.setEmptyState(EmptyState.EMPTY_KIND_SCHEDULE);
+                        } else {
+                            state.setEmptyState(EmptyState.NORMAL);
+                            updateAfterFilter(schedules);
+                        }
                         break;
                     case R.id.action_add:
                         Intent intent = new Intent(ThisWeekActivity.this, AddActivity.class);

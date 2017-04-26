@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="stateModel"
+            type="com.todo.ui.base.StateModel" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/rv_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/w1"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="@{stateModel.empty?View.VISIBLE:View.GONE}"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v4.widget.ContentLoadingProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:theme="@style/ContentLoadingProgressBar"
+            android:visibility="@{stateModel.progressing?View.VISIBLE:View.GONE}" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="100dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="@{stateModel.progressing?View.INVISIBLE:View.VISIBLE}">
+
+            <ImageView
+                android:id="@+id/none_data"
+                android:layout_width="345dp"
+                android:layout_height="180dp"
+                android:scaleType="fitCenter"
+                android:src="@{stateModel.emptyIconRes}" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_below="@+id/none_data"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="@{stateModel.currentStateLabel}"
+                android:textColor="#b0b0b0"
+                android:textSize="20dp" />
+
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

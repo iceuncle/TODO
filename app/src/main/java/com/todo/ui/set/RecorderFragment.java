@@ -1,6 +1,7 @@
 package com.todo.ui.set;
 
 import android.content.DialogInterface;
+import android.databinding.DataBindingUtil;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -17,12 +18,18 @@ import android.widget.Chronometer;
 import android.widget.EditText;
 
 
+import com.android.databinding.library.baseAdapters.BR;
 import com.loonggg.lib.alarmmanager.clock.SPUtils;
 import com.todo.R;
 import com.todo.data.bean.Mp3Info;
+import com.todo.data.database.Schedule;
+import com.todo.databinding.FragmentRecorderBinding;
 import com.todo.databinding.ItemRecorderBinding;
 import com.todo.ui.base.BaseFragment;
+import com.todo.ui.base.EmptyState;
+import com.todo.ui.base.StateModel;
 import com.todo.utils.DensityUtil;
+import com.todo.utils.IsEmpty;
 import com.todo.utils.LogUtil;
 import com.todo.utils.StringUtil;
 import com.todo.vendor.recyleradapter.BaseViewAdapter;
@@ -39,9 +46,7 @@ import java.util.List;
  */
 public class RecorderFragment extends BaseFragment {
 
-    private View mView;
-    private RecyclerView recyclerView;
-    private FloatingActionButton addBtn;
+
     private SingleTypeAdapter<Mp3Info> mAdapter;
 
     private MediaRecorder mRecorder;
@@ -49,9 +54,13 @@ public class RecorderFragment extends BaseFragment {
     private List<String> fileNameList = new ArrayList<>();
     private List<Mp3Info> mp3InfoList = new ArrayList<>();
     private boolean mStartRecording = true;
-    private Chronometer mChronometer;
+
     // 标志位，标志已经初始化完成。
     private boolean isPrepared;
+
+    private FragmentRecorderBinding mBinding;
+
+    private StateModel stateModel;
 
 
     public static RecorderFragment newInstance() {
@@ -71,24 +80,25 @@ public class RecorderFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_recorder, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_recorder, container, false);
         LogUtil.d("RecorderFragment  onCreateView...");
         initView();
         isPrepared = true;
         initEventHandelers();
-        return mView;
+        return mBinding.getRoot();
     }
 
 
     private void initView() {
-        recyclerView = (RecyclerView) mView.findViewById(R.id.recyclerview);
-        addBtn = (FloatingActionButton) mView.findViewById(R.id.add_btn);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mBinding.recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new SingleTypeAdapter<>(getActivity(), R.layout.item_recorder);
         mAdapter.setPresenter(new ItemPresenter());
         mAdapter.setDecorator(new DemoAdapterDecorator());
-        recyclerView.setAdapter(mAdapter);
-        mChronometer = (Chronometer) mView.findViewById(R.id.timer);
+        mBinding.recyclerview.setAdapter(mAdapter);
+
+        if (stateModel == null)
+            stateModel = new StateModel();
+        mBinding.setVariable(BR.stateModel, stateModel);
 
     }
 
@@ -104,6 +114,11 @@ public class RecorderFragment extends BaseFragment {
             mp3InfoList.add(mp3Info);
         }
 
+        if (IsEmpty.list(mp3InfoList)) {
+            stateModel.setEmptyState(EmptyState.EMPTY_RECORDER);
+            return;
+        }
+        stateModel.setEmptyState(EmptyState.NORMAL);
         String type = (String) SPUtils.get(getActivity(), SPUtils.RING_TYPE_KEY, "");
         String url = (String) SPUtils.get(getActivity(), SPUtils.RECORD_NAME_KEY, "");
         if (type != null && type.equals(SPUtils.RECORD_NAME_KEY) && url != null)
@@ -118,14 +133,14 @@ public class RecorderFragment extends BaseFragment {
 
     private void initEventHandelers() {
 
-        addBtn.setOnClickListener(new View.OnClickListener() {
+        mBinding.addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onRecord(mStartRecording);
                 if (mStartRecording) {
-                    addBtn.setImageResource(R.mipmap.recorder_pause);
+                    mBinding.addBtn.setImageResource(R.mipmap.recorder_pause);
                 } else {
-                    addBtn.setImageResource(R.mipmap.recorder_start);
+                    mBinding.addBtn.setImageResource(R.mipmap.recorder_start);
                 }
                 mStartRecording = !mStartRecording;
             }
@@ -158,20 +173,20 @@ public class RecorderFragment extends BaseFragment {
             LogUtil.d("startRecording failed");
         }
         mRecorder.start();
-        mChronometer.setVisibility(View.VISIBLE);
+        mBinding.chronometer.setVisibility(View.VISIBLE);
         //计时器清零
-        mChronometer.setBase(SystemClock.elapsedRealtime());
-        mChronometer.start();
+        mBinding.chronometer.setBase(SystemClock.elapsedRealtime());
+        mBinding.chronometer.start();
     }
 
     private void stopRecording() {
         mRecorder.stop();
         mRecorder.release();
         mRecorder = null;
-        mChronometer.setVisibility(View.GONE);
+        mBinding.chronometer.setVisibility(View.GONE);
         //计时器清零
-        mChronometer.setBase(SystemClock.elapsedRealtime());
-        mChronometer.stop();
+        mBinding.chronometer.setBase(SystemClock.elapsedRealtime());
+        mBinding.chronometer.stop();
         initDatas();
     }
 
@@ -207,7 +222,6 @@ public class RecorderFragment extends BaseFragment {
     }
 
 
-
     public class ItemPresenter implements BaseViewAdapter.Presenter {
         public void onItemClick(Mp3Info mp3Info) {
             for (Mp3Info bean : mp3InfoList)
@@ -232,6 +246,8 @@ public class RecorderFragment extends BaseFragment {
         @Override
         public void decorator(BindingViewHolder holder, final int position, int viewType) {
             binding = (ItemRecorderBinding) holder.getBinding();
+            final Mp3Info mp3Info = mAdapter.getItemByPos(position);
+
             binding.recorderItemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
@@ -240,18 +256,24 @@ public class RecorderFragment extends BaseFragment {
 
                     builder.setItems(items, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int item) {
-                            if (item == 0) rename(position);
+                            if (item == 0) rename(mp3Info);
                             else {
-                                File file = new File(mp3InfoList.get(position).getUrl());
+                                File file = new File(mp3Info.getUrl());
                                 if (file.isFile() && file.exists()) {
                                     file.delete();
                                 }
-                                mp3InfoList.remove(position);
-                                mAdapter = new SingleTypeAdapter<>(getActivity(), R.layout.item_recorder);
-                                mAdapter.setPresenter(new ItemPresenter());
-                                mAdapter.setDecorator(new DemoAdapterDecorator());
-                                recyclerView.setAdapter(mAdapter);
-                                mAdapter.set(mp3InfoList);
+                                mp3InfoList.remove(mp3Info);
+//                                mAdapter = new SingleTypeAdapter<>(getActivity(), R.layout.item_recorder);
+//                                mAdapter.setPresenter(new ItemPresenter());
+//                                mAdapter.setDecorator(new DemoAdapterDecorator());
+//                                mBinding.recyclerview.setAdapter(mAdapter);
+                                if (IsEmpty.list(mp3InfoList)) {
+                                    stateModel.setEmptyState(EmptyState.EMPTY_RECORDER);
+                                } else {
+                                    stateModel.setEmptyState(EmptyState.NORMAL);
+                                    mAdapter.set(mp3InfoList);
+                                }
+
                             }
                         }
                     });
@@ -267,7 +289,7 @@ public class RecorderFragment extends BaseFragment {
     }
 
 
-    private void rename(final int position) {
+    private void rename(final Mp3Info mp3Info) {
         final EditText et = new EditText(getActivity());
         et.setBackgroundColor(getResources().getColor(R.color.transparent));
         et.setPadding(DensityUtil.dp2px(getActivity(), 15), DensityUtil.dp2px(getActivity(), 10)
@@ -279,9 +301,10 @@ public class RecorderFragment extends BaseFragment {
                 .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mp3InfoList.get(position).setTitle(et.getText().toString());
-                        File oldFile = new File(mp3InfoList.get(position).getUrl());
-//                        String newPath = getActivity().getFilesDir().getAbsolutePath() + et.getText().toString() + ".amr";
+                        mp3Info.setTitle(et.getText().toString());
+                        File oldFile = new File(mp3Info.getUrl());
+                        String newPath = getActivity().getFilesDir().getAbsolutePath() + "/" + et.getText().toString() + ".amr";
+                        mp3Info.setUrl(newPath);
                         oldFile.renameTo(new File(getActivity().getFilesDir().getAbsolutePath(), et.getText().toString() + ".amr"));
                         mAdapter.set(mp3InfoList);
                     }

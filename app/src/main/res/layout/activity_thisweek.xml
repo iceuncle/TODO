@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="stateModel"
+            type="com.todo.ui.base.StateModel" />
+    </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -25,10 +33,20 @@
             android:layout_height="match_parent"
             android:layout_below="@id/toolBar">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerview"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="@{stateModel.empty?View.GONE:View.VISIBLE}" />
+
+                <include
+                    layout="@layout/widget_layout_empty"
+                    app:stateModel="@{stateModel}" />
+            </RelativeLayout>
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
