@@ -33,22 +33,20 @@ import cn.aigestudio.datepicker.views.DatePicker;
  * Created by tianyang on 2017/3/11.
  */
 public class DaySheduleDialog extends AppCompatDialog {
-    private DatePicker picker;
 
 
     public DaySheduleDialog(Context context) {
         super(context);
     }
 
-    public DaySheduleDialog(Context context, int theme, DatePicker picker) {
+    public DaySheduleDialog(Context context, int theme) {
         super(context, theme);
-        this.picker = picker;
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-//        picker.getMonthView().setFocusableInTouchMode(false);
     }
 
     public static class Builder {
@@ -58,7 +56,7 @@ public class DaySheduleDialog extends AppCompatDialog {
         private DaysheduleDialogBinding mBinding;
         private SingleTypeAdapter<Schedule> mAdapter;
         private List<Schedule> scheduleList = new ArrayList<>();
-        private DatePicker datePicker;
+
 
         public Builder(@NonNull Context context) {
             mContext = context;
@@ -69,13 +67,14 @@ public class DaySheduleDialog extends AppCompatDialog {
             return this;
         }
 
-        public Builder setDatePicker(DatePicker datePicker) {
-            this.datePicker = datePicker;
+        public Builder upDateDatas() {
+            initDatas();
             return this;
         }
 
+
         public DaySheduleDialog create() {
-            dialog = new DaySheduleDialog(mContext, R.style.ActionSheetDialog, datePicker);
+            dialog = new DaySheduleDialog(mContext, R.style.ActionSheetDialog);
             mBinding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.dayshedule_dialog, null, false);
 
             mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -94,7 +93,9 @@ public class DaySheduleDialog extends AppCompatDialog {
             return dialog;
         }
 
+
         private void initDatas() {
+            scheduleList.clear();
             List<Schedule> list = DataSupport.findAll(Schedule.class);
             for (Schedule schedule : list) {
                 Schedule s = SchedulesUtil.getSheduleInDay(schedule, dayTime, schedule.getType());
@@ -108,7 +109,7 @@ public class DaySheduleDialog extends AppCompatDialog {
         }
 
         public DaySheduleDialog show() {
-            dialog = create();
+//            dialog = create();
             dialog.show();
             double dialogwidth = Util.getScreenWidth(mContext) - Util.dip2px(mContext, 80);
             double dialogHeight = Util.getScreenHeight(mContext) - Util.dip2px(mContext, 120);

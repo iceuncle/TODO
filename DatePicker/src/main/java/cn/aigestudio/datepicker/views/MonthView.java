@@ -603,28 +603,28 @@ public class MonthView extends View {
                             ValueAnimator animScale1 =
                                     ObjectAnimator.ofInt(circle, "radius", 0, animZoomOut1);
                             //250
-                            animScale1.setDuration(0);
+                            animScale1.setDuration(250);
                             animScale1.setInterpolator(decelerateInterpolator);
                             animScale1.addUpdateListener(scaleAnimationListener);
 
                             ValueAnimator animScale2 =
                                     ObjectAnimator.ofInt(circle, "radius", animZoomOut1, animZoomIn1);
                             //100
-                            animScale2.setDuration(0);
+                            animScale2.setDuration(100);
                             animScale2.setInterpolator(accelerateInterpolator);
                             animScale2.addUpdateListener(scaleAnimationListener);
 
                             ValueAnimator animScale3 =
                                     ObjectAnimator.ofInt(circle, "radius", animZoomIn1, animZoomOut2);
                             //150
-                            animScale3.setDuration(0);
+                            animScale3.setDuration(150);
                             animScale3.setInterpolator(decelerateInterpolator);
                             animScale3.addUpdateListener(scaleAnimationListener);
 
                             ValueAnimator animScale4 =
                                     ObjectAnimator.ofInt(circle, "radius", animZoomOut2, circleRadius);
                             //50
-                            animScale4.setDuration(0);
+                            animScale4.setDuration(50);
                             animScale4.setInterpolator(accelerateInterpolator);
                             animScale4.addUpdateListener(scaleAnimationListener);
 
@@ -660,7 +660,7 @@ public class MonthView extends View {
                             BGCircle circle = cirApr.get(date);
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                                 ValueAnimator animScale = ObjectAnimator.ofInt(circle, "radius", circleRadius, 0);
-                                animScale.setDuration(0);
+                                animScale.setDuration(250);
                                 animScale.setInterpolator(accelerateInterpolator);
                                 animScale.addUpdateListener(scaleAnimationListener);
                                 animScale.addListener(new AnimatorListenerAdapter() {
@@ -684,25 +684,25 @@ public class MonthView extends View {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                                 ValueAnimator animScale1 =
                                         ObjectAnimator.ofInt(circle, "radius", 0, animZoomOut1);
-                                animScale1.setDuration(0);
+                                animScale1.setDuration(250);
                                 animScale1.setInterpolator(decelerateInterpolator);
                                 animScale1.addUpdateListener(scaleAnimationListener);
 
                                 ValueAnimator animScale2 =
                                         ObjectAnimator.ofInt(circle, "radius", animZoomOut1, animZoomIn1);
-                                animScale2.setDuration(0);
+                                animScale2.setDuration(100);
                                 animScale2.setInterpolator(accelerateInterpolator);
                                 animScale2.addUpdateListener(scaleAnimationListener);
 
                                 ValueAnimator animScale3 =
                                         ObjectAnimator.ofInt(circle, "radius", animZoomIn1, animZoomOut2);
-                                animScale3.setDuration(0);
+                                animScale3.setDuration(150);
                                 animScale3.setInterpolator(decelerateInterpolator);
                                 animScale3.addUpdateListener(scaleAnimationListener);
 
                                 ValueAnimator animScale4 =
                                         ObjectAnimator.ofInt(circle, "radius", animZoomOut2, circleRadius);
-                                animScale4.setDuration(0);
+                                animScale4.setDuration(50);
                                 animScale4.setInterpolator(accelerateInterpolator);
                                 animScale4.addUpdateListener(scaleAnimationListener);
 

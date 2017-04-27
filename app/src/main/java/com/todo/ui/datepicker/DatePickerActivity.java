@@ -42,6 +42,9 @@ public class DatePickerActivity extends BaseActivity implements DatePicker.DateC
     //有日程的时间
     private List<DateTime> dateTimeList = new ArrayList<>();
 
+    private DaySheduleDialog.Builder builder;
+    private DaySheduleDialog daySheduleDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,11 +97,19 @@ public class DatePickerActivity extends BaseActivity implements DatePicker.DateC
         picker.setOnDatePickedListener(new DatePicker.OnDatePickedListener() {
             @Override
             public void onDatePicked(String date) {
-                if (DateManageUtil.isInDateTimeList(DateFormatUtil.parseDate(date), dateTimeList))
-                    new DaySheduleDialog.Builder(DatePickerActivity.this)
-                            .setDayTime(DateFormatUtil.parseDate(date))
-                            .setDatePicker(picker)
-                            .show();
+                if (DateManageUtil.isInDateTimeList(DateFormatUtil.parseDate(date), dateTimeList)) {
+                    if (builder == null)
+                        builder = new DaySheduleDialog.Builder(DatePickerActivity.this);
+                    if (daySheduleDialog == null) {
+                        daySheduleDialog = builder.setDayTime(DateFormatUtil.parseDate(date))
+                                .create();
+                    } else {
+                        builder.setDayTime(DateFormatUtil.parseDate(date))
+                                .upDateDatas();
+                    }
+                    builder.show();
+
+                }
             }
         });
 
