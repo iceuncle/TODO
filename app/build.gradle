@@ -30,7 +30,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:design:25.2.0'
     compile 'jp.wasabeef:glide-transformations:2.0.1'
-    compile 'org.litepal.android:core:1.4.1'
+    compile 'org.litepal.android:core:1.5.1'
     compile 'joda-time:joda-time:2.9.7'
     compile 'com.android.support:recyclerview-v7:25.2.0'
     compile 'io.reactivex:rxjava:1.0.14'
@@ -39,6 +39,7 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.github.yavski:fab-speed-dial:1.0.6'
+    compile 'com.google.code.gson:gson:2.7'
     compile project(':DatePicker')
     compile project(':alarmmanagerclock')
 }

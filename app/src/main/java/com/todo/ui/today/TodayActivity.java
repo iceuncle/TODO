@@ -229,7 +229,6 @@ public class TodayActivity extends BaseActivity {
             Schedule s = SchedulesUtil.getSheduleInDay(schedule, today, schedule.getType());
             if (s != null)
                 mScheduleList.add(s);
-
         }
 
         state.setEmptyState(EmptyState.NORMAL);

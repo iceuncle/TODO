@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
+import com.todo.MyApplication;
 import com.todo.R;
 import com.todo.data.database.Alarm;
 import com.todo.data.database.Schedule;
@@ -41,7 +42,6 @@ public class DayShowActivity extends BaseActivity {
     private LinearLayout detailView, soundOrVibratorView;
     private View dividerView;
     private SwitchCompat zhengdongSc, ringSc;
-
 
 
     @Override
@@ -177,7 +177,7 @@ public class DayShowActivity extends BaseActivity {
                             alarmIdList.add(alarm.getId());
                         if (mSchedule.isRemind()) {
                             for (int alarmId : alarmIdList)
-                                AlarmManagerUtil.cancelAlarm(DayShowActivity.this, "com.loonggg.alarm.clock", alarmId);
+                                AlarmManagerUtil.cancelAlarm(MyApplication.instance(), "com.loonggg.alarm.clock", alarmId);
                         }
                         DataSupport.delete(Schedule.class, id);
                         DataSupport.deleteAll(WeekSchedule.class, "scheduleId=?", id + "");

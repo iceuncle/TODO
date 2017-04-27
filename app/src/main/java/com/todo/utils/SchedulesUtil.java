@@ -33,7 +33,7 @@ public class SchedulesUtil {
         List<Schedule> scheduleList = new ArrayList<>();
         for (DateTime date : dateTimeList) {
             if (DateManageUtil.BigerThanStart(startTime, date)) {
-                Schedule s = schedule.clone();
+                Schedule s = GsonUtil.parse(GsonUtil.toJson(schedule), Schedule.class);
                 s.setStartTime(DateFormatUtil.format(date));
                 scheduleList.add(s);
             }
@@ -49,7 +49,7 @@ public class SchedulesUtil {
         DateTime date = DateManageUtil.getDayofWeek(startTime);
         LogUtil.d(startTime.toString() + "   " + date.toString());
         if (DateManageUtil.BigerThanStart(startTime, date)) {
-            Schedule s = schedule.clone();
+            Schedule s = GsonUtil.parse(GsonUtil.toJson(schedule), Schedule.class);
             s.setStartTime(DateFormatUtil.format(date));
             return s;
         }
@@ -71,7 +71,7 @@ public class SchedulesUtil {
 
         for (DateTime dateTime : dateTimeList) {
             if (DateManageUtil.BigerThanStart(startTime, dateTime)) {
-                Schedule s = schedule.clone();
+                Schedule s = GsonUtil.parse(GsonUtil.toJson(schedule), Schedule.class);
                 s.setStartTime(DateFormatUtil.format(dateTime));
                 scheduleList.add(s);
             }
@@ -199,22 +199,22 @@ public class SchedulesUtil {
         int days = Days.daysBetween(startTime, dayTime).getDays();
         if (type == 0) {
             if (days == 0) {
-                return schedule.clone();
+                return GsonUtil.parse(GsonUtil.toJson(schedule), Schedule.class);
             }
         } else if (type == 1) {
             if (days >= 0) {
                 Log.d("days", "days type1   :" + days);
-                String dateTimeStr = DateFormatUtil.format(startTime, "HH:mm");
+                String dateTimeStr = DateFormatUtil.format(time, "HH:mm");
                 String s = DateFormatUtil.format(dayTime, "yyyy年MM月dd日 " + dateTimeStr);
-                Schedule schedule1 = schedule.clone();
+                Schedule schedule1 = GsonUtil.parse(GsonUtil.toJson(schedule), Schedule.class);
                 schedule1.setStartTime(s);
                 return schedule1;
             }
         } else if (type == 2) {
             if (days >= 0 && dayTime.getDayOfWeek() == startTime.getDayOfWeek()) {
-                String dateTimeStr = DateFormatUtil.format(startTime, "HH:mm");
+                String dateTimeStr = DateFormatUtil.format(time, "HH:mm");
                 String s = DateFormatUtil.format(dayTime, "yyyy年MM月dd日 " + dateTimeStr);
-                Schedule schedule1 = schedule.clone();
+                Schedule schedule1 = GsonUtil.parse(GsonUtil.toJson(schedule), Schedule.class);
                 schedule1.setStartTime(s);
                 return schedule1;
             }
@@ -222,9 +222,9 @@ public class SchedulesUtil {
             List<Integer> integerList = parse(schedule.getCycleTime());
             for (int i : integerList) {
                 if (days >= 0 && dayTime.getDayOfWeek() == i) {
-                    String dateTimeStr = DateFormatUtil.format(startTime, "HH:mm");
+                    String dateTimeStr = DateFormatUtil.format(time, "HH:mm");
                     String s = DateFormatUtil.format(dayTime, "yyyy年MM月dd日 " + dateTimeStr);
-                    Schedule schedule1 = schedule.clone();
+                    Schedule schedule1 = GsonUtil.parse(GsonUtil.toJson(schedule), Schedule.class);
                     schedule1.setStartTime(s);
                     return schedule1;
                 }
@@ -252,7 +252,7 @@ public class SchedulesUtil {
         List<Schedule> scheduleList = new ArrayList<>();
         for (DateTime date : dateTimeList) {
             if (DateManageUtil.BigerThanStart(startTime, date)) {
-                Schedule s = schedule.clone();
+                Schedule s = GsonUtil.parse(GsonUtil.toJson(schedule), Schedule.class);
                 s.setStartTime(DateFormatUtil.format(date));
                 scheduleList.add(s);
             }
@@ -268,7 +268,7 @@ public class SchedulesUtil {
         DateTime date = DateManageUtil.getDayofThisWeek(startTime);
 //        LogUtil.d(startTime.toString() + "   " + date.toString());
         if (DateManageUtil.BigerThanStart(startTime, date)) {
-            Schedule s = schedule.clone();
+            Schedule s = GsonUtil.parse(GsonUtil.toJson(schedule), Schedule.class);
             s.setStartTime(DateFormatUtil.format(date));
             return s;
         }
@@ -290,7 +290,7 @@ public class SchedulesUtil {
 
         for (DateTime dateTime : dateTimeList) {
             if (DateManageUtil.BigerThanStart(startTime, dateTime)) {
-                Schedule s = schedule.clone();
+                Schedule s = GsonUtil.parse(GsonUtil.toJson(schedule), Schedule.class);
                 s.setStartTime(DateFormatUtil.format(dateTime));
                 scheduleList.add(s);
             }

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
+import com.todo.MyApplication;
 import com.todo.R;
 import com.todo.data.bean.CalendarBean;
 import com.todo.data.database.Alarm;
@@ -151,7 +152,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
     protected void initDatas() {
         mScheduleId = getIntent().getExtras().getInt("ScheduleID");
         type = getIntent().getStringExtra("ActivityType");
-        mSchedule = DataSupport.find(Schedule.class, mScheduleId);
+        mSchedule = DataSupport.find(Schedule.class, mScheduleId, true);
         selectedIndex = mSchedule.getType();
         soundOrVibrator = mSchedule.getSoundOrVibrator();
     }
@@ -307,8 +308,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
     //选择提醒时间点击事件
     public void startTime(View view) {
         isClicked = true;
-        calendarBean = new CalendarBean();
-        DateTimePickDialog dateTimePickDialog = new DateTimePickDialog(this, "");
+        DateTimePickDialog dateTimePickDialog = new DateTimePickDialog(this, "", calendarBean.getCalendar());
         dateTimePickDialog.dateTimePicKDialog(startTimeTv, calendarBean);
     }
 
@@ -386,8 +386,11 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
             for (Alarm alarm : mSchedule.getAlarmList())
                 alarmIdList.add(alarm.getId());
             if (mSchedule.isRemind()) {
-                for (int alarmId : alarmIdList)
-                    AlarmManagerUtil.cancelAlarm(this, "com.loonggg.alarm.clock", alarmId);
+                for (int alarmId : alarmIdList) {
+                    Log.d("alarmId", "addAlarmID: " + alarmId);
+                    AlarmManagerUtil.cancelAlarm(MyApplication.instance(), "com.loonggg.alarm.clock", alarmId);
+                }
+
             }
 
             //删除数据库中数据
@@ -441,27 +444,27 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
-            AlarmManagerUtil.setAlarm(this, 0, startCalendar, alarm.getId(), 0, titleEt.getText().toString(), soundOrVibrator);
+            AlarmManagerUtil.setAlarm(MyApplication.instance(), 0, startCalendar, alarm.getId(), 0, titleEt.getText().toString(), soundOrVibrator);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 1) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
-            AlarmManagerUtil.setAlarm(this, 1, startCalendar, alarm.getId(), 0, titleEt.getText().toString(), soundOrVibrator);
+            AlarmManagerUtil.setAlarm(MyApplication.instance(), 1, startCalendar, alarm.getId(), 0, titleEt.getText().toString(), soundOrVibrator);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 2) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
             DateTime dateTime = new DateTime(startCalendar);
-            AlarmManagerUtil.setAlarm(this, 2, startCalendar, alarm.getId(), dateTime.getDayOfWeek(), titleEt.getText().toString(), soundOrVibrator);
+            AlarmManagerUtil.setAlarm(MyApplication.instance(), 2, startCalendar, alarm.getId(), dateTime.getDayOfWeek(), titleEt.getText().toString(), soundOrVibrator);
         } else if (selectedIndex == 3) {
             for (int i = 0; i < selectedWeekdays.length; i++) {
                 if (selectedWeekdays[i]) {
                     Alarm alarm = new Alarm();
                     alarm.setSchedule(schedule);
                     alarm.save();
-                    AlarmManagerUtil.setAlarm(this, 2, startCalendar, alarm.getId(), i + 1, titleEt.getText().toString(), soundOrVibrator);
+                    AlarmManagerUtil.setAlarm(MyApplication.instance(), 2, startCalendar, alarm.getId(), i + 1, titleEt.getText().toString(), soundOrVibrator);
                 }
             }
         }

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
+import com.todo.MyApplication;
 import com.todo.R;
 import com.todo.data.bean.CalendarBean;
 import com.todo.data.database.Alarm;
@@ -31,8 +32,11 @@ import com.todo.widget.ImageButtonText;
 import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
+import org.litepal.crud.DataSupport;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by tianyang on 2017/2/15.
@@ -48,7 +52,7 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
     private EditText title, detailEt;
     private String biaoqian;
     private SwitchCompat naozhongSc, zhengdongSc, ringSc;
-    private CalendarBean calendarBean;
+    private CalendarBean calendarBean = new CalendarBean();
     private LinearLayout soundOrVibratorView;
     private View soundOrVibratorDivider;
 
@@ -150,15 +154,13 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
 
 
     public void startTime(View view) {
-        calendarBean = new CalendarBean();
-        DateTimePickDialog dateTimePickDialog = new DateTimePickDialog(this, "");
+        DateTimePickDialog dateTimePickDialog = new DateTimePickDialog(this, "", calendarBean.getCalendar());
         dateTimePickDialog.dateTimePicKDialog(stText, calendarBean);
-
     }
 
     public void endTime(View view) {
         CalendarBean calendarBean = new CalendarBean();
-        DateTimePickDialog dateTimePickDialog = new DateTimePickDialog(this, "");
+        DateTimePickDialog dateTimePickDialog = new DateTimePickDialog(this, "", null);
         dateTimePickDialog.dateTimePicKDialog(etText, calendarBean);
         endCalendar = calendarBean.getCalendar();
     }
@@ -272,31 +274,37 @@ public class AddActivity extends BaseActivity implements ImageButtonText.OnImage
 
     public void addAlarm(Schedule schedule) {
 
+//        Schedule mSchedule = DataSupport.find(Schedule.class, schedule.getId());
         if (selectedIndex == 0) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
-            AlarmManagerUtil.setAlarm(this, 0, startCalendar, alarm.getId(), 0, title.getText().toString(), soundOrVibrator);
+            AlarmManagerUtil.setAlarm(MyApplication.instance(), 0, startCalendar, alarm.getId(), 0, title.getText().toString(), soundOrVibrator);
+            Log.d("alarmId", "addAlarmID: " + alarm.getId());
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 1) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
-            AlarmManagerUtil.setAlarm(this, 1, startCalendar, alarm.getId(), 0, title.getText().toString(), soundOrVibrator);
+            Log.d("alarmId", "addAlarmID: " + alarm.getId());
+            AlarmManagerUtil.setAlarm(MyApplication.instance(), 1, startCalendar, alarm.getId(), 0, title.getText().toString(), soundOrVibrator);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 2) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
             alarm.save();
+            Log.d("alarmId", "addAlarmID: " + alarm.getId());
             DateTime dateTime = new DateTime(startCalendar);
-            AlarmManagerUtil.setAlarm(this, 2, startCalendar, alarm.getId(), dateTime.getDayOfWeek(), title.getText().toString(), soundOrVibrator);
+            AlarmManagerUtil.setAlarm(MyApplication.instance(), 2, startCalendar, alarm.getId(), dateTime.getDayOfWeek(), title.getText().toString(), soundOrVibrator);
         } else if (selectedIndex == 3) {
             for (int i = 0; i < selectedWeekdays.length; i++) {
                 if (selectedWeekdays[i]) {
                     Alarm alarm = new Alarm();
                     alarm.setSchedule(schedule);
                     alarm.save();
-                    AlarmManagerUtil.setAlarm(this, 2, startCalendar, alarm.getId(), i + 1, title.getText().toString(), soundOrVibrator);
+                    schedule.getAlarmList().add(alarm);
+                    Log.d("alarmId", "addAlarmID: " + alarm.getId());
+                    AlarmManagerUtil.setAlarm(MyApplication.instance(), 2, startCalendar, alarm.getId(), i + 1, title.getText().toString(), soundOrVibrator);
                 }
             }
         }

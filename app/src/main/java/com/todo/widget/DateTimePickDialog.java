@@ -21,6 +21,7 @@ import android.widget.TimePicker.OnTimeChangedListener;
 
 import com.todo.R;
 import com.todo.data.bean.CalendarBean;
+import com.todo.utils.IsEmpty;
 
 /**
  * 日期时间选择控件 使用方法： private EditText inputDate;//需要设置的日期时间文本编辑框 private String
@@ -44,6 +45,7 @@ public class DateTimePickDialog implements OnDateChangedListener,
     private String initDateTime;
     private Activity activity;
     private Calendar calendar;
+    private Calendar initCalendar;
 
     /**
      * 日期时间弹出选择框构造函数
@@ -51,29 +53,31 @@ public class DateTimePickDialog implements OnDateChangedListener,
      * @param activity     ：调用的父activity
      * @param initDateTime 初始日期时间值，作为弹出窗口的标题和日期时间初始值
      */
-    public DateTimePickDialog(Activity activity, String initDateTime) {
+    public DateTimePickDialog(Activity activity, String initDateTime, Calendar calendar) {
         this.activity = activity;
         this.initDateTime = initDateTime;
+        this.initCalendar = calendar;
 
     }
 
     public void init(DatePicker datePicker, TimePicker timePicker) {
-        Calendar calendar = Calendar.getInstance();
+        if (initCalendar == null)
+            initCalendar = Calendar.getInstance();
         if (!(null == initDateTime || "".equals(initDateTime))) {
-            calendar = this.getCalendarByInintData(initDateTime);
+            initCalendar = this.getCalendarByInintData(initDateTime);
         } else {
-            initDateTime = calendar.get(Calendar.YEAR) + "年"
-                    + calendar.get(Calendar.MONTH) + "月"
-                    + calendar.get(Calendar.DAY_OF_MONTH) + "日 "
-                    + calendar.get(Calendar.HOUR_OF_DAY) + ":"
-                    + calendar.get(Calendar.MINUTE);
+            initDateTime = initCalendar.get(Calendar.YEAR) + "年"
+                    + initCalendar.get(Calendar.MONTH) + "月"
+                    + initCalendar.get(Calendar.DAY_OF_MONTH) + "日 "
+                    + initCalendar.get(Calendar.HOUR_OF_DAY) + ":"
+                    + initCalendar.get(Calendar.MINUTE);
         }
 
-        datePicker.init(calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH), this);
-        timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
-        timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
+        datePicker.init(initCalendar.get(Calendar.YEAR),
+                initCalendar.get(Calendar.MONTH),
+                initCalendar.get(Calendar.DAY_OF_MONTH), this);
+        timePicker.setCurrentHour(initCalendar.get(Calendar.HOUR_OF_DAY));
+        timePicker.setCurrentMinute(initCalendar.get(Calendar.MINUTE));
     }
 
     /**

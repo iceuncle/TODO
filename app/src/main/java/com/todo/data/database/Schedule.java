@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by tianyang on 2017/2/15.
  */
-public class Schedule extends DataSupport implements Cloneable, Serializable {
+public class Schedule extends DataSupport implements Serializable {
 
     private int id;
 
@@ -61,7 +61,7 @@ public class Schedule extends DataSupport implements Cloneable, Serializable {
      */
     private int soundOrVibrator;
 
-    private List<Alarm> alarmList = new ArrayList<>();
+    private List<Alarm> alarmList = new ArrayList<Alarm>();
 
 
     public int getId() {
@@ -128,9 +128,6 @@ public class Schedule extends DataSupport implements Cloneable, Serializable {
         isFinished = finished;
     }
 
-    public void setAlarmList(List<Alarm> alarmList) {
-        this.alarmList = alarmList;
-    }
 
     public void setDetail(String detail) {
         this.detail = detail;
@@ -148,19 +145,12 @@ public class Schedule extends DataSupport implements Cloneable, Serializable {
         return soundOrVibrator;
     }
 
+
     public List<Alarm> getAlarmList() {
         return alarmList;
     }
 
-    public Schedule clone() {
-        Schedule o = null;
-        try {
-            o = (Schedule) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return o;
+    public void setAlarmList(List<Alarm> alarmList) {
+        this.alarmList = alarmList;
     }
-
-
 }

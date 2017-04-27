@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
+import com.todo.MyApplication;
 import com.todo.R;
 import com.todo.data.database.Alarm;
 import com.todo.data.database.Schedule;
@@ -164,13 +166,15 @@ public class WeekShowActivity extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         int id = mWeekSchedule.getScheduleId();
-                        Schedule mSchedule = DataSupport.find(Schedule.class, id);
+                        Schedule mSchedule = DataSupport.find(Schedule.class, id, true);
                         List<Integer> alarmIdList = new ArrayList<Integer>();
                         for (Alarm alarm : mSchedule.getAlarmList())
                             alarmIdList.add(alarm.getId());
                         if (mWeekSchedule.isRemind()) {
-                            for (int alarmId : alarmIdList)
-                                AlarmManagerUtil.cancelAlarm(WeekShowActivity.this, "com.loonggg.alarm.clock", alarmId);
+                            for (int alarmId : alarmIdList) {
+                                AlarmManagerUtil.cancelAlarm(MyApplication.instance(), "com.loonggg.alarm.clock", alarmId);
+                                Log.d("alarmId", "alarmID: " + alarmId);
+                            }
                         }
                         DataSupport.delete(Schedule.class, id);
                         DataSupport.deleteAll(WeekSchedule.class, "scheduleId=?", id + "");

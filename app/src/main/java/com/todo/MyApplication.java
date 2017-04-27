@@ -1,13 +1,15 @@
 package com.todo;
 
+import android.app.Application;
 import android.content.Context;
 
+import org.litepal.LitePal;
 import org.litepal.LitePalApplication;
 
 /**
  * Created by dzq on 16/7/11.
  */
-public class MyApplication extends LitePalApplication {
+public class MyApplication extends Application {
 
     private static Context applicationContext;
 
@@ -19,6 +21,9 @@ public class MyApplication extends LitePalApplication {
     public void onCreate() {
         super.onCreate();
         applicationContext = getApplicationContext();
+
+        //初始化litepal
+        LitePal.initialize(this);
     }
 
 
