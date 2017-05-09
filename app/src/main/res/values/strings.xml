@@ -12,6 +12,7 @@
     <string name="no_daiban_schedule">还没有待办行程哦！</string>
     <string name="no_guoqi_schedule">还没有过期行程哦！</string>
     <string name="no_wancheng_schedule">还没有已完成行程哦！</string>
+    <string name="no_search">搜索结果为空哦！</string>
     <string name="nothing"></string>
 
 </resources>

@@ -1,5 +1,7 @@
 package com.todo.data.database;
 
+import com.todo.data.bean.Picture;
+
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
@@ -60,6 +62,8 @@ public class Schedule extends DataSupport implements Serializable {
      * 音乐震动模式
      */
     private int soundOrVibrator;
+
+    private List<Picture> photoList = new ArrayList<>();
 
     private List<Alarm> alarmList = new ArrayList<Alarm>();
 
@@ -152,5 +156,13 @@ public class Schedule extends DataSupport implements Serializable {
 
     public void setAlarmList(List<Alarm> alarmList) {
         this.alarmList = alarmList;
+    }
+
+    public List<Picture> getPhotoList() {
+        return photoList;
+    }
+
+    public void setPhotoList(List<Picture> photoList) {
+        this.photoList = photoList;
     }
 }

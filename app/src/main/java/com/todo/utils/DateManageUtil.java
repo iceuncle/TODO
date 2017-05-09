@@ -53,7 +53,6 @@ public class DateManageUtil {
             String s = DateFormatUtil.format(date, "yyyy年MM月dd日 " + dateTimeStr);
             stringList.add(s);
             dateList.add(DateFormatUtil.parse(s));
-//            System.out.println(s);
         }
         return dateList;
     }

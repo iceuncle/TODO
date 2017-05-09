@@ -8,6 +8,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +19,7 @@ import android.view.View;
 import com.todo.BR;
 import com.todo.R;
 import com.todo.data.database.Schedule;
+import com.todo.data.database.WeekSchedule;
 import com.todo.databinding.ActivityTodayBinding;
 import com.todo.databinding.ItemListTodayBinding;
 import com.todo.ui.base.BaseActivity;
@@ -30,6 +34,7 @@ import com.todo.ui.thisweek.ThisWeekActivity;
 import com.todo.utils.IsEmpty;
 import com.todo.utils.LogUtil;
 import com.todo.utils.SchedulesUtil;
+import com.todo.vendor.comparator.CharacterParser;
 import com.todo.vendor.recyleradapter.BaseViewAdapter;
 import com.todo.vendor.recyleradapter.BindingViewHolder;
 import com.todo.vendor.recyleradapter.SingleTypeAdapter;
@@ -56,6 +61,8 @@ public class TodayActivity extends BaseActivity {
     private SingleTypeAdapter<Schedule> mAdapter;
     private List<Schedule> mScheduleList = new ArrayList<>();
     protected StateModel state; //显示空状态
+
+    private CharacterParser characterParser;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MsgEvent event) {
@@ -138,6 +145,8 @@ public class TodayActivity extends BaseActivity {
             state = new StateModel();
         }
         mBinding.setVariable(BR.stateModel, state);
+
+        characterParser = CharacterParser.getInstance();
     }
 
     private void initEventHandler() {
@@ -145,6 +154,40 @@ public class TodayActivity extends BaseActivity {
             @Override
             public void onRefresh() {
                 initDatas();
+            }
+        });
+
+        mBinding.searchEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterData(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        mBinding.searchEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -222,7 +265,7 @@ public class TodayActivity extends BaseActivity {
 
     private void initDatas() {
         mScheduleList.clear();
-        List<Schedule> list = DataSupport.findAll(Schedule.class);
+        List<Schedule> list = DataSupport.findAll(Schedule.class, true);
         DateTime dateTime = new DateTime();
         DateTime today = new DateTime(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth(), 0, 0);
         for (Schedule schedule : list) {
@@ -243,8 +286,28 @@ public class TodayActivity extends BaseActivity {
 
     }
 
-    public void setEmptyState() {
+    List<Schedule> filterDateList = new ArrayList<Schedule>();
+
+    private void filterData(String filterStr) {
         state.setEmptyState(EmptyState.NORMAL);
+        filterDateList.clear();
+        if (TextUtils.isEmpty(filterStr)) {
+            filterDateList.addAll(mScheduleList);
+        } else {
+            for (Schedule sortModel : mScheduleList) {
+                String title = sortModel.getTitle();
+                if (title.toUpperCase().indexOf(
+                        filterStr.toString().toUpperCase()) != -1
+                        || characterParser.getSelling(title).toUpperCase()
+                        .startsWith(filterStr.toString().toUpperCase())) {
+                    filterDateList.add(sortModel);
+                }
+            }
+        }
+        if (IsEmpty.list(filterDateList)) {
+            state.setEmptyState(EmptyState.EMPTY_SEARCH);
+        }
+        mAdapter.set(filterDateList);
     }
 
     public class ItemPresenter implements BaseViewAdapter.Presenter {

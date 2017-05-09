@@ -12,7 +12,10 @@
     <!--默认背景色-->
     <color name="w1">#efeff5</color>
 
+
+    <color name="deep_gray">#666666</color><!--brownish_grey-->
     <color name="gray">#888888</color><!--warm_grey-->
+    <color name="dark_gray">#b0b0b0</color><!--greyish-->
 
     <!--最常用灰-->
     <color name="g0">#888888</color>

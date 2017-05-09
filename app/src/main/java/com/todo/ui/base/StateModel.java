@@ -104,6 +104,9 @@ public class StateModel extends BaseObservable {
             case EmptyState.EMPTY_WANCHENG_SCHEDULE:
                 resId = R.string.no_wancheng_schedule;
                 break;
+            case EmptyState.EMPTY_SEARCH:
+                resId = R.string.no_search;
+                break;
             case EmptyState.NORMAL:
                 break;
             case EmptyState.PROGRESS:
@@ -139,6 +142,9 @@ public class StateModel extends BaseObservable {
                 resId = R.mipmap.none_data;
                 break;
             case EmptyState.EMPTY_WANCHENG_SCHEDULE:
+                resId = R.mipmap.none_data;
+                break;
+            case EmptyState.EMPTY_SEARCH:
                 resId = R.mipmap.none_data;
                 break;
             case EmptyState.NORMAL:

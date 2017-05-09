@@ -2,10 +2,12 @@ package com.todo.data.database;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.Serializable;
+
 /**
  * Created by tianyang on 2017/3/17.
  */
-public class Alarm extends DataSupport {
+public class Alarm extends DataSupport implements Serializable {
     private int id;
     private String name;
     private Schedule schedule;

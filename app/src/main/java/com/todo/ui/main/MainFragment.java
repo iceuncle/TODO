@@ -1,5 +1,6 @@
 package com.todo.ui.main;
 
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -7,11 +8,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.SimpleAdapter;
 
 import com.android.databinding.library.baseAdapters.BR;
@@ -27,8 +32,11 @@ import com.todo.ui.crud.WeekShowActivity;
 import com.todo.ui.event.MsgEvent;
 import com.todo.ui.main.adpters.MainAdapter;
 import com.todo.utils.DateFormatUtil;
+import com.todo.utils.IsEmpty;
 import com.todo.utils.LogUtil;
 import com.todo.utils.SchedulesUtil;
+import com.todo.vendor.comparator.CharacterParser;
+import com.todo.widget.ClearEditText;
 import com.todo.widget.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -67,6 +75,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
     private List<WeekSchedule> wanchengList = new ArrayList<>();
     private MainAdapter mAdapter;
 
+    private CharacterParser characterParser;
     private StateModel stateModel;
 
     // 标志位，标志已经初始化完成。
@@ -92,7 +101,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MsgEvent event) {
         if (event.getMsg().equals("UpDate")) {
-            LogUtil.d("aaa", "UpDate");
+            LogUtil.d("qqq", "UpDate");
             initDatas();
         }
     }
@@ -108,7 +117,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false);
-
+        LogUtil.d("qqq", "onCreateView");
         initView();
         initHandlers();
 
@@ -130,9 +139,11 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
         super.onInvisible();
         if (mBinding != null && mBinding.fabSpeedDial != null && mBinding.fabSpeedDial.isMenuOpen())
             mBinding.fabSpeedDial.closeMenu();
+
     }
 
     private void initView() {
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mBinding.recyclerview.setLayoutManager(layoutManager);
         if (mPosition == 0)
@@ -156,6 +167,11 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
             stateModel = new StateModel();
         mBinding.setVariable(BR.stateModel, stateModel);
 
+        characterParser = CharacterParser.getInstance();
+
+//        //隐藏软键盘
+//        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(mBinding.searchEt.getWindowToken(), 0);
     }
 
     private void initHandlers() {
@@ -163,6 +179,22 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
             @Override
             public void onRefresh() {
                 initDatas();
+            }
+        });
+
+        mBinding.searchEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterData(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -240,10 +272,10 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
 
 
     private void initDatas() {
+        LogUtil.d("qqq", "initDatas");
         if (!mBinding.refreshLayout.isRefreshing())
             mBinding.refreshLayout.setRefreshing(true);
         weekList.clear();
-        scheduleList.clear();
         wanchengList.clear();
         daibanList.clear();
         guoqiList.clear();
@@ -267,7 +299,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
                     }
                 } else {
                     stateModel.setEmptyState(EmptyState.NORMAL);
-                    mAdapter.update(list);
+                    mAdapter.update(scheduleList);
                 }
             }
         };
@@ -327,6 +359,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
         }
         weekScheduleList = DataSupport.findAll(WeekSchedule.class);
 
+
     }
 
 
@@ -336,6 +369,7 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
      * @return
      */
     private List<WeekSchedule> setScheduleList() {
+        scheduleList.clear();
         for (WeekSchedule schedule : weekScheduleList) {
             if (schedule.isFinished()) wanchengList.add(schedule);
             else {
@@ -403,6 +437,30 @@ public class MainFragment extends BaseFragment implements MainAdapter.MyOnItemCl
     @Override
     public void onLongClick(View view, final int position) {
 
+    }
+
+    List<WeekSchedule> filterDateList = new ArrayList<WeekSchedule>();
+
+    private void filterData(String filterStr) {
+        filterDateList.clear();
+        stateModel.setEmptyState(EmptyState.NORMAL);
+        if (TextUtils.isEmpty(filterStr)) {
+            filterDateList.addAll(scheduleList);
+        } else {
+            for (WeekSchedule sortModel : scheduleList) {
+                String title = sortModel.getTitle();
+                if (title.toUpperCase().indexOf(
+                        filterStr.toString().toUpperCase()) != -1
+                        || characterParser.getSelling(title).toUpperCase()
+                        .startsWith(filterStr.toString().toUpperCase())) {
+                    filterDateList.add(sortModel);
+                }
+            }
+        }
+        if (IsEmpty.list(filterDateList)) {
+            stateModel.setEmptyState(EmptyState.EMPTY_SEARCH);
+        }
+        mAdapter.update(filterDateList);
     }
 
 

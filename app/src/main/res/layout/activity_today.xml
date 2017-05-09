@@ -27,11 +27,41 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:titleTextAppearance="@style/ToolBarTitleText" />
 
+        <LinearLayout
+            android:id="@+id/search_ll"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:layout_below="@+id/toolBar"
+            android:background="@color/w0"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/ic_searchbar_dark" />
+
+            <com.todo.widget.ClearEditText
+                android:id="@+id/search_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="25dp"
+                android:background="@color/transparent"
+                android:hint="搜索行程"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:textSize="14dp" />
+
+        </LinearLayout>
+
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/toolBar">
+            android:layout_below="@id/search_ll">
 
             <RelativeLayout
                 android:layout_width="wrap_content"

@@ -1,10 +1,6 @@
 package com.todo.ui.main;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -13,27 +9,17 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
 import com.todo.R;
-import com.todo.data.database.Schedule;
-import com.todo.data.database.WeekSchedule;
-import com.todo.ui.main.adpters.ViewPagerAdapter;
 import com.todo.ui.base.BaseActivity;
-import com.todo.ui.crud.AddActivity;
 import com.todo.ui.datepicker.DatePickerActivity;
+import com.todo.ui.main.adpters.ViewPagerAdapter;
 import com.todo.ui.set.RingSettingActivity;
 import com.todo.ui.thisweek.ThisWeekActivity;
 import com.todo.ui.today.TodayActivity;
 
-import org.litepal.crud.DataSupport;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import io.github.yavski.fabspeeddial.FabSpeedDial;
-import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 public class MainActivity extends BaseActivity {
     private TabLayout tabLayout;
@@ -99,26 +85,6 @@ public class MainActivity extends BaseActivity {
                 break;
         }
         return true;
-    }
-
-    public void Add(View view) {
-
-//        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(AlarmManagerUtil.ALARM_ACTION);
-//
-//        long intervalMillis = 60000;
-//        intent.putExtra("msg", "测试");
-//        intent.putExtra("intervalMillis", intervalMillis);
-//        intent.putExtra("id", 1111);
-//        intent.putExtra("soundOrVibrator", 1);
-//        PendingIntent sender = PendingIntent.getBroadcast(this, 1111, intent, PendingIntent
-//                .FLAG_CANCEL_CURRENT);
-//
-////        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 10000, sender);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-//            am.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 3000,
-//                    sender);
-
     }
 
 

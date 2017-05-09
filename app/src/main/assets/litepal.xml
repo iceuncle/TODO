@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <litepal>
     <dbname value="ToDo" />
-    <version value="12" />
+    <version value="20" />
     <list>
         <mapping class="com.todo.data.database.Schedule"></mapping>
         <mapping class="com.todo.data.database.WeekSchedule"></mapping>
         <mapping class="com.todo.data.database.Alarm"></mapping>
+        <mapping class="com.todo.data.bean.Picture"></mapping>
     </list>
 </litepal>

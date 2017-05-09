@@ -7,4 +7,8 @@
         <item>@color/holo_orange_dark</item>
         <item>@color/b0</item>
     </integer-array>
+
+    <declare-styleable name="ClearEditText">
+        <attr name="leftDrawable" format="reference"/>
+    </declare-styleable>
 </resources>

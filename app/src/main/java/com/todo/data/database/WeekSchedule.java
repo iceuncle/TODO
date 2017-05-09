@@ -21,6 +21,7 @@ public class WeekSchedule extends Schedule implements Serializable {
         setBiaoqian(schedule.getBiaoqian());
         setDetail(schedule.getDetail());
         setSoundOrVibrator(schedule.getSoundOrVibrator());
+        setPhotoList(schedule.getPhotoList());
     }
 
     public int getScheduleId() {

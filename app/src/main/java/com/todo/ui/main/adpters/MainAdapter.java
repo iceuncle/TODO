@@ -121,6 +121,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         this.mOnItemClickLitener = mOnItemClickLitener;
     }
 
+    public void clear(){
+        this.scheduleList.clear();
+        notifyDataSetChanged();
+    }
+
     public void update(List<WeekSchedule> list) {
         this.scheduleList.clear();
         this.scheduleList.addAll(list);

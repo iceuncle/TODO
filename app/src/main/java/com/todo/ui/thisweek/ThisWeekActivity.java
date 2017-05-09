@@ -8,6 +8,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +35,7 @@ import com.todo.utils.DateFormatUtil;
 import com.todo.utils.IsEmpty;
 import com.todo.utils.LogUtil;
 import com.todo.utils.SchedulesUtil;
+import com.todo.vendor.comparator.CharacterParser;
 import com.todo.vendor.recyleradapter.BaseViewAdapter;
 import com.todo.vendor.recyleradapter.BindingViewHolder;
 import com.todo.vendor.recyleradapter.MultiTypeAdapter;
@@ -66,6 +70,8 @@ public class ThisWeekActivity extends BaseActivity {
     //过期list
     private List<Schedule> guoqiList = new ArrayList<>();
     protected StateModel state; //显示空状态
+
+    private CharacterParser characterParser;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MsgEvent event) {
@@ -148,6 +154,8 @@ public class ThisWeekActivity extends BaseActivity {
             state = new StateModel();
         }
         mBinding.setVariable(BR.stateModel, state);
+
+        characterParser = CharacterParser.getInstance();
     }
 
 
@@ -156,7 +164,7 @@ public class ThisWeekActivity extends BaseActivity {
         daibanList.clear();
         guoqiList.clear();
         mAdapter.clear();
-        List<Schedule> list = DataSupport.findAll(Schedule.class);
+        List<Schedule> list = DataSupport.findAll(Schedule.class, true);
         for (Schedule schedule : list) {
             if (schedule.getType() == 0) {
                 if (SchedulesUtil.isInThisWeek(schedule))
@@ -239,6 +247,24 @@ public class ThisWeekActivity extends BaseActivity {
             }
         });
 
+        mBinding.searchEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterData(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
         final List<Schedule> schedules = new ArrayList<>();
         mBinding.fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
@@ -312,6 +338,29 @@ public class ThisWeekActivity extends BaseActivity {
         });
     }
 
+    List<Schedule> filterDateList = new ArrayList<Schedule>();
+
+    private void filterData(String filterStr) {
+        state.setEmptyState(EmptyState.NORMAL);
+        filterDateList.clear();
+        if (TextUtils.isEmpty(filterStr)) {
+            filterDateList.addAll(mScheduleList);
+        } else {
+            for (Schedule sortModel : mScheduleList) {
+                String title = sortModel.getTitle();
+                if (title.toUpperCase().indexOf(
+                        filterStr.toString().toUpperCase()) != -1
+                        || characterParser.getSelling(title).toUpperCase()
+                        .startsWith(filterStr.toString().toUpperCase())) {
+                    filterDateList.add(sortModel);
+                }
+            }
+        }
+        if (IsEmpty.list(filterDateList)) {
+            state.setEmptyState(EmptyState.EMPTY_SEARCH);
+        } else
+            updateAfterFilter(filterDateList);
+    }
 
     //从小到大的排序
     private class SortComparator implements Comparator {

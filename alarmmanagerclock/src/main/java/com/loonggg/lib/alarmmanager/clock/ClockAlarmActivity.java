@@ -12,6 +12,7 @@ import android.os.PowerManager;
 import android.os.Vibrator;
 import android.view.View;
 
+import java.io.File;
 import java.io.IOException;
 
 
@@ -71,35 +72,50 @@ public class ClockAlarmActivity extends Activity {
         String type = (String) SPUtils.get(this, SPUtils.RING_TYPE_KEY, "");
         if (type != null && type.equals(SPUtils.MUSIC_NAME_KEY)) {
             Uri uri = Uri.parse((String) SPUtils.get(this, SPUtils.MUSIC_NAME_KEY, ""));
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            try {
-                if (uri != null)
-                    mediaPlayer.setDataSource(this, uri);
-                mediaPlayer.prepare(); // might take long! (for buffering, etc)
-                mediaPlayer.start();
-            } catch (IOException e) {
-                e.printStackTrace();
+
+            if (ClockUtil.getRealFilePath(this, uri) != null) {
+                mediaPlayer = new MediaPlayer();
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                try {
+                    if (uri != null)
+                        mediaPlayer.setDataSource(this, uri);
+                    mediaPlayer.prepare(); // might take long! (for buffering, etc)
+                    mediaPlayer.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                playRow();
             }
+
         } else if (type != null && type.equals(SPUtils.RECORD_NAME_KEY)) {
             String url = (String) SPUtils.get(this, SPUtils.RECORD_NAME_KEY, "");
-            mediaPlayer = new MediaPlayer();
+            if (url == null || new File(url).exists()) {
+                mediaPlayer = new MediaPlayer();
 //            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            try {
-                mediaPlayer.setDataSource(url);
-                mediaPlayer.setLooping(true);
-                mediaPlayer.prepare();
-                mediaPlayer.start();
-            } catch (IOException e) {
-                e.printStackTrace();
+                try {
+                    mediaPlayer.setDataSource(url);
+                    mediaPlayer.setLooping(true);
+                    mediaPlayer.prepare();
+                    mediaPlayer.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                playRow();
             }
+
         } else {
-            mediaPlayer = MediaPlayer.create(this, R.raw.in_call_alarm);
-            mediaPlayer.setLooping(true);
-            mediaPlayer.start();
+            playRow();
         }
         wakeUpAndUnlock(this);
 
+    }
+
+    public void playRow() {
+        mediaPlayer = MediaPlayer.create(this, R.raw.in_call_alarm);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
     }
 
     public void wakeUpAndUnlock(Context context) {

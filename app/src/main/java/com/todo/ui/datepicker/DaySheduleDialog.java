@@ -96,7 +96,7 @@ public class DaySheduleDialog extends AppCompatDialog {
 
         private void initDatas() {
             scheduleList.clear();
-            List<Schedule> list = DataSupport.findAll(Schedule.class);
+            List<Schedule> list = DataSupport.findAll(Schedule.class, true);
             for (Schedule schedule : list) {
                 Schedule s = SchedulesUtil.getSheduleInDay(schedule, dayTime, schedule.getType());
                 if (s != null)

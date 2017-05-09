@@ -1,12 +1,18 @@
 package com.todo.ui.crud;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -23,6 +29,7 @@ import com.loonggg.lib.alarmmanager.clock.AlarmManagerUtil;
 import com.todo.MyApplication;
 import com.todo.R;
 import com.todo.data.bean.CalendarBean;
+import com.todo.data.bean.Picture;
 import com.todo.data.database.Alarm;
 import com.todo.data.database.Schedule;
 import com.todo.data.database.WeekSchedule;
@@ -30,9 +37,13 @@ import com.todo.ui.base.BaseActivity;
 import com.todo.ui.datepicker.DatePickerActivity;
 import com.todo.ui.event.MsgEvent;
 import com.todo.ui.main.MainActivity;
+import com.todo.ui.preview.PreviewActivity;
 import com.todo.ui.today.TodayActivity;
 import com.todo.utils.DateFormatUtil;
+import com.todo.utils.IsEmpty;
 import com.todo.utils.LogUtil;
+import com.todo.vendor.recyleradapter.BaseViewAdapter;
+import com.todo.vendor.recyleradapter.SingleTypeAdapter;
 import com.todo.widget.DateTimePickDialog;
 import com.todo.widget.ImageButtonText;
 
@@ -46,10 +57,13 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import me.iwf.photopicker.PhotoPicker;
+
 /**
  * Created by tianyang on 2017/2/20.
  */
 public class ModifyActivity extends BaseActivity implements ImageButtonText.OnImageButtonTextClickListener {
+    private static final int CAMERA_PERMISSION = 1;
     private Schedule mSchedule;
     private EditText titleEt, detailEt;
     private TextView startTimeTv, xunhuanTv;
@@ -71,6 +85,14 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
     private String[] types = {"只此一次", "每天", "每周", "自定义"};
     private boolean[] selectedWeekdays = new boolean[7];
     private String type;
+
+    private RecyclerView mRecyclerView;
+    private SingleTypeAdapter<Picture> mAdapter;
+
+    //照片url
+    private List<Picture> photoUrls = new ArrayList<>();
+
+    private ArrayList<String> stringList = new ArrayList<>();
 
 
     @Override
@@ -147,6 +169,13 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         zhengdongSc = (SwitchCompat) findViewById(R.id.zhendong_sc);
         ringSc = (SwitchCompat) findViewById(R.id.ring_sc);
 
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
+        mAdapter = new SingleTypeAdapter<>(this, R.layout.item_modify_pic);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setPresenter(new ItemPresenter());
+
+
     }
 
     protected void initDatas() {
@@ -155,6 +184,12 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         mSchedule = DataSupport.find(Schedule.class, mScheduleId, true);
         selectedIndex = mSchedule.getType();
         soundOrVibrator = mSchedule.getSoundOrVibrator();
+
+        if (!IsEmpty.list(mSchedule.getPhotoList())) {
+            mAdapter.addAll(mSchedule.getPhotoList());
+        }
+        mAdapter.add(new Picture(R.mipmap.ic_addpics, true));
+
     }
 
     private void initEvents() {
@@ -437,24 +472,31 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         schedule.setSoundOrVibrator(soundOrVibrator);
         schedule.save();
         alarmId = schedule.getId();
+        for (Picture picture : photoUrls) {
+            picture.setSchedule(schedule);
+            picture.save();
+        }
     }
 
     public void addAlarm(Schedule schedule) {
         if (selectedIndex == 0) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
+            alarm.setName(schedule.getTitle());
             alarm.save();
             AlarmManagerUtil.setAlarm(MyApplication.instance(), 0, startCalendar, alarm.getId(), 0, titleEt.getText().toString(), soundOrVibrator);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 1) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
+            alarm.setName(schedule.getTitle());
             alarm.save();
             AlarmManagerUtil.setAlarm(MyApplication.instance(), 1, startCalendar, alarm.getId(), 0, titleEt.getText().toString(), soundOrVibrator);
             Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         } else if (selectedIndex == 2) {
             Alarm alarm = new Alarm();
             alarm.setSchedule(schedule);
+            alarm.setName(schedule.getTitle());
             alarm.save();
             DateTime dateTime = new DateTime(startCalendar);
             AlarmManagerUtil.setAlarm(MyApplication.instance(), 2, startCalendar, alarm.getId(), dateTime.getDayOfWeek(), titleEt.getText().toString(), soundOrVibrator);
@@ -463,6 +505,7 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
                 if (selectedWeekdays[i]) {
                     Alarm alarm = new Alarm();
                     alarm.setSchedule(schedule);
+                    alarm.setName(schedule.getTitle());
                     alarm.save();
                     AlarmManagerUtil.setAlarm(MyApplication.instance(), 2, startCalendar, alarm.getId(), i + 1, titleEt.getText().toString(), soundOrVibrator);
                 }
@@ -470,4 +513,89 @@ public class ModifyActivity extends BaseActivity implements ImageButtonText.OnIm
         }
     }
 
+    public void getPermissions() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            List<String> permissionsNeeded = new ArrayList<String>();
+            permissionsNeeded.add(Manifest.permission.CAMERA);
+            permissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            ActivityCompat.requestPermissions(this,
+                    permissionsNeeded.toArray(new String[permissionsNeeded.size()]), CAMERA_PERMISSION);
+        } else if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            List<String> permissionsNeeded = new ArrayList<String>();
+            permissionsNeeded.add(Manifest.permission.CAMERA);
+            ActivityCompat.requestPermissions(this,
+                    permissionsNeeded.toArray(new String[permissionsNeeded.size()]), CAMERA_PERMISSION);
+        } else if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            List<String> permissionsNeeded = new ArrayList<String>();
+            permissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            ActivityCompat.requestPermissions(this,
+                    permissionsNeeded.toArray(new String[permissionsNeeded.size()]), CAMERA_PERMISSION);
+        } else {
+            PhotoPicker.builder().setPhotoCount(4).setShowCamera(true).setShowGif(true)
+                    .setPreviewEnabled(false).start(this, PhotoPicker.REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[],
+                                           int[] grantResults) {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            PhotoPicker.builder().setPhotoCount(4).setShowCamera(true).setShowGif(true)
+                    .setPreviewEnabled(false).start(this, PhotoPicker.REQUEST_CODE);
+        } else if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "请允许手机拍照权限", Toast.LENGTH_SHORT).show();
+        } else if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "请允许手机读写外部存储权限", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("hello", resultCode + "");
+        if (resultCode == RESULT_OK && requestCode == PhotoPicker.REQUEST_CODE) {
+            if (data != null) {
+                mAdapter.clear();
+                photoUrls.clear();
+                data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
+                Log.d("hello", photoUrls.toString() + "");
+
+                for (String s : data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS)) {
+                    Picture picture = new Picture(s, false);
+                    photoUrls.add(picture);
+                }
+
+                mAdapter.addAll(photoUrls);
+                mAdapter.add(new Picture(R.mipmap.ic_addpics, true));
+
+            }
+        }
+    }
+
+    public class ItemPresenter implements BaseViewAdapter.Presenter {
+        public void addClick() {
+            getPermissions();
+        }
+
+
+        public void previewClick() {
+            stringList.clear();
+            for (Picture picture : photoUrls) {
+                stringList.add((String) picture.getImgRes());
+            }
+            PreviewActivity.actionStart(ModifyActivity.this, stringList);
+        }
+
+    }
 }

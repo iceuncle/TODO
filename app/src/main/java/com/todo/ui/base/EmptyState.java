@@ -11,6 +11,7 @@ import static com.todo.ui.base.EmptyState.EMPTY_GUOQI_SCHEDULE;
 import static com.todo.ui.base.EmptyState.EMPTY_KIND_SCHEDULE;
 import static com.todo.ui.base.EmptyState.EMPTY_MUSIC;
 import static com.todo.ui.base.EmptyState.EMPTY_RECORDER;
+import static com.todo.ui.base.EmptyState.EMPTY_SEARCH;
 import static com.todo.ui.base.EmptyState.EMPTY_WANCHENG_SCHEDULE;
 import static com.todo.ui.base.EmptyState.NORMAL;
 import static com.todo.ui.base.EmptyState.PROGRESS;
@@ -22,7 +23,7 @@ import static com.todo.ui.base.EmptyState.PROGRESS;
  * Created by ditclear on 2017/2/24.
  */
 @IntDef({NORMAL, PROGRESS, EMPTY_DATA, EMPTY_MUSIC, EMPTY_RECORDER, EMPTY_KIND_SCHEDULE,
-        EMPTY_DAIBAN_SCHEDULE, EMPTY_GUOQI_SCHEDULE, EMPTY_WANCHENG_SCHEDULE})
+        EMPTY_DAIBAN_SCHEDULE, EMPTY_GUOQI_SCHEDULE, EMPTY_WANCHENG_SCHEDULE, EMPTY_SEARCH})
 @Retention(RetentionPolicy.SOURCE)
 public @interface EmptyState {
 
@@ -36,5 +37,6 @@ public @interface EmptyState {
     int EMPTY_DAIBAN_SCHEDULE = 55555; //待办行程为空
     int EMPTY_GUOQI_SCHEDULE = 66666; //过期行程为空
     int EMPTY_WANCHENG_SCHEDULE = 77777; //已完成行程为空
+    int EMPTY_SEARCH = 88888; //搜素列表为空
 
 }
