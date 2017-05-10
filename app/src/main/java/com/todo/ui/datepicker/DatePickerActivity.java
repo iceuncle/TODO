@@ -1,6 +1,7 @@
 package com.todo.ui.datepicker;
 
 import android.app.DatePickerDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -153,10 +154,16 @@ public class DatePickerActivity extends BaseActivity implements DatePicker.DateC
 
 
     public void dateSet(View view) {
-        DatePickerDialog mDialog = new DatePickerDialog(this, mdateListener, DateTime.now().getYear(),
+        DatePickerDialog mDialog = new DatePickerDialog(this, R.style.PickerDialogCustom, mdateListener, DateTime.now().getYear(),
                 DateTime.now().getMonthOfYear() - 1, DateTime.now().getDayOfMonth());
+        mDialog.setTitle("");
         mDialog.show();
         android.widget.DatePicker dp = mDialog.getDatePicker();
+//        dp.setSpinnersShown(true);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+//            dp.setLayoutMode(1);
+//        }
+
         if (dp.getChildAt(0) != null
                 && ((ViewGroup) dp.getChildAt(0)).getChildAt(0) != null
                 && ((ViewGroup) ((ViewGroup) dp.getChildAt(0)).getChildAt(0)).getChildAt(2) != null)
