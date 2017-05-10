@@ -22,6 +22,7 @@ public class BindUtil {
         } else {
             Glide.with(MyApplication.instance())
                     .load(picture.getImgRes())
+                    .crossFade()
                     .into(imgView);
         }
     }
