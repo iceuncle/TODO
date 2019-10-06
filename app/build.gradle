@@ -11,19 +11,41 @@ android {
         versionCode 2
         versionName "2.0"
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
 
     signingConfigs {
+        debug {
+            keyAlias "${signing_keyAlias}"
+            keyPassword "${signging_certificatePassword}"
+            storeFile file("${signing_certificate}")
+            storePassword "${signging_storePassword}"
+        }
         release {
             keyAlias "${signing_keyAlias}"
             keyPassword "${signging_certificatePassword}"
             storeFile file("${signing_certificate}")
             storePassword "${signging_storePassword}"
+        }
+    }
+
+    buildTypes {
+        debug {
+            // 显示Log
+            debuggable true
+            versionNameSuffix "-debug"
+            zipAlignEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled false
+            //Zipalign优化
+            zipAlignEnabled true
+            // 移除无用的resource文件
+            shrinkResources false
+            signingConfig signingConfigs.release
+            aaptOptions.cruncherEnabled = false
+            aaptOptions.useNewCruncher = false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
